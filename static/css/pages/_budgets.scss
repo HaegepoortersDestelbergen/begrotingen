@@ -1,0 +1,46 @@
+[data-section="step2"] {
+    header {
+        background-color: $grey200;
+    }
+    
+    
+    [data-form="newBudget"] {
+        .body__prepend input {
+            // padding: 0;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: $blue500;
+            // background-color: transparent;
+            min-height: unset;
+            
+            &::placeholder {
+                color: $blue500;
+            }
+            
+            & + .form-text {
+                font-size: .8rem !important;
+            }
+            
+            &.small {
+                font-size: 14px;
+                font-weight: 500;
+            }
+        }
+        
+        .body__append {
+            hr {
+                margin: 1.4rem 0;
+                height: 1px;
+                background: none;  
+                border: none;            
+                background-image: linear-gradient(to right, $blue300 35%, rgba(255, 255, 255, 0) 0%);
+                background-position: center;
+                background-size: 38px 3px;
+                background-repeat: repeat-x;
+                opacity: unset;
+            }
+            
+            text-align: unset;
+        }
+    }
+}

@@ -1,0 +1,51 @@
+input {
+    border: none;
+    
+    &:focus, &:focus-within {
+        box-shadow: none;
+        outline: none;
+    }
+}
+
+.form-label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 80%;
+    font-weight: 500;
+}
+
+.form-control {
+    border-radius: $bd-radius/2;
+    border: none;
+    
+    &:focus, &:focus-within {
+        box-shadow: none;
+        outline: none;
+    }
+}
+
+.search {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    border-radius: $bd-radius;
+    background-color: $grey200;
+    box-shadow: $shadow-lg;
+    
+    input {
+        width: inherit;
+        background-color: transparent;
+        border-radius: inherit;
+        border: none;
+        
+        &::placeholder {
+            font-weight: 500;
+            color: $blue300
+        }
+    }
+    
+    .addon {
+        white-space: nowrap;
+        color: $blue300;
+    }
+}

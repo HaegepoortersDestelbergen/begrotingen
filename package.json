@@ -1,0 +1,35 @@
+{
+  "name": "begroting-maker",
+  "version": "1.0.0",
+  "description": "Eenvoudig begrotingen centraal aanmaken, bewaren en raadplegen",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel watch index.html --target node --bundle-node-modules & browser-sync start --watch --server 'dist' --files 'dist' --no-notify",
+    "build": "parcel build index.html --target node --bundle-node-modules"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaegepoortersDestelbergen/begrotingen.git"
+  },
+  "author": "Lennert De Ryck",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HaegepoortersDestelbergen/begrotingen/issues"
+  },
+  "homepage": "https://github.com/HaegepoortersDestelbergen/begrotingen#readme",
+  "dependencies": {
+    "bootstrap": "^5.0.0-alpha1",
+    "browser-sync": "^2.26.7",
+    "firebase": "^7.16.1",
+    "firebase-admin": "^9.0.0",
+    "http2": "^3.3.7",
+    "moment": "^2.27.0",
+    "popper.js": "^1.16.1",
+    "sesam-collapse": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.23",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.26.10"
+  }
+}

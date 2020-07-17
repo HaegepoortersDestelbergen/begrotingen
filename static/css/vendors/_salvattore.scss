@@ -1,0 +1,45 @@
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+);
+
+$columns: length($breakpoints);
+
+.salvattore {
+    display: flex;
+    
+    .salvattore__column:not(:first-child):not(:last-child) {
+        margin: 0 1.5rem;
+    }
+    
+    @for $i from 1 through $columns {
+        &__column--1of#{$i} {
+            width: calc(100% / #{$i});
+        }
+    }
+    
+    @each $break, $point in $breakpoints {
+        
+        &#{&} {
+            @for $i from 1 through $columns {
+                &__grid--#{$i}c::before {
+                    content: '#{$i} .salvattore__column.salvattore__column--1of#{$i}';
+                }
+            }
+        }
+        
+        @media screen and (min-width: $point) {
+            // .salvatore-grid[data-columns]::before {content: '1 .column.size-1of1';}
+            
+            &#{&} {
+                @for $i from 1 through $columns {
+                    &__grid--#{$break}-#{$i}c::before {
+                        content: '#{$i} .salvattore__column.salvattore__column--1of#{$i}' !important;
+                    }
+                }
+            }
+        }
+    }
+}

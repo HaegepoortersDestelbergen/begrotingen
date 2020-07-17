@@ -1,0 +1,10 @@
+.modal {
+    &-header, &-footer {
+        border: none;
+    }
+    
+    &-content {
+        border: none;
+        border-radius: $bd-radius;
+    }
+}

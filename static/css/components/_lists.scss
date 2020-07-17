@@ -1,0 +1,52 @@
+.list {
+    &__item {
+        padding: 1.2rem 1.4rem;
+        background-color: $blue100;
+        border-radius: $bd-radius;
+    }
+    
+    .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        
+        &__icon {
+            width: fit-content;
+            font-size: 1.6rem;
+            margin-bottom: 0;
+            margin-right: 1.2rem;
+            
+            .bx {
+                @include flex-center;
+                width: 3rem; height: 3rem;
+                border-radius: 100%;
+                background-color: $blue300;
+                color: white;
+            }
+        }
+        
+        .body {
+            display: flex;
+            // align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            color: $blue500;
+            
+            span {
+                display: block;
+                font-weight: 700;
+            }
+            
+            small {
+                display: block;
+                font-weight: 500;
+            }
+            
+            &__append {
+                text-align: right;
+            }
+        }
+        
+    } 
+}

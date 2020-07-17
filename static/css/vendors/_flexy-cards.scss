@@ -1,0 +1,114 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.flex-grid {
+    --flex-grid--items: 1;
+    --flex-grid--spacing: 20px;
+    overflow: visible !important;
+    overflow-x: hidden;
+
+    &__wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin-right: calc(var(--flex-grid--spacing) - (var(--flex-grid--spacing) * 2));
+        margin-bottom: calc(var(--flex-grid--spacing) - (var(--flex-grid--spacing) * 2));
+    
+        .flex-grid__item {
+            flex-basis: calc(100% / var(--flex-grid--items) - var(--flex-grid--spacing));
+            margin-bottom: var(--flex-grid--spacing); 
+            margin-right: var(--flex-grid--spacing);
+            height: fit-content;
+            // background-color: inherit;
+            // color: red;
+        }
+        
+    }
+    
+    &--grow {
+        justify-content: space-between;
+
+        .flex-grid-item {
+            flex-grow: 1;
+        }
+    }
+}
+
+.flex-grid--1i {
+  --flex-grid--items: 1 !important;
+}
+.flex-grid--2i {
+  --flex-grid--items: 2 !important;
+}
+.flex-grid--3i {
+  --flex-grid--items: 3 !important;
+}
+.flex-grid--4i {
+  --flex-grid--items: 4 !important;
+}
+
+@media (min-width: 576px) {
+  .flex-grid--sm-1i {
+      --flex-grid--items: 1 !important;
+  }
+  .flex-grid--sm-2i {
+      --flex-grid--items: 2 !important;
+  }
+  .flex-grid--sm-3i {
+      --flex-grid--items: 3 !important;
+  }
+  .flex-grid--sm-4i {
+      --flex-grid--items: 4 !important;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .flex-grid {
+      --flex-grid--items: 2;
+  }
+
+  .flex-grid--md-1i {
+      --flex-grid--items: 1 !important;
+  }
+
+  .flex-grid--md-2i {
+      --flex-grid--items: 2 !important;
+  }
+
+  .flex-grid--md-3i {
+      --flex-grid--items: 3 !important;
+  }
+
+  .flex-grid--md-4i {
+      --flex-grid--items: 4 !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .flex-grid {
+      --flex-grid--items: 3;
+  }
+
+  .flex-grid--lg-1i {
+      --flex-grid--items: 1 !important;
+  }
+
+  .flex-grid--lg-2i {
+      --flex-grid--items: 2 !important;
+  }
+
+  .flex-grid--lg-3i {
+      --flex-grid--items: 3 !important;
+  }
+
+  .flex-grid--lg-4i {
+      --flex-grid--items: 4 !important;
+  }
+}
+
+@media (min-width: 1200px) { }

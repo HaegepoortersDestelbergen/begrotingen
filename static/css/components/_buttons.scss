@@ -1,0 +1,64 @@
+.btn {
+    display: block;
+    max-width: fit-content;
+    height: fit-content;
+    padding-left: 3rem; padding-right: 3rem;
+    background-color: $blue500;
+    border-radius: 120px;
+    white-space: nowrap;
+    font-weight: bold;
+    color: $blue100;
+    
+    &:hover {
+        color: $blue100;
+    }
+    
+    &:focus, &:focus-within, &:active {
+        outline: none;
+        box-shadow: none;
+    }
+    
+    
+    &--nav-back {
+        position: relative;
+        padding: 0;
+        background-color: transparent;
+        font-size: 90%;
+        font-weight: 500;
+        color: $blue500;
+        
+        &:hover {
+            color: $blue500;
+        }
+        
+        .bx {
+            position: absolute;
+            top: 2px;
+            right: 100%;
+            padding-right: .5rem;
+            color: $blue300;
+        }
+    }
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    width: fit-content;
+    // padding: .5rem;
+    // background-color: $blue100;
+    // mix-blend-mode: multiply;
+    border-radius: 120px;
+    
+    .btn {
+        margin-right: 1rem;
+        border-radius: 120px !important;
+        
+        &:last-child {margin-right: 0;}
+        
+        &--sub {
+            background-color: transparentize($blue500, $amount: 0.5);
+            // margin-right: 0rem;
+        }
+    }
+}

@@ -1,0 +1,44 @@
+// STEPS
+
+[data-section="step1"] .form { 
+    width: fit-content;
+    margin: 0 auto;
+      
+    &__group {
+        margin-right: 2rem;
+        
+        &:last-child {margin-right: 0;}
+        
+        input {display: none;}
+        
+        label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 150px;
+            padding: 1.5rem 2rem 1.2rem 2rem;
+            background-color: $blue100;
+            font-weight: bold;
+            color: $blue500;
+            text-align: center;
+            border-radius: 26px;
+        }
+        
+        svg {
+            height: 100px;
+            max-width: 100px;
+            margin-bottom: 1rem;
+            fill: $blue500 !important;
+        }
+    }
+    
+    &.change--changed {
+        label {
+            opacity: .5;
+        }
+        
+        input:checked + label {
+            opacity: 1;
+        }
+    }
+}

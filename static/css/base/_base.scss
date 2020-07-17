@@ -1,0 +1,23 @@
+* {
+    transition: all .3s ease;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: inherit;
+    height: inherit;
+    
+    #credits {
+        padding: 1rem;
+        font-weight: 500;
+        color: $blue500;
+    }
+}
