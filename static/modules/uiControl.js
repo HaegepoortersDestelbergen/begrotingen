@@ -12,34 +12,40 @@ moment.locale('nl-be');
 const render = {
     async budgets(tak) {
         const data = await budget.getAll(tak);
+        if (data.length > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = '';
         data.forEach(doc => {
-            const item = new Element('div');
-            item.class(['list__item', 'item']);
-            item.attributes([
-                ['data-firebase', doc.id]
-            ])
-            item.inner(`
-                <div class="item__icon">
-                    <i class='bx bx-calendar-alt'></i>
-                </div>
-                <div class="item__body body">
-                    <div class="body__prepend">
-                        <span class="body__title">${doc.data.title}</span>
-                        <small class="body__comment">Een beetje commentaar</small>
-                    </div>
-                    <div class="body__append">
-                        <span>
-                            ${moment.unix(doc.data.period.end.seconds).format('D MMM')}
-                            tot 
-                            ${moment.unix(doc.data.period.start.seconds).format('D MMM')}
-                        </span>
-                        <small>3436 euro</small>
-                    </div>
-                </div>
-            `);
-            item.append('[data-section="step2"] [data-label="budgetsList"]');
+            render.budget(doc);
         })
-        console.log(data)
+    },
+    
+    budget(doc, insertBefore = false) {
+        const item = new Element('div');
+        item.class(['list__item', 'item']);
+        item.attributes([
+            ['data-firebase', doc.id]
+        ])
+        
+        item.inner(`
+            <div class="item__icon">
+                <i class='bx bx-calendar-alt'></i>
+            </div>
+            <div class="item__body body">
+                <div class="body__prepend">
+                    <span class="body__title">${doc.data.title}</span>
+                    <small class="body__comment">${doc.data.comment}</small>
+                </div>
+                <div class="body__append">
+                    <span>
+                        ${moment.unix(doc.data.period.end.seconds).format('D MMM')}
+                        tot 
+                        ${moment.unix(doc.data.period.start.seconds).format('D MMM')}
+                    </span>
+                    <small>3436 euro</small>
+                </div>
+            </div>
+        `);
+        if (insertBefore == false) item.append('[data-section="step2"] [data-label="budgetsList"]');
+        else if (insertBefore == true) item.prepend('[data-section="step2"] [data-label="budgetsList"]');
     },
     
     async costs() {
@@ -48,7 +54,12 @@ const render = {
             const budgetData = window.appSettings.selectedBudget.data;
             console.log(budgetData);
             
-            const item = new Element('div');
+            render.cost(doc);
+        })
+    },
+    
+    cost(doc, insertBefore = false) {
+        const item = new Element('div');
             item.class(['list__item', 'item']);
             item.attributes([
                 ['data-firebase', doc.id]
@@ -79,8 +90,8 @@ const render = {
                     </div>
                 </div>
             `)
-            item.append('[data-section="step3"] [data-label="costsList"]');
-        })
+            if (insertBefore == false) item.append('[data-section="step3"] [data-label="costsList"]');
+            else if (insertBefore == true) item.prepend('[data-section="step3"] [data-label="costsList"]');
     }
 }
 
@@ -94,18 +105,6 @@ const ui = {
         const projectData = require('../../package.json');
         const credits = node('#credits');
         if (credits) credits.innerHTML = `Versie ${projectData.version} — <a href="">Ondersteuning krijgen</a> — ontwikkeld door ${projectData.author}`
-    },
-    
-    switch(templateName, callback) {
-        const template = node(`template[data-template="${templateName}"]`);
-        console.log(template);
-        const templateInner = template.content.cloneNode(true).querySelector('*').outerHTML;
-        const app = node('#app');
-        
-        // const section = node('#app > *');
-        // if (section) section.classList.add('animate__animated', 'animate__faster', 'animate__fadeOut');
-        app.innerHTML = templateInner;
-        if (callback) callback();
     },
     
     svgReplacement() {
@@ -125,6 +124,23 @@ const ui = {
     }
 }
 
+const switchTemplate = {
+    switch(templateName, callback) {
+        const template = node(`template[data-template="${templateName}"]`);
+        const templateInner = template.content.cloneNode(true).querySelector('*').outerHTML;
+        const app = node('#app');
+        
+        // const section = node('#app > *');
+        // if (section) section.classList.add('animate__animated', 'animate__faster', 'animate__fadeOut');
+        app.innerHTML = templateInner;
+        if (callback) callback();
+    },
+    
+    content() {
+        
+    }
+}
+
 Array.from(document.querySelectorAll('.modal')).forEach(bsNode => new Modal(bsNode))
 Array.from(document.querySelectorAll('.collapse')).forEach(bsNode => {
     new Collapse(bsNode, {
@@ -135,4 +151,5 @@ Array.from(document.querySelectorAll('.collapse')).forEach(bsNode => {
 export {
     render,
     ui,
+    switchTemplate
 }

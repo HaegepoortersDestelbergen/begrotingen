@@ -14,7 +14,7 @@ input {
     font-weight: 500;
 }
 
-.form-control {
+.form-control, .form-select {
     border-radius: $bd-radius/2;
     border: none;
     

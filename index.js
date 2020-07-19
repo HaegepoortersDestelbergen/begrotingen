@@ -1,4 +1,4 @@
-import {ui, render} from './static/modules/uiControl';
+import {ui, switchTemplate, render, switchTemplate} from './static/modules/uiControl';
 import {pricify} from './static/modules/utils';
 import {budget, costs, extractFormData} from './static/modules/dataControl';
 import {eventCallback, node} from 'cutleryjs';
@@ -9,22 +9,18 @@ const app = {
     init() {
         app.listeners();
         
-        ui.switch('groupSelect');
+        switchTemplate.switch('groupSelect');
         ui.init();
     },
     
     listeners() {
-        document.addEventListener('change', (event) => {
-            console.log('click: change');
-            
+        document.addEventListener('change', (event) => {            
             eventCallback('#form_step1', (target) => {
                 target.classList.add('change--changed');
             }, false)
         })
         
-        document.addEventListener('click', (event) => {  
-            console.log('event: click');  
-                        
+        document.addEventListener('click', (event) => {                          
             eventCallback('testing' , () => {
                 console.log('click');
             })
@@ -33,14 +29,14 @@ const app = {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
                 
-                ui.switch('costsListing');
+                switchTemplate.switch('costsListing');
                 render.costs();
             }, false)
             
             eventCallback('[data-nav-section]', (target) => {
                 target = target.dataset.navSection;
                 
-                ui.switch(target, () => {
+                switchTemplate.switch(target, () => {
                     if (target == 'budgetsListing') render.budgets(window.appSettings.group);
                 });
                 ui.init();
@@ -48,15 +44,14 @@ const app = {
         })
         
         document.addEventListener('submit', (event) => {
-            console.log('event: submit');
             event.preventDefault();
             
-            eventCallback('#form_step1', (target) => {
+            eventCallback('#form_step1', () => {
                 window.appSettings.group = extractFormData(event.target).get('group');
                 console.log('Selected group:', window.appSettings.group);
                 
                 render.budgets(window.appSettings.group);
-                ui.switch('budgetsListing');
+                switchTemplate.switch('budgetsListing');
             }, false);
             
             eventCallback('[data-form="newBudget"]' , () => {
@@ -77,6 +72,18 @@ const app = {
                     created: Date.now()
                 })
             }, false);
+            
+            eventCallback('[data-form="newCost"]', (target) => {
+                const formData = extractFormData(target);
+                
+                costs.add({
+                    title: formData.get('title'),
+                    comment: formData.get('comments'),
+                    amount: formData.get('amount'),
+                    type: formData.get('type'),
+                })
+                console.log(formData);
+            }, false)
         })
     }
 }
