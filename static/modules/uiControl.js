@@ -10,6 +10,8 @@ import {kap, wel, wol, jgv, giv} from '../../static/modules/svgs';
 moment.locale('nl-be');
 
 const render = {
+    totalBudget: 0,
+    
     async budgets(tak) {
         const data = await budget.getAll(tak);
         if (data.length > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = '';
@@ -50,48 +52,157 @@ const render = {
     
     async costs() {
         const data = await costs.getAll();
-        data.forEach(doc => {
-            const budgetData = window.appSettings.selectedBudget.data;
-            console.log(budgetData);
-            
+        data.forEach(doc => {            
             render.cost(doc);
         })
     },
     
     cost(doc, insertBefore = false) {
         const item = new Element('div');
-            item.class(['list__item', 'item']);
-            item.attributes([
-                ['data-firebase', doc.id]
-            ])
-            item.inner(`
-                <div class="item__body body" data-toggle="collapse" data-target="[data-collapse='${doc.id}']">
-                    <div class="body__prepend">
-                        <h5 class="title">${doc.data.title}</h5>
-                        <small class="comment">${doc.data.comment}</small>
-                    </div>
-                    <div class="body__append">
-                        <h5>+${pricify(doc.data.price)}</h5>
-                        <small>Voor de hele groep, totaal van alle personen</small>
-                    </div>
+        const budgetData = window.appSettings.selectedBudget.data;
+        contextSwitch.setType(doc.data.type);
+        render.addCost(doc.data.amount);
+        
+        item.class(['list__item', 'item']);
+        item.attributes([
+            ['data-firebase', doc.id]
+        ])
+        item.inner(`
+            <div class="item__body body" data-toggle="collapse" data-target="[data-collapse='${doc.id}']">
+                <div class="body__prepend">
+                    <h5 class="title">${doc.data.title}</h5>
+                    <small class="comment">${doc.data.comment}</small>
                 </div>
-                <div class="collapse" data-collapse="${doc.id}">
-                    <hr>
-                    <div class="item__behind">
-                        <div class="row">
-                            <div class="col-12 col-lg-4">
-                                <p class="mb-2">Uitgave van <strong>${pricify(doc.data.price/(budgetData.people.free + budgetData.people.paying))} per persoon</strong></p>
-                                <small>Voor elke persoon uit de groep, inclusief leiding of andere niet-betalende personen</small>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <button class="btn ml-auto mt-auto">Bewerken <i class='bx bx-chevron-down' ></i></button>
-                            </div>
+                <div class="body__append">
+                    <h5>${contextSwitch.price(doc.data.amount)} euro</h5>
+                    <small>${contextSwitch.priceComment()}</small>
+                </div>
+            </div>
+            <div class="collapse" data-collapse="${doc.id}" data-parent="[data-label='costsList']">
+                <hr>
+                <div class="item__behind">
+                    <div class="row">
+                        <div class="col-12 col-lg-4">
+                            <p class="mb-2">${contextSwitch.priceSinglePayer(doc.data.amount)}</p>
+                            <small>${contextSwitch.priceSinglePayerComment()}</small>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <button class="btn ml-auto mt-auto">Bewerken <i class='bx bx-chevron-down' ></i></button>
                         </div>
                     </div>
                 </div>
-            `)
-            if (insertBefore == false) item.append('[data-section="step3"] [data-label="costsList"]');
-            else if (insertBefore == true) item.prepend('[data-section="step3"] [data-label="costsList"]');
+            </div>
+        `)
+        if (insertBefore == false) item.append('[data-section="step3"] [data-label="costsList"]');
+        else if (insertBefore == true) item.prepend('[data-section="step3"] [data-label="costsList"]');
+    },
+    
+    addCost(amount) {
+        this.totalBudget = this.totalBudget + amount;
+        node('[data-template-context="priceTotal"]').innerHTML = pricify(this.totalBudget);
+        node('[data-template-context="priceSinglePayer"]').innerHTML = pricify(this.totalBudget/window.appSettings.selectedBudget.data.people.paying) + ' per persoon';
+    }
+}
+
+const contextSwitch = {
+    setType(type) {
+        this.costType = type
+    },
+    
+    priceComment() {
+        switch (this.costType) {
+            case 'fixed':
+                return 'Vaste kost, ongeacht aantal personen'
+                break;
+            case 'per-person':
+                return 'Totaalkost, alle personen'
+                break;
+            case 'per-payer':
+                return 'Totaalkost, betalende personen'
+                break;
+            case 'per-free':
+                return 'Totaalkost, niet-betalende personen'
+                break;
+            case 'per-free':
+                return 'Inkomsten, wordt afgetrokken van totaal'
+                break;
+        
+            default:
+                break;
+        }
+    },
+    
+    price(price) {
+        const budgetData = window.appSettings.selectedBudget.data;
+        
+        switch (this.costType) {
+            case 'fixed':
+                return '+' + price
+                break;
+            case 'per-person':
+                return '+' + price*(budgetData.people.paying + budgetData.people.free)
+                break;
+            case 'per-payer':
+                return '+' + price*(budgetData.people.paying)
+                break;
+            case 'per-free':
+                return '+' + price*(budgetData.people.free)
+                break;
+            case 'income':
+                return '-' + price
+                break;
+        
+            default:
+                break;
+        }
+    },
+    
+    priceSinglePayer(price) {
+        const budgetData = window.appSettings.selectedBudget.data;
+        
+        switch (this.costType) {
+            case 'fixed':
+                return `Uitgave van <strong>${pricify(price/(budgetData.people.paying))} per persoon</strong>`
+                break;
+            case 'per-person':
+                return `Uitgave van <strong>${pricify(price/(budgetData.people.paying))} per persoon</strong>`
+                break;
+            case 'per-payer':
+                return `Uitgave van <strong>${pricify(price/(budgetData.people.paying))} per persoon</strong>`
+                break;
+            case 'per-free':
+                return `Uitgave van <strong>${pricify(price/(budgetData.people.paying))} per persoon</strong>`
+                break;
+            case 'income':
+                return `Totale inkomst van <strong>${price} euro</strong>`
+                break;
+        
+            default:
+                break;
+        }
+    },
+    
+    priceSinglePayerComment() {
+        switch (this.costType) {
+            case 'fixed':
+                return 'Kost voor heel de groep, verekend per betalende persoon'
+                break;
+            case 'per-person':
+                return 'Kost voor elke persoon uit de groep, verekend per betalende persoon'
+                break;
+            case 'per-payer':
+                return 'Kost voor elke betalende persoon uit de groep, verekend per betalende persoon'
+                break;
+            case 'per-free':
+                return 'Kost voor elke niet-betalende persoon uit de groep, verekend per betalende persoon'
+                break;
+            case 'income':
+                return 'Deze inkomsten worden afgetrokken van het totaal van deze begroting'
+                break;
+        
+            default:
+                break;
+        }
     }
 }
 
@@ -125,19 +236,23 @@ const ui = {
 }
 
 const switchTemplate = {
-    switch(templateName, callback) {
-        const template = node(`template[data-template="${templateName}"]`);
-        const templateInner = template.content.cloneNode(true).querySelector('*').outerHTML;
-        const app = node('#app');
-        
-        // const section = node('#app > *');
-        // if (section) section.classList.add('animate__animated', 'animate__faster', 'animate__fadeOut');
-        app.innerHTML = templateInner;
-        if (callback) callback();
+    getTemplate(templateName) {
+        this.template = node(`template[data-template="${templateName}"]`);
     },
     
-    content() {
+    switch(templateName, callback) {
+        switchTemplate.getTemplate(templateName);
         
+        this.templateHTML = this.template.content.cloneNode(true).querySelector('*');
+        const app = node('#app');
+        
+        if (callback) callback(this);
+        app.innerHTML = this.templateHTML.outerHTML;
+    },
+    
+    editContext(contextCaller, innerHTML) {
+        const context = this.templateHTML.querySelector(`[data-template-context="${contextCaller}"]`);
+        context.innerHTML = innerHTML;
     }
 }
 

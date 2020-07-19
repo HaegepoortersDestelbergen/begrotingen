@@ -1,8 +1,11 @@
-import {ui, switchTemplate, render, switchTemplate} from './static/modules/uiControl';
+import {ui, switchTemplate, render} from './static/modules/uiControl';
 import {pricify} from './static/modules/utils';
 import {budget, costs, extractFormData} from './static/modules/dataControl';
 import {eventCallback, node} from 'cutleryjs';
+import moment from 'moment';
+import 'moment/locale/nl-be';
 
+moment.locale('nl-be');
 window.appSettings = {};
 
 const app = {
@@ -10,6 +13,7 @@ const app = {
         app.listeners();
         
         switchTemplate.switch('groupSelect');
+        
         ui.init();
     },
     
@@ -28,8 +32,16 @@ const app = {
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
+                console.log(budgetsData)
                 
-                switchTemplate.switch('costsListing');
+                switchTemplate.switch('costsListing', (context) => {
+                    context.editContext('title', 'Midweek');
+                    context.editContext('meta', `
+                        ${moment.unix(budgetsData.data.period.start.seconds).format('D MMM')} tot ${moment.unix(budgetsData.data.period.end.seconds).format('D MMM')}
+                        – ${budgetsData.data.people.paying + budgetsData.data.people.free} personen
+                    `);
+                    context.editContext('comments', budgetsData.data.comment);
+                });
                 render.costs();
             }, false)
             
@@ -75,6 +87,7 @@ const app = {
             
             eventCallback('[data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);
+                console.log(formData);
                 
                 costs.add({
                     title: formData.get('title'),

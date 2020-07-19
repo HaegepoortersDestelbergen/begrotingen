@@ -138,12 +138,13 @@
                     <button class="btn btn--nav-back mb-5" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht takken</button>
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <h2 class="font-weight-bold mb-0">Welpenkamp</h2>
-                            <h5 class="color-grey-400">3 juli tot 10 juli – 31 deelnemers</h5>
+                            <h2 data-template-context="title" class="font-weight-bold mb-0">Welpenkamp</h2>
+                            <h5 data-template-context="meta" class="color-grey-400">3 juli tot 10 juli – 31 deelnemers</h5>
+                            <p data-template-context="comments" class="small mb-0">Hier komt wat commentaar</p>
                         </div>
                         <div class="text-right">
-                            <h2 class="color-blue font-weight-bold mb-0">115,57 euro</h2>
-                            <p class="color-blue-300 small">5,02 euro per lid</p>
+                            <h2 data-template-context="priceTotal" class="color-blue font-weight-bold mb-0">115,57 euro</h2>
+                            <p data-template-context="priceSinglePayer" class="color-blue-300 small">5,02 euro per lid</p>
                         </div>
                     </div>
                     <form id="form_step2" class="form form--search mt-4">
@@ -176,7 +177,7 @@
                                     <div class="row mt-3 mb-3">  
                                         <div class="col">
                                             <div class="form-label">Bedrag €</div>
-                                            <input class="form-control" name="amount" type="number" id="newCost_amount" placeholder="115.57">
+                                            <input class="form-control" name="amount" type="number" step=".01" id="newCost_amount" placeholder="115.57">
                                         </div>
                                         <div class="col">
                                             <div class="form-label">Type</div>
@@ -200,8 +201,8 @@
                 </form>
                 <div class="list" data-label="costsList">
                     <!-- costslisting -->
-                    <!-- <h5 class="text-center mt-5">Er werden geen uitgaven gevonden</h5> -->
-                    <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="200px" alt="">
+                    <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
+                    <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
                 </div>
             </div>
         </div>

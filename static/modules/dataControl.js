@@ -45,17 +45,17 @@ const costs = {
         return db.collection(window.appSettings.group).doc(window.appSettings.selectedBudget.id).collection('costs');
     },
     
-    async add() {
-        costs.getCollection({title, comment, amount, type}).add({
+    async add({title, comment, amount, type}) {
+        costs.getCollection().add({
             title: title,
             comment: comment,
             amount: amount,
-            type: period,
+            type: type,
             created: new Date()
         })
         .then(async (response) => {
-            const costData = await getCollection().get(response.id);
-            render.cost({id: costData.id, data: costData.data}, true);
+            const costData = await costs.getCollection().doc(response.id).get();
+            render.cost({id: costData.id, data: costData.data()}, true);
         })
         .catch((error) => {
             console.error("Error writing document: ", error);
@@ -88,11 +88,14 @@ const extractFormData = (formNode) => {
     const nameElements = formNode.querySelectorAll('[name]');
     
     nameElements.forEach(node => {
-        names.add(node.getAttribute('name'));
+        names.add({
+            name: node.getAttribute('name'),
+            type: node.getAttribute('type') || 'textarea'
+        });
     });
     
-    names.forEach(name => {
-        returnData.set(name, formData.get(name))
+    names.forEach(i => {
+        returnData.set(i.name, i.type == 'number' ? parseFloat(formData.get(i.name)) : formData.get(i.name))
     })
     
     return returnData;
