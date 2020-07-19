@@ -1,4 +1,4 @@
-import {node} from './utils';
+import {node} from 'cutleryjs';
 
 const step1 = document.querySelector('#form_step1');
 

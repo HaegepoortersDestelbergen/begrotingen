@@ -6,64 +6,69 @@
     <title>begroting.haegepoorters.be</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/css/main.scss">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-firestore.js"></script>
 </head>
 <body>
     <div id="app">
-        <section data-section="step1" class="m-auto">
-            <h1 class="display-4 mb-0 text-center font-weight-bold">Welke tak?</h1>
-            <h4 class="text-center">Kies een tak om een begroting voor op te maken</h4>
-            <form id="form_step1" class="form d-flex flex-column mt-5">
-                <div class="d-flex">
-                    <div class="form__group">
-                        <input type="radio" name="group" id="group_1" value="kapoenen">
-                        <label for="group_1">
-                            <img data-src="tak_kap.svg" alt="Kapoenen">
-                            <span>Kapoenen</span>
-                        </label>
-                    </div>
-                    <div class="form__group">
-                        <input type="radio" name="group" id="group_2" value="welpen">
-                        <label for="group_2">
-                            <img data-src="tak_wel.svg" alt="Kapoenen">
-                            <span>Welpen</span>
-                        </label>
-                    </div>
-                    <div class="form__group">
-                        <input type="radio" name="group" id="group_3" value="woudlopers">
-                        <label for="group_3">
-                            <img data-src="tak_wol.svg" alt="Kapoenen">
-                            <span>Woudlopers</span>
-                        </label>
-                    </div>
-                    <div class="form__group">
-                        <input type="radio" name="group" id="group_4" value="jonggivers">
-                        <label for="group_4">
-                            <img data-src="tak_jgv.svg" alt="Kapoenen">
-                            <span>Jonggivers</span>
-                        </label>
-                    </div>
-                    <div class="form__group">
-                        <input type="radio" name="group" id="group_5" value="givers">
-                        <label for="group_5">
-                            <img data-src="tak_giv.svg" alt="Kapoenen">
-                            <span>Givers</span>
-                        </label>
-                    </div>
-                </div>
-                <button type="submit" class="btn mx-auto mt-5">Volgende</button>
-            </form>
-        </section>
-        <div id="credits" class="small" data-action="testing"></div>
+
     </div>
-    <div data-template="budgetsListing">
+    <template data-template="groupSelect">
+        <section data-section="step1" class="m-auto animate__animated animate__zoomIn">
+            <div class="wrapper">
+                <h1 class="display-4 mb-0 text-center font-weight-bold">Welke tak?</h1>
+                <h4 class="text-center">Kies een tak om een begroting voor op te maken</h4>
+                <form id="form_step1" class="form d-flex flex-column mt-5">
+                    <div class="d-flex">
+                        <div class="form__group">
+                            <input type="radio" name="group" id="group_1" value="kapoenen" required>
+                            <label for="group_1">
+                                <img data-src="tak_kap.svg" alt="Kapoenen">
+                                <span>Kapoenen</span>
+                            </label>
+                        </div>
+                        <div class="form__group">
+                            <input type="radio" name="group" id="group_2" value="welpen" required>
+                            <label for="group_2">
+                                <img data-src="tak_wel.svg" alt="Kapoenen">
+                                <span>Welpen</span>
+                            </label>
+                        </div>
+                        <div class="form__group">
+                            <input type="radio" name="group" id="group_3" value="woudlopers" required>
+                            <label for="group_3">
+                                <img data-src="tak_wol.svg" alt="Kapoenen">
+                                <span>Woudlopers</span>
+                            </label>
+                        </div>
+                        <div class="form__group">
+                            <input type="radio" name="group" id="group_4" value="jonggivers" required>
+                            <label for="group_4">
+                                <img data-src="tak_jgv.svg" alt="Kapoenen">
+                                <span>Jonggivers</span>
+                            </label>
+                        </div>
+                        <div class="form__group">
+                            <input type="radio" name="group" id="group_5" value="givers" required>
+                            <label for="group_5">
+                                <img data-src="tak_giv.svg" alt="Kapoenen">
+                                <span>Givers</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn mx-auto mt-5">Volgende</button>
+                </form>
+            </div>
+            <div id="credits" class="small text-center mt-auto d-none" data-action="testing"></div>
+        </section>
+    </template>
+    <template data-template="budgetsListing">
         <div data-section="step2">
-            <header class="py-5 mb-3">
+            <header class="py-5 mb-3 animate__animated animate__fadeInDown">
                 <div class="container">
-                    <button class="btn btn--nav-back mb-5"><i class='bx bx-arrow-back'></i>Overzicht takken</button>
+                    <button class="btn btn--nav-back mb-5" data-nav-section="groupSelect"><i class='bx bx-arrow-back'></i>Overzicht takken</button>
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h2 class="display-3 font-weight-bold mb-0">Welpen</h2>
@@ -83,7 +88,7 @@
                     </form>
                 </div>
             </header>
-            <div class="container">
+            <div class="container animate__animated animate__fadeInUp">
                 <form data-form="newBudget">
                     <div class="list">
                         <div class="list__item item mb-3 py-4">
@@ -108,15 +113,7 @@
                                             <input class="form-control" name="period-end" type="date" id="newBudget_periodEnd">
                                         </div>
                                     </div>
-                                    <div class="row d-none">
-                                        <div class="col-12 col-lg-4 d-none">
-                                            <div class="form-label">Type</div>
-                                            <select class="form-select" name="type" aria-label="Default select example">
-                                                <option selected value="fixed">Vaste kost</option>
-                                                <option value="per-payer">Per persoon</option>
-                                              </select>
-                                        </div>
-                                    </div>
+
                                     <div class="btn-group mt-4 ml-auto" data-toggle="collapse" data-target="[data-collapse='newBudget']">
                                         <button type="reset" class="btn btn--sub">Annuleren</button>
                                         <button type="submit" class="btn btn--main">Begroting aanmaken</button>
@@ -127,25 +124,86 @@
                     </div>
                 </form>
                 <div class="list" data-label="budgetsList">
-                    <div class="list__item item">
-                        <div class="item__icon">
-                            <i class='bx bx-calendar-alt'></i>
-                        </div>
-                        <div class="item__body body">
-                            <div class="body__prepend">
-                                <span class="body__title">Welpenkamp</span>
-                                <small class="body__comment">Een beetje commentaar</small>
-                            </div>
-                            <div class="body__append">
-                                <span>21 jul tot 30 jul</span>
-                                <small>3436 euro</small>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- budgetlisting -->
                 </div>
             </div>
         </div>
-    </div>
+    </template>
+    <template data-template="costsListing">
+        <div data-section="step3">
+            <header class="py-5 mb-3 animate__animated animate__fadeInDown">
+                <div class="container">
+                    <button class="btn btn--nav-back mb-5" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht takken</button>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="font-weight-bold mb-0">Welpenkamp</h2>
+                            <h5 class="color-grey-400">3 juli tot 10 juli – 31 deelnemers</h5>
+                        </div>
+                        <div class="text-right">
+                            <h2 class="color-blue font-weight-bold mb-0">115,57 euro</h2>
+                            <p class="color-blue-300 small">5,02 euro per lid</p>
+                        </div>
+                    </div>
+                    <form id="form_step2" class="form form--search mt-4">
+                        <div class="form__wrapper search">
+                            <input type="text" class="search__input" placeholder="Zoek op titel, commentaar of budget">
+                            <div class="search__addons">
+                                <div class="addon">
+                                    Sorteer op datum
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </header>
+            <div class="container animate__animated animate__fadeInUp">
+                <form data-form="newCost">
+                    <div class="list">
+                        <div class="list__item item mb-3 py-4">
+                            <i class='bx bx-list-plus'></i>
+                            <div class="item__icon h-100 align-self-start">
+                                <i class='bx bx-coin'></i>
+                            </div>
+                            <div class="item__body body d-flex flex-column">
+                                <div class="mb-0 body__prepend">
+                                    <input class="form-control h5" type="text" id="newCost_title" name="title" autocomplete="none" placeholder="Nieuwe kost" data-toggle="collapse" data-target="[data-collapse='newCost']">
+                                    <input class="form-control small w-50" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
+                                    <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
+                                </div>
+                                <div class="body__append collapse" data-collapse="newCost">
+                                    <hr>
+                                    <div class="row mt-3 mb-3">  
+                                        <div class="col">
+                                            <div class="form-label">Bedrag €</div>
+                                            <input class="form-control" name="amount" type="number" id="newCost_amount" placeholder="115.57">
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-label">Type</div>
+                                            <select class="form-select" name="type" aria-label="Default select example">
+                                                <option selected value="fixed">Vaste kost</option>
+                                                <option value="per-person">Kost per persoon</option>
+                                                <option value="per-payer">Kost per betalende persoon</option>
+                                                <option value="per-free">Kost per gratis persoon</option>
+                                                <option value="income">Inkomst</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group mt-4 ml-auto" data-toggle="collapse" data-target="[data-collapse='newCost']">
+                                        <button type="reset" class="btn btn--sub">Annuleren</button>
+                                        <button type="submit" class="btn btn--main">Begroting aanmaken</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="list" data-label="costsList">
+                    <!-- costslisting -->
+                </div>
+            </div>
+        </div>
+    </template>
+    
     <script src="index.js"></script>
 </body>
 </html>

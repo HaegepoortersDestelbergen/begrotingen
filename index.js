@@ -1,44 +1,68 @@
-import {kap, wel, wol, jgv, giv} from './static/modules/svgs';
-import {step1} from './static/modules/steps/step1';
 import {ui, render} from './static/modules/uiControl';
-import {eventCallback} from './static/modules/utils';
-import {addBudget, extractFormData} from './static/modules/dataControl';
-import moment from 'moment';
+import {pricify} from './static/modules/utils';
+import {budget, costs, extractFormData} from './static/modules/dataControl';
+import {eventCallback, node} from 'cutleryjs';
 
 window.appSettings = {};
-
-console.log(moment.now());
 
 const app = {
     init() {
         app.listeners();
-        app.svgReplacement();
         
-        step1.listeners();
-        
-        ui.generateCredits();
-        render.budgets('kapoenen');
+        ui.switch('groupSelect');
+        ui.init();
     },
     
     listeners() {
-        document.addEventListener('click', (event) => {    
+        document.addEventListener('change', (event) => {
+            console.log('click: change');
+            
+            eventCallback('#form_step1', (target) => {
+                target.classList.add('change--changed');
+            }, false)
+        })
+        
+        document.addEventListener('click', (event) => {  
+            console.log('event: click');  
+                        
             eventCallback('testing' , () => {
                 console.log('click');
             })
+            
+            eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
+                const budgetsData = await budget.get(target.dataset.firebase);
+                window.appSettings.selectedBudget = budgetsData;
+                
+                ui.switch('costsListing');
+                render.costs();
+            }, false)
+            
+            eventCallback('[data-nav-section]', (target) => {
+                target = target.dataset.navSection;
+                
+                ui.switch(target, () => {
+                    if (target == 'budgetsListing') render.budgets(window.appSettings.group);
+                });
+                ui.init();
+            }, false)
         })
         
         document.addEventListener('submit', (event) => {
+            console.log('event: submit');
             event.preventDefault();
             
-            eventCallback('#form_step1', () => {
+            eventCallback('#form_step1', (target) => {
                 window.appSettings.group = extractFormData(event.target).get('group');
                 console.log('Selected group:', window.appSettings.group);
+                
+                render.budgets(window.appSettings.group);
+                ui.switch('budgetsListing');
             }, false);
             
             eventCallback('[data-form="newBudget"]' , () => {
                 const formData = extractFormData(event.target)
                 
-                addBudget({
+                budget.add({
                     tak: window.appSettings.group,
                     title: formData.get('title'),
                     comment: formData.get('comments'),
@@ -54,23 +78,9 @@ const app = {
                 })
             }, false);
         })
-    },
-    
-    svgReplacement() {
-        const takImages = {
-            kap: document.querySelectorAll('img[data-src="tak_kap.svg"]'),
-            wel: document.querySelectorAll('img[data-src="tak_wel.svg"]'),
-            wol: document.querySelectorAll('img[data-src="tak_wol.svg"]'),
-            jgv: document.querySelectorAll('img[data-src="tak_jgv.svg"]'),
-            giv: document.querySelectorAll('img[data-src="tak_giv.svg"]'),
-        }
-        
-        takImages.kap.forEach(img => {img.outerHTML = kap})
-        takImages.wel.forEach(img => {img.outerHTML = wel})
-        takImages.wol.forEach(img => {img.outerHTML = wol})
-        takImages.jgv.forEach(img => {img.outerHTML = jgv})
-        takImages.giv.forEach(img => {img.outerHTML = giv})
     }
 }
 
 app.init();
+
+export {app};

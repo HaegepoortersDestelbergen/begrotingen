@@ -1,5 +1,4 @@
 import {db} from './plugins/firebase';
-import {eventCallback} from './utils';
 
 const addBudgetCost = ({tak, title, comment, period, people}) => {
     db.collection(tak).set({
@@ -34,15 +33,55 @@ const addBudget = ({tak, title, comment, period, people}) => {
     });
 }
 
-const getCollectionData = async (tak) => {
-    const snapshot = await db.collection(tak).get();
-    const data = snapshot.docs.map((querySnapshot) => {
+const budget = {
+    async add({tak, title, comment, period, people}) {
+        db.collection(tak).add({
+            title: title,
+            comment: comment,
+            period: period,
+            people: people,
+            created: (new Date).getTime() 
+        })
+        .then(() => {
+            console.log("Document successfully written!");
+        })
+        .catch((error) => {
+            console.error("Error writing document: ", error);
+        });
+    },
+    
+    async get(id) {
+        const snapshot = await db.collection(window.appSettings.group).doc(id).get();
+        const data = snapshot.data();
         return {
-            id: querySnapshot.id,
-            data: querySnapshot.data()
-        }
-    })
-    return data;
+            id: id,
+            data: data
+        };
+    },
+    
+    async getAll(tak) {
+        const snapshot = await db.collection(tak).get();
+        const data = snapshot.docs.map((querySnapshot) => {
+            return {
+                id: querySnapshot.id,
+                data: querySnapshot.data()
+            }
+        })
+        return data;
+    }
+}
+
+const costs = {
+    async getAll() {
+        const snapshot = await db.collection(window.appSettings.group).doc(window.appSettings.selectedBudget.id).collection('costs').get();
+        const data = snapshot.docs.map((querySnapshot) => {
+            return {
+                id: querySnapshot.id,
+                data: querySnapshot.data()
+            }
+        })
+        return data;
+    }
 }
 
 const loadTestData = async () => {
@@ -70,9 +109,8 @@ const extractFormData = (formNode) => {
 }
 
 export {
-    addBudgetCost,
-    addBudget,
-    getCollectionData,
+    budget,
+    costs,
     loadTestData,
     extractFormData
 }

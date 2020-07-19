@@ -5,6 +5,7 @@
 body {
     width: 100vw;
     height: 100vh;
+    line-height: initial;
 }
 
 #app {
@@ -14,6 +15,11 @@ body {
     justify-content: center;
     width: inherit;
     height: inherit;
+    
+    > [data-section] {
+        width: 100%;
+        height: 100%;
+    }
     
     #credits {
         padding: 1rem;

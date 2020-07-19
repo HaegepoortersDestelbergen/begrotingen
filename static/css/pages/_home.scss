@@ -1,5 +1,14 @@
 // STEPS
 
+[data-section="step1"] {
+    @include flex-center;
+    flex-direction: column;
+    
+    .wrapper {
+        height: auto;
+    }
+}
+
 [data-section="step1"] .form { 
     width: fit-content;
     margin: 0 auto;

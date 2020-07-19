@@ -1,0 +1,11 @@
+hr {
+    margin: 1.4rem 0;
+    height: 1px;
+    background: none;  
+    border: none;            
+    background-image: linear-gradient(to right, $blue300 35%, rgba(255, 255, 255, 0) 0%);
+    background-position: center;
+    background-size: 38px 3px;
+    background-repeat: repeat-x;
+    opacity: unset;
+}

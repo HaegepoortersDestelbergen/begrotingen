@@ -9,7 +9,7 @@ const eventCallback = (selector, callback, action = true) => {
     if (action == true) target = event.target.closest(`[data-action="${selector}"]`);
     else target = event.target.closest(selector);
     
-    if (target) callback();
+    if (target) callback(target);
 }
 
 class Element {
@@ -67,8 +67,14 @@ class Element {
     }
 }
 
+const pricify = (price) => {
+    return `${price.toFixed(2).toString().replace('.', ',')} euro`;
+}
+
+
 export {
     node,
     eventCallback,
-    Element
+    Element,
+    pricify
 }

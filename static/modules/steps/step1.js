@@ -1,4 +1,4 @@
-import {node, actionCallback} from '../utils'
+import {node, eventCallback} from 'cutleryjs'
 
 export const step1 = {
     init() {
@@ -11,10 +11,7 @@ export const step1 = {
     },
     
     listeners() {
-        node('form').addEventListener('change', (event) => {
-            const form = event.target.closest('form');
-            form.classList.add('change--changed');
-        })
+        
         
         // node('form').addEventListener('submit', (event) => {
         //     event.preventDefault();
