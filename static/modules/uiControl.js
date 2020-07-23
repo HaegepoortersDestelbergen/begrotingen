@@ -309,15 +309,17 @@ const ui = {
         takImages.giv.forEach(img => {img.outerHTML = giv})
     },
     
-    shareMode(bool) {
-        const nodesToHide = [
-            node('[data-form="newCost"]'),
-            node('[data-nav-section="budgetsListing"]')
-        ]
-        
-        nodesToHide.map(n => {
-            if (n) n.remove();
-        })
+    shareMode(bool) {       
+        if (bool == true) {
+            const nodesToHide = [
+                node('[data-form="newCost"]'),
+                node('[data-nav-section="budgetsListing"]')
+            ]
+            
+            nodesToHide.map(n => {
+                if (n) n.remove();
+            })
+        }
         
         return bool;
     }
