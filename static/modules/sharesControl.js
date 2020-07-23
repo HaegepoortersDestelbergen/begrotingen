@@ -21,6 +21,10 @@ const shares = {
         .resolve();
     },
     
+    new() {
+        
+    },
+    
     async getShareData(id) {
         const snapshot = await db.collection('shares').doc(id).get();
         const data = snapshot.data();

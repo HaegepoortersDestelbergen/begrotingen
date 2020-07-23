@@ -13,6 +13,7 @@ window.appSettings = {
     }
 };
 
+
 const app = {
     init() {
         app.listeners();
@@ -23,7 +24,7 @@ const app = {
     
     listeners() {
         document.addEventListener('change', (event) => {            
-            if (ui.shareMode() == false) eventCallback('#form_step1', (target) => {
+            if (ui.shareMode() != true) eventCallback('#form_step1', (target) => {
                 target.classList.add('change--changed');
             }, false)
         })
@@ -44,7 +45,7 @@ const app = {
                 render.costs();
             }, false)
             
-            if (ui.shareMode() == false) eventCallback('[data-nav-section]', (target) => {
+            if (ui.shareMode() != true) eventCallback('[data-nav-section]', (target) => {
                 target = target.dataset.navSection;
                 
                 switchTemplate.switch(target, () => {
@@ -53,7 +54,7 @@ const app = {
                 ui.init();
             }, false)
             
-            if (ui.shareMode() == false) eventCallback('editCost', async (target) => {
+            if (ui.shareMode() != true) eventCallback('editCost', async (target) => {
                 const parent = target.parentElement.closest('[data-firebase]');
                 const id = window.appSettings.edit.cost = parent.dataset.firebase;
                 
