@@ -135,7 +135,7 @@
         <div data-section="step3">
             <header class="py-5 mb-3 animate__animated animate__fadeInDown">
                 <div class="container">
-                    <button class="btn btn--nav-back mb-5" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht takken</button>
+                    <button class="btn btn--nav-back mb-5" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht budgetten</button>
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h2 data-template-context="title" class="font-weight-bold mb-0">Welpenkamp</h2>
@@ -189,6 +189,14 @@
                                                 <option value="income">Inkomst</option>
                                             </select>
                                         </div>
+                                        <div class="col">
+                                            <div class="form-label">Hoe vaak</div>
+                                            <select class="form-select" name="when" aria-label="Default select example">
+                                                <option selected value="onetime">Eenmalig</option>
+                                                <option value="per-day">Per dag</option>
+                                                <option value="per-night">Per nacht</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="btn-group mt-4 ml-auto" data-toggle="collapse" data-target="[data-collapse='newCost']">
                                         <button type="reset" class="btn btn--sub">Annuleren</button>
@@ -207,6 +215,7 @@
             </div>
         </div>
     </template>
+    
     
     <script src="index.js"></script>
 </body>

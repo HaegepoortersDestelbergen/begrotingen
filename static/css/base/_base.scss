@@ -8,6 +8,12 @@ body {
     line-height: initial;
 }
 
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
 #app {
     display: flex;
     flex-direction: column;

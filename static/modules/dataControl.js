@@ -1,9 +1,10 @@
 import {db} from './plugins/firebase';
-import {render} from './uiControl';
+import {render, contextSwitch} from './uiControl';
 
 const budget = {
     async add({tak, title, comment, period, people}) {
-        db.collection(tak).add({
+        db.collection('takken').add({
+            group: window.appSettings.group,
             title: title,
             comment: comment,
             period: period,
@@ -20,7 +21,7 @@ const budget = {
     },
     
     async get(id) {
-        const snapshot = await db.collection(window.appSettings.group).doc(id).get();
+        const snapshot = await db.collection('takken').doc(id).get();
         const data = snapshot.data();
         return {
             id: id,
@@ -28,8 +29,8 @@ const budget = {
         };
     },
     
-    async getAll(tak) {
-        const snapshot = await db.collection(tak).get();
+    async getAll() {
+        const snapshot = await db.collection('takken').where('group', '==', window.appSettings.group).get();
         const data = snapshot.docs.map((querySnapshot) => {
             return {
                 id: querySnapshot.id,
@@ -42,20 +43,23 @@ const budget = {
 
 const costs = {
     getCollection() {
-        return db.collection(window.appSettings.group).doc(window.appSettings.selectedBudget.id).collection('costs');
+        // return db.collection(window.appSettings.group).doc(window.appSettings.selectedBudget.id).collection('costs');
+        return db.collection('takken').doc(window.appSettings.selectedBudget.id).collection('costs')
     },
     
-    async add({title, comment, amount, type}) {
+    async add({title, comment, amount, type, when}) {
         costs.getCollection().add({
             title: title,
             comment: comment,
             amount: amount,
             type: type,
+            when: when,
             created: new Date()
         })
         .then(async (response) => {
             const costData = await costs.getCollection().doc(response.id).get();
-            render.cost({id: costData.id, data: costData.data()}, true);
+            render.cost({id: costData.id, data: costData.data()})
+                  .prepend('[data-section="step3"] [data-label="costsList"]');
         })
         .catch((error) => {
             console.error("Error writing document: ", error);
@@ -71,6 +75,43 @@ const costs = {
             }
         })
         return data;
+    },
+    
+    async get(id) {
+        const snapshot = await costs.getCollection().doc(id).get();
+        return {
+            id: id,
+            data: snapshot.data()
+        };
+    },
+    
+    async edit() {
+        // replace current with new generated
+    },
+    
+    calculateCost(price, when, costType) {
+        const budgetData = window.appSettings.selectedBudget.data;
+        
+        switch (costType) {
+            case 'fixed':
+                return price*contextSwitch.whenCalculations(when)
+                break;
+            case 'per-person':
+                return price*(budgetData.people.paying + budgetData.people.free)*contextSwitch.whenCalculations(when)
+                break;
+            case 'per-payer':
+                return price*(budgetData.people.paying)*contextSwitch.whenCalculations(when)
+                break;
+            case 'per-free':
+                return price*(budgetData.people.free)*contextSwitch.whenCalculations(when)
+                break;
+            case 'income':
+                return price*contextSwitch.whenCalculations(when)
+                break;
+        
+            default:
+                break;
+        }
     }
 }
 

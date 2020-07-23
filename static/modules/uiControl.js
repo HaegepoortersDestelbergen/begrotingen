@@ -1,4 +1,4 @@
-import {pricify} from './utils'
+import {pricify, periodDifference} from './utils'
 import {node, Element} from 'cutleryjs'
 import {budget, costs} from './dataControl'
 import moment from 'moment';
@@ -12,9 +12,10 @@ moment.locale('nl-be');
 const render = {
     totalBudget: 0,
     
-    async budgets(tak) {
-        const data = await budget.getAll(tak);
+    async budgets() {
+        const data = await budget.getAll();
         if (data.length > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = '';
+        
         data.forEach(doc => {
             render.budget(doc);
         })
@@ -52,16 +53,17 @@ const render = {
     
     async costs() {
         const data = await costs.getAll();
+        if (data.length > 0) node('[data-label="costsList"]').innerHTML = '';
         data.forEach(doc => {            
-            render.cost(doc);
+            const item = render.cost(doc);
+            item.append('[data-section="step3"] [data-label="costsList"]');
         })
     },
     
     cost(doc, insertBefore = false) {
         const item = new Element('div');
-        const budgetData = window.appSettings.selectedBudget.data;
+        const budgetData = window.appSettings.selectedBudget.data
         contextSwitch.setType(doc.data.type);
-        render.addCost(doc.data.amount);
         
         item.class(['list__item', 'item']);
         item.attributes([
@@ -71,10 +73,10 @@ const render = {
             <div class="item__body body" data-toggle="collapse" data-target="[data-collapse='${doc.id}']">
                 <div class="body__prepend">
                     <h5 class="title">${doc.data.title}</h5>
-                    <small class="comment">${doc.data.comment}</small>
+                    ${doc.data.comment != '' ? `<small class="comment">${doc.data.comment}</small>` : ``}
                 </div>
                 <div class="body__append">
-                    <h5>${contextSwitch.price(doc.data.amount)} euro</h5>
+                    <h5>${contextSwitch.price(doc.data.amount, doc.data.when)} euro</h5>
                     <small>${contextSwitch.priceComment()}</small>
                 </div>
             </div>
@@ -83,24 +85,77 @@ const render = {
                 <div class="item__behind">
                     <div class="row">
                         <div class="col-12 col-lg-4">
-                            <p class="mb-2">${contextSwitch.priceSinglePayer(doc.data.amount)}</p>
+                            <p class="mb-2">${contextSwitch.priceSinglePayer(contextSwitch.price(doc.data.amount, doc.data.when))}</p>
                             <small>${contextSwitch.priceSinglePayerComment()}</small>
                         </div>
-                        <div class="col-12 col-lg-8">
-                            <button class="btn ml-auto mt-auto">Bewerken <i class='bx bx-chevron-down' ></i></button>
+                        <div class="col-12 col-lg-8 d-flex justify-content-end align-items-center">
+                            <div class="btn-group btn-group--floating">
+                                <button class="btn ml-auto mt-auto" data-action="editCost">Bewerken <i class="bx bx-chevron-down" data-toggle="collapse" data-target="[data-collapse='costEdit_${doc.id}']"></i></button>
+                                <div class="collapse btn-group__float" data-collapse="costEdit_${doc.id}">
+                                    <button class="btn">Verwijderen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" data-label="editCostForm">
+                            <!-- editingform -->
                         </div>
                     </div>
                 </div>
             </div>
         `)
-        if (insertBefore == false) item.append('[data-section="step3"] [data-label="costsList"]');
-        else if (insertBefore == true) item.prepend('[data-section="step3"] [data-label="costsList"]');
+        return item;
     },
     
     addCost(amount) {
         this.totalBudget = this.totalBudget + amount;
         node('[data-template-context="priceTotal"]').innerHTML = pricify(this.totalBudget);
         node('[data-template-context="priceSinglePayer"]').innerHTML = pricify(this.totalBudget/window.appSettings.selectedBudget.data.people.paying) + ' per persoon';
+    },
+    
+    async costEditForm(costData) {
+        // const id = window.appSettings.edit.cost = node.dataset.firebase;
+        
+        return `
+            <hr class="mx-0 my-4">
+            <form>
+                <div class="row mb-4">
+                    <div class="col">
+                        <input class="form-control h5" type="text" id="newCost_title" name="title" autocomplete="none" value="${costData.data.title}">
+                        <input class="form-control small w-50" type="text" name="comments" value="${costData.data.comment}">
+                    </div>
+                </div>
+                <div class="row"> 
+                    <div class="col">
+                        <div class="form-label">Bedrag €</div>
+                        <input class="form-control" name="amount" type="number" step=".01" id="newCost_amount" value="${costData.data.amount}">
+                    </div>
+                    <div class="col">
+                        <div class="form-label">Type</div>
+                        <select class="form-select" name="type" aria-label="Default select example">
+                            <option value="fixed">Vaste kost</option>
+                            <option value="per-person">Kost per persoon</option>
+                            <option value="per-payer">Kost per betalende persoon</option>
+                            <option value="per-free">Kost per gratis persoon</option>
+                            <option value="income">Inkomst</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <div class="form-label">Hoe vaak</div>
+                        <select class="form-select" name="when" aria-label="Default select example">
+                            <option value="onetime">Eenmalig</option>
+                            <option value="per-day">Per dag</option>
+                            <option value="per-night">Per nacht</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group mt-4 ml-auto" data-toggle="collapse" data-target="[data-collapse='${costData.id}']">
+                    <button type="reset" class="btn btn--sub">Annuleren</button>
+                    <button type="submit" class="btn btn--main">Begroting aanmaken</button>
+                </div>
+            </form>
+        `;
     }
 }
 
@@ -132,24 +187,44 @@ const contextSwitch = {
         }
     },
     
-    price(price) {
+    whenCalculations(when) {
         const budgetData = window.appSettings.selectedBudget.data;
+        const period = periodDifference(budgetData.period.start.seconds, budgetData.period.end.seconds);
         
+        switch (when) {
+            case 'onetime':
+                return 1
+            case 'per-day':
+                return period.days
+            case 'per-night':
+                return period.nights
+                
+            default:
+                break;
+        }
+    },
+    
+    price(price, when) {       
         switch (this.costType) {
             case 'fixed':
-                return '+' + price
+                render.addCost(costs.calculateCost(price, when, this.costType))
+                return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'per-person':
-                return '+' + price*(budgetData.people.paying + budgetData.people.free)
+                render.addCost(costs.calculateCost(price, when, this.costType))
+                return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'per-payer':
-                return '+' + price*(budgetData.people.paying)
+                render.addCost(costs.calculateCost(price, when, this.costType))
+                return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'per-free':
-                return '+' + price*(budgetData.people.free)
+                render.addCost(costs.calculateCost(price, when, this.costType))
+                return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'income':
-                return '-' + price
+                render.addCost(costs.calculateCost(price, when, this.costType))
+                return '-' + costs.calculateCost(price, when, this.costType)
                 break;
         
             default:
@@ -232,6 +307,19 @@ const ui = {
         takImages.wol.forEach(img => {img.outerHTML = wol})
         takImages.jgv.forEach(img => {img.outerHTML = jgv})
         takImages.giv.forEach(img => {img.outerHTML = giv})
+    },
+    
+    shareMode(bool) {
+        const nodesToHide = [
+            node('[data-form="newCost"]'),
+            node('[data-nav-section="budgetsListing"]')
+        ]
+        
+        nodesToHide.map(n => {
+            if (n) n.remove();
+        })
+        
+        return bool;
     }
 }
 
@@ -266,5 +354,6 @@ Array.from(document.querySelectorAll('.collapse')).forEach(bsNode => {
 export {
     render,
     ui,
-    switchTemplate
+    switchTemplate,
+    contextSwitch
 }

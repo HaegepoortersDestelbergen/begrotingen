@@ -4,38 +4,37 @@ import {budget, costs, extractFormData} from './static/modules/dataControl';
 import {eventCallback, node} from 'cutleryjs';
 import moment from 'moment';
 import 'moment/locale/nl-be';
+import {shares} from './static/modules/sharesControl'
 
 moment.locale('nl-be');
-window.appSettings = {};
+window.appSettings = {
+    edit: {
+        cost: null,
+    }
+};
 
 const app = {
     init() {
         app.listeners();
-        
         switchTemplate.switch('groupSelect');
-        
         ui.init();
+        shares.init();
     },
     
     listeners() {
         document.addEventListener('change', (event) => {            
-            eventCallback('#form_step1', (target) => {
+            if (ui.shareMode() == false) eventCallback('#form_step1', (target) => {
                 target.classList.add('change--changed');
             }, false)
         })
         
         document.addEventListener('click', (event) => {                          
-            eventCallback('testing' , () => {
-                console.log('click');
-            })
-            
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
-                console.log(budgetsData)
-                
+                                
                 switchTemplate.switch('costsListing', (context) => {
-                    context.editContext('title', 'Midweek');
+                    context.editContext('title', budgetsData.data.title);
                     context.editContext('meta', `
                         ${moment.unix(budgetsData.data.period.start.seconds).format('D MMM')} tot ${moment.unix(budgetsData.data.period.end.seconds).format('D MMM')}
                         – ${budgetsData.data.people.paying + budgetsData.data.people.free} personen
@@ -45,14 +44,26 @@ const app = {
                 render.costs();
             }, false)
             
-            eventCallback('[data-nav-section]', (target) => {
+            if (ui.shareMode() == false) eventCallback('[data-nav-section]', (target) => {
                 target = target.dataset.navSection;
                 
                 switchTemplate.switch(target, () => {
-                    if (target == 'budgetsListing') render.budgets(window.appSettings.group);
+                    if (target == 'budgetsListing') render.budgets();
                 });
                 ui.init();
             }, false)
+            
+            if (ui.shareMode() == false) eventCallback('editCost', async (target) => {
+                const parent = target.parentElement.closest('[data-firebase]');
+                const id = window.appSettings.edit.cost = parent.dataset.firebase;
+                
+                const costData = await costs.get(id);
+                const container = await parent.querySelector('[data-label="editCostForm"]');
+                container.innerHTML = await render.costEditForm(costData);
+                console.log(costData);
+                document.querySelector(`[data-firebase="${id}"] [name="type"] option[value="${costData.data.type}"]`).selected = true;
+                document.querySelector(`[data-firebase="${id}"] [name="when"] option[value="${costData.data.when}"]`).selected = true;
+            })
         })
         
         document.addEventListener('submit', (event) => {
@@ -62,7 +73,7 @@ const app = {
                 window.appSettings.group = extractFormData(event.target).get('group');
                 console.log('Selected group:', window.appSettings.group);
                 
-                render.budgets(window.appSettings.group);
+                render.budgets();
                 switchTemplate.switch('budgetsListing');
             }, false);
             
@@ -85,17 +96,16 @@ const app = {
                 })
             }, false);
             
-            eventCallback('[data-form="newCost"]', (target) => {
+            if (ui.shareMode() == false) eventCallback('[data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);
-                console.log(formData);
                 
                 costs.add({
                     title: formData.get('title'),
                     comment: formData.get('comments'),
                     amount: formData.get('amount'),
                     type: formData.get('type'),
+                    when: formData.get('when'),
                 })
-                console.log(formData);
             }, false)
         })
     }

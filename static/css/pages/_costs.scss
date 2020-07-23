@@ -48,6 +48,13 @@
                 padding: 0 1.4rem 1.2rem 1.4rem;
             }
             
+            .body__prepend {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+            }
+            
             .body__prepend h5, .body__append h5 {
                 margin-bottom: 0.2rem;
                 font-weight: bold;

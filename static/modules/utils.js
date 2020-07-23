@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const node = (selector, multiple = false) => {
     if (multiple == false) return document.querySelector(selector);
     return document.querySelectorAll(selector);
@@ -71,10 +73,24 @@ const pricify = (price) => {
     return `${price.toFixed(2).toString().replace('.', ',')} euro`;
 }
 
+const periodDifference = (start, end) => {
+    const dateStart = new Date(start);
+    const dateEnd = new Date(end);
+    
+    const timeDiff = dateStart.getTime() - dateEnd.getTime();
+    const diff = (timeDiff / (3600 * 24));
+    
+    return {
+        days: diff < 0 ? (diff*-1)+1 : diff+1,
+        nights: diff < 0 ? diff*-1 : diff,
+    };
+}
+
 
 export {
     node,
     eventCallback,
     Element,
-    pricify
+    pricify,
+    periodDifference
 }
