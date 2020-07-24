@@ -9,6 +9,19 @@
         width: fit-content;
         background-color: $blue200;
     }
+    
+    .login-wrapper {
+        .spinner-border {color: $blue500;}
+        
+        &.login-wrapper--validating {
+            [data-form="logIn"] {display: none;};
+            [data-label="logInLoader"] {display: flex;};
+        }
+        &.login-wrapper--form {
+            [data-form="logIn"] {display: block;};
+            [data-label="logInLoader"] {display: none;};
+        }
+    }
 }
 
 [data-section="step1"] {

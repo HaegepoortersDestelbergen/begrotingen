@@ -130,6 +130,18 @@ const app = {
                     target: window.appSettings.selectedBudget.id
                 })
             }, false)
+            
+            eventCallback('[data-label="costsList"] .list__item form', (target) => {
+                const formData = extractFormData(target);
+                const listItem = target.parentNode.closest('[data-firebase]');
+                costs.edit({
+                    title: formData.get('title'),
+                    comment: formData.get('comments'),
+                    amount: formData.get('amount'),
+                    type: formData.get('type'),
+                    when: formData.get('when'),
+                }, listItem.dataset.firebase, listItem);
+            }, false)
         })
     }
 }

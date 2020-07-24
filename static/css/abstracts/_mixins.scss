@@ -3,3 +3,7 @@
     align-items: center;
     justify-content: center;
 }
+
+@mixin shadow-lg {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 11px -6px, rgba(0, 0, 0, 0.1) 0px 12px 43px 6px;
+}

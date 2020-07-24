@@ -11,12 +11,19 @@
     }
     
     &-content {
-        border: none;
         padding: $modal-padding;
+        background-color: rgba(255, 255, 255, 0.445);
+        backdrop-filter: blur(12px);
+        border: none;
         border-radius: $bd-radius;
+        @include shadow-lg;
     }
     
     input {
         background-color: $blue200;
+    }
+    
+    &-backdrop.show {
+        opacity: .15;
     }
 }

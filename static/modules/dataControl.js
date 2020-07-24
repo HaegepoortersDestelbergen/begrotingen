@@ -94,8 +94,9 @@ const costs = {
             created: new Date()
         })
         .then(async (response) => {
-            const costData = await costs.getCollection().doc(response.id).get();
-            render.cost({id: costData.id, data: costData.data()})
+            console.log(response.id);
+            // const costData = await costs.getCollection().doc(response.id).get();
+            render.cost({id: response.id, data: {title, comment, amount, type, when}})
                   .prepend('[data-section="step3"] [data-label="costsList"]');
         })
         .catch((error) => {
@@ -122,7 +123,24 @@ const costs = {
         };
     },
     
-    async edit() {
+    async edit({title, comment, amount, type, when}, id, listItem) {
+        costs.getCollection().doc(id).update({
+            title: title,
+            comment: comment,
+            amount: amount,
+            type: type,
+            when: when,
+            edited: new Date()
+        }).then(() => {
+            const updatedListItem = render.cost({id: id, data: {title, comment, amount, type, when}}).el;
+            updatedListItem.classList.add('animate__fadeIn');
+            
+            listItem.classList.add('animate__fadeOut');
+            listItem.outerHTML = updatedListItem.outerHTML;
+        }).catch(err => {
+            console.log(err);
+        })
+        
         // replace current with new generated
     },
     

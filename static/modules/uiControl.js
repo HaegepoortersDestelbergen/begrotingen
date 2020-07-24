@@ -65,7 +65,7 @@ const render = {
         const budgetData = window.appSettings.selectedBudget.data
         contextSwitch.setType(doc.data.type);
         
-        item.class(['list__item', 'item']);
+        item.class(['list__item', 'item', 'animate__animated', 'animate__fadeIn']);
         item.attributes([
             ['data-firebase', doc.id]
         ])
@@ -152,7 +152,7 @@ const render = {
                 </div>
                 <div class="btn-group mt-4 ml-auto" data-toggle="collapse" data-target="[data-collapse='${costData.id}']">
                     <button type="reset" class="btn btn--sub">Annuleren</button>
-                    <button type="submit" class="btn btn--main">Begroting aanmaken</button>
+                    <button type="submit" class="btn btn--main">Kost updaten</button>
                 </div>
             </form>
         `;

@@ -18,11 +18,13 @@ const user = {
         })
     },
     
-    logIn({email, passw}) {        
+    logIn({email, passw}) {
+        user.logInScreen(false);
         auth.signInWithEmailAndPassword(email, passw)
         .then(resp => {console.log(resp)})
         .catch(err => {
             if (err.code == 'auth/user-not-found') formError('Deze gebruiker werd niet gevonden');
+            user.logInScreen(true);
         });
     },
     
@@ -74,6 +76,18 @@ const user = {
             
             default:
                 break;
+        }
+    },
+    
+    logInScreen(bool = true) {
+        const wrapper = node('[data-section="step0"] .login-wrapper');
+        
+        if (bool == false) {
+            wrapper.classList.add('login-wrapper--validating');
+            wrapper.classList.remove('login-wrapper--form');
+        } else if (bool == true) {
+            wrapper.classList.remove('login-wrapper--validating');
+            wrapper.classList.add('login-wrapper--form');
         }
     }
 }
