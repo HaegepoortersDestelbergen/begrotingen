@@ -1,5 +1,16 @@
 // STEPS
 
+[data-section="step0"] {
+    display: grid;
+    place-items: center;
+    
+    .card {
+        padding: 2rem;
+        width: fit-content;
+        background-color: $blue200;
+    }
+}
+
 [data-section="step1"] {
     @include flex-center;
     flex-direction: column;
@@ -49,6 +60,12 @@
         input:checked + label {
             opacity: 1;
         }
+    }
+}
+
+[data-section="step2"] {
+    [data-template-context="group"] {
+        text-transform: capitalize;
     }
 }
 

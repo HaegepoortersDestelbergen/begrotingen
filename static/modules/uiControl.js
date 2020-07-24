@@ -4,8 +4,8 @@ import {budget, costs} from './dataControl'
 import moment from 'moment';
 import 'moment/locale/nl-be';
 import { Modal, Collapse } from 'bootstrap';
-import {kap, wel, wol, jgv, giv} from '../../static/modules/svgs';
-// import {app} from '../../index.js'
+import {kap, wel, wol, jgv, giv, grl} from '../../static/modules/svgs';
+import {user} from './userControl';
 
 moment.locale('nl-be');
 
@@ -282,6 +282,11 @@ const contextSwitch = {
 }
 
 const ui = {
+    modes: {
+        read: false,
+        share: false
+    },
+    
     init() {
         ui.svgReplacement();
         ui.generateCredits();
@@ -300,6 +305,7 @@ const ui = {
             wol: document.querySelectorAll('img[data-src="tak_wol.svg"]'),
             jgv: document.querySelectorAll('img[data-src="tak_jgv.svg"]'),
             giv: document.querySelectorAll('img[data-src="tak_giv.svg"]'),
+            grl: document.querySelectorAll('img[data-src="tak_grl.svg"]'),
         }
         
         takImages.kap.forEach(img => {img.outerHTML = kap})
@@ -307,13 +313,16 @@ const ui = {
         takImages.wol.forEach(img => {img.outerHTML = wol})
         takImages.jgv.forEach(img => {img.outerHTML = jgv})
         takImages.giv.forEach(img => {img.outerHTML = giv})
+        takImages.grl.forEach(img => {img.outerHTML = grl})
     },
     
-    shareMode(bool) {       
+    shareMode(bool) {    
+        ui.modes.share = bool;
+         
         if (bool == true) {
             const nodesToHide = [
                 node('[data-form="newCost"]'),
-                node('[data-nav-section="budgetsListing"]')
+                node('[data-label="costsTopActions"]')      
             ]
             
             nodesToHide.map(n => {
@@ -321,7 +330,25 @@ const ui = {
             })
         }
         
-        return bool;
+        return ui.modes.share;
+    },
+    
+    readMode(bool) {
+        ui.modes.read = bool;
+        
+        if (bool == true) {
+            const nodesToHide = [
+                node('[data-form="newCost"]'),
+                node('[data-form="newBudget"]'),
+                node(`[data-target="[data-collapse='newBudget']"]`),
+            ]
+            
+            nodesToHide.map(n => {
+                if (n) n.remove();
+            })
+        } else bool == false
+        
+        return ui.modes.read
     }
 }
 
@@ -330,14 +357,17 @@ const switchTemplate = {
         this.template = node(`template[data-template="${templateName}"]`);
     },
     
-    switch(templateName, callback) {
+    switch(templateName, callback, afterLoad = false) {
         switchTemplate.getTemplate(templateName);
         
         this.templateHTML = this.template.content.cloneNode(true).querySelector('*');
         const app = node('#app');
         
-        if (callback) callback(this);
+        if (callback && afterLoad == false) callback(this);
         app.innerHTML = this.templateHTML.outerHTML;
+        if (callback && afterLoad == true) callback(this);
+        
+        ui.init();
     },
     
     editContext(contextCaller, innerHTML) {

@@ -1,6 +1,43 @@
 import {db} from './plugins/firebase';
 import {render, contextSwitch} from './uiControl';
 
+const data = {
+    async getByPath(path) {
+        const snapshot = db.collection(path).get();
+        const data = snapshot.docs.map((querySnapshot) => {
+            return {
+                id: querySnapshot.id,
+                data: querySnapshot.data()
+            }
+        })
+        return data;
+    },
+    
+    async getCollection(name) {
+        const snapshot = await db.collection(name).get();
+        const data = snapshot.data();
+        return {
+            id: id,
+            data: data
+        };
+    },
+    
+    async getDoc(path, id) {
+        const snapshot = await db.collection(path).doc(id).get();
+        const data = snapshot.data();
+        return {
+            id: id,
+            data: data
+        };
+    },
+    
+    async createDoc(path, data) {
+        const response = await db.collection(path).add(data);
+        console.log(response.id);
+        return response.id;
+    }
+}
+
 const budget = {
     async add({tak, title, comment, period, people}) {
         db.collection('takken').add({
@@ -143,6 +180,7 @@ const extractFormData = (formNode) => {
 }
 
 export {
+    data,
     budget,
     costs,
     loadTestData,

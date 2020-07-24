@@ -7,11 +7,42 @@ input {
     }
 }
 
+.form__error {
+    display: none;
+    align-items: center;
+    margin-top: 2rem;
+    font-size: 80%;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 1px;
+    color: rgb(107, 0, 0);
+    
+    & + button[type="submit"] {
+        margin-top: 1.6rem;
+    }
+    
+    &.show {
+        display: block;
+        
+        & + button[type="submit"] {
+            margin-top: 1rem;
+        }
+    }
+}
+
+form, *:not(.btn-group) {
+    button[type="submit"], button[type="reset"] {
+        margin-top: 1.4rem;
+    }
+}
+
+
 .form-label {
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 80%;
-    font-weight: 500;
+    font-size: 90%;
+    font-weight: 600;
 }
 
 .form-control, .form-select {
@@ -21,6 +52,40 @@ input {
     &:focus, &:focus-within {
         box-shadow: none;
         outline: none;
+    }
+    
+    & + .form-control__error {
+        display: none;
+        align-items: center;
+        margin-top: 0.5rem;
+        font-size: 80%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+        color: rgb(107, 0, 0);
+        
+        &::before {
+            content: "\ea94";
+            display: inline-block; display: none;
+            margin-right: .5rem;
+            font-size: 1.1rem;
+            font-family: 'boxicons'!important;
+            font-weight: normal;
+            font-style: normal;
+            font-variant: normal;
+            line-height: 1;
+            text-transform: none;
+            speak: none;
+            -webkit-font-smoothing: antialiased;
+        }
+    }
+    
+    &:invalid:not(:focus):not(:placeholder-shown) .form-control__error {
+        display: flex;
+    }
+    
+    &:required:invalid:not(:placeholder-shown) + .form-control__error {
+        display: flex;
     }
 }
 

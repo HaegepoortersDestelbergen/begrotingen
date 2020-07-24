@@ -3,6 +3,8 @@ import {budget} from './dataControl'
 import {switchTemplate, render, ui} from './uiControl'
 import moment from 'moment';
 import {db} from './plugins/firebase';
+import {data} from './dataControl';
+import { node } from './utils';
 
 const root = location.origin;
 const useHash = true; // Defaults to: false
@@ -21,8 +23,14 @@ const shares = {
         .resolve();
     },
     
-    new() {
-        
+    async new(formData) {
+        const id = await data.createDoc('shares', {
+            validity: formData.validity,
+            target: formData.target,
+        })
+        await node('[data-form="budgetShare"]').classList.add('d-none');
+        await node('[data-label="linkPreview"]').classList.add('d-block');
+        node('[data-label="linkPreview"] input').value = `${window.location.origin}/#s/${id}`;
     },
     
     async getShareData(id) {

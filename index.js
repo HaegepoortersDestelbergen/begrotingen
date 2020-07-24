@@ -1,10 +1,11 @@
 import {ui, switchTemplate, render} from './static/modules/uiControl';
-import {pricify} from './static/modules/utils';
 import {budget, costs, extractFormData} from './static/modules/dataControl';
-import {eventCallback, node} from 'cutleryjs';
+import {eventCallback, node, cookies} from 'cutleryjs';
 import moment from 'moment';
 import 'moment/locale/nl-be';
-import {shares} from './static/modules/sharesControl'
+import {shares} from './static/modules/sharesControl';
+import {user} from './static/modules/userControl';
+import {clickEvent} from './static/modules/utils';
 
 moment.locale('nl-be');
 window.appSettings = {
@@ -15,9 +16,9 @@ window.appSettings = {
 
 
 const app = {
-    init() {
+    async init() {
         app.listeners();
-        switchTemplate.switch('groupSelect');
+        user.init();
         ui.init();
         shares.init();
     },
@@ -29,7 +30,13 @@ const app = {
             }, false)
         })
         
-        document.addEventListener('click', (event) => {                          
+        document.addEventListener('click', (event) => { 
+            clickEvent.set(event);
+             
+            eventCallback('logOut', () => {
+                user.logOut();
+            })
+            
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
@@ -52,9 +59,10 @@ const app = {
                     if (target == 'budgetsListing') render.budgets();
                 });
                 ui.init();
+                user.ui();
             }, false)
             
-            if (ui.shareMode() != true) eventCallback('editCost', async (target) => {
+            if (ui.shareMode() != true || ui.readMode() != true) eventCallback('editCost', async (target) => {
                 const parent = target.parentElement.closest('[data-firebase]');
                 const id = window.appSettings.edit.cost = parent.dataset.firebase;
                 
@@ -70,15 +78,20 @@ const app = {
         document.addEventListener('submit', (event) => {
             event.preventDefault();
             
-            eventCallback('#form_step1', () => {
+            eventCallback('[data-form="logIn"]', (target) => {
+                const formData = extractFormData(target);                
+                user.logIn({
+                    email: formData.get('email'),
+                    passw: formData.get('password')
+                })
+            }, false)
+            
+            eventCallback('#form_step1', (target) => {
                 window.appSettings.group = extractFormData(event.target).get('group');
-                console.log('Selected group:', window.appSettings.group);
-                
-                render.budgets();
-                switchTemplate.switch('budgetsListing');
+                user.accessControl();
             }, false);
             
-            eventCallback('[data-form="newBudget"]' , () => {
+            if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , () => {
                 const formData = extractFormData(event.target)
                 
                 budget.add({
@@ -97,7 +110,7 @@ const app = {
                 })
             }, false);
             
-            if (ui.shareMode() == false) eventCallback('[data-form="newCost"]', (target) => {
+            if (ui.shareMode() != true || ui.readMode() != true) eventCallback('[data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);
                 
                 costs.add({
@@ -106,6 +119,15 @@ const app = {
                     amount: formData.get('amount'),
                     type: formData.get('type'),
                     when: formData.get('when'),
+                })
+            }, false);
+            
+            eventCallback('[data-form="budgetShare"]', (target) => {
+                const formData = extractFormData(target);
+            
+                shares.new({
+                    validity: formData.get('date'),
+                    target: window.appSettings.selectedBudget.id
                 })
             }, false)
         })

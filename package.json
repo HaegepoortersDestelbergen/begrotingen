@@ -20,7 +20,7 @@
   "dependencies": {
     "bootstrap": "^5.0.0-alpha1",
     "browser-sync": "^2.26.10",
-    "cutleryjs": "^1.2.1",
+    "cutleryjs": "^1.4.2",
     "firebase": "^7.16.1",
     "firebase-admin": "^9.0.0",
     "http2": "^3.3.7",

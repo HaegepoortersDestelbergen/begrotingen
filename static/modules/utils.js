@@ -86,11 +86,25 @@ const periodDifference = (start, end) => {
     };
 }
 
+const formError = (message) => {
+    const event = clickEvent.event;
+    const errorNode = event.target.parentNode.closest('form').querySelector('.form__error');
+    errorNode.innerHTML = message;
+    errorNode.classList.add('show');
+}
+
+const clickEvent = {
+    set(event) {
+        this.event = event
+    },
+}
 
 export {
     node,
     eventCallback,
     Element,
     pricify,
-    periodDifference
+    periodDifference,
+    formError,
+    clickEvent
 }

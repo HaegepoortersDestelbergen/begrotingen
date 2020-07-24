@@ -1,10 +1,22 @@
 .modal {
-    &-header, &-footer {
+    $modal-padding: 1rem;
+    
+    &-title {
+        font-weight: bold;
+        margin: 0 auto;
+    }
+    
+    &-header, &-footer, &-body {
         border: none;
     }
     
     &-content {
         border: none;
+        padding: $modal-padding;
         border-radius: $bd-radius;
+    }
+    
+    input {
+        background-color: $blue200;
     }
 }
