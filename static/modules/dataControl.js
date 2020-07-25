@@ -75,6 +75,30 @@ const budget = {
             }
         })
         return data;
+    },
+    
+    total: new Map(),
+    addCost(doc) {       
+        const has = budget.total.has(doc.id);
+        if (has == false) budget.total.set(doc.id, doc.cost)
+        else {
+            budget.total.delete(doc.id);
+            budget.total.set(doc.id, doc.cost);
+        }
+        
+        return budget.returnTotal();
+    },
+    
+    removeCost(id) {
+        const has = budget.total.has(id);
+        if (has == true) budget.total.delete(id);
+        return budget.returnTotal();
+    },
+
+    returnTotal() {
+        let totalBudget = 0;
+        budget.total.forEach(cost => {totalBudget += cost});
+        return totalBudget;
     }
 }
 
@@ -144,29 +168,36 @@ const costs = {
         // replace current with new generated
     },
     
+    async delete(budget, id) {
+        await db.doc(`takken/${budget}/costs/${id}`).delete();
+        render.deleteCost(id);
+    },
+    
     calculateCost(price, when, costType) {
         const budgetData = window.appSettings.selectedBudget.data;
+        let cost = null
         
         switch (costType) {
             case 'fixed':
-                return price*contextSwitch.whenCalculations(when)
+                cost = price*contextSwitch.whenCalculations(when)
                 break;
             case 'per-person':
-                return price*(budgetData.people.paying + budgetData.people.free)*contextSwitch.whenCalculations(when)
+                cost = price*(budgetData.people.paying + budgetData.people.free)*contextSwitch.whenCalculations(when)
                 break;
             case 'per-payer':
-                return price*(budgetData.people.paying)*contextSwitch.whenCalculations(when)
+                cost = price*(budgetData.people.paying)*contextSwitch.whenCalculations(when)
                 break;
             case 'per-free':
-                return price*(budgetData.people.free)*contextSwitch.whenCalculations(when)
+                cost = price*(budgetData.people.free)*contextSwitch.whenCalculations(when)
                 break;
             case 'income':
-                return price*contextSwitch.whenCalculations(when)
+                cost = price*contextSwitch.whenCalculations(when)
                 break;
         
             default:
                 break;
         }
+        return cost
     }
 }
 
@@ -197,10 +228,30 @@ const extractFormData = (formNode) => {
     return returnData;
 }
 
+const search = {
+    do({container, items, query}) {
+        if (typeof container == 'string') container = node(container);
+        items = container.querySelectorAll(items);
+        
+        // items.map(item => {
+        //     item.innerHTML.contains(query);
+        // })
+        
+        // filter alternative
+        
+        // if no docs found, make new cost
+    },
+    
+    false() {
+        return 'img';
+    }
+}
+
 export {
     data,
     budget,
     costs,
+    search,
     loadTestData,
     extractFormData
 }

@@ -52,6 +52,11 @@
             font-size: 1.2rem;
         }
     }
+    
+    &--icon-only {
+        min-width: 38px;
+        padding: .375rem;
+    }
 }
 
 .btn-group {

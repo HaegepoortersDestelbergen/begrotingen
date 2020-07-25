@@ -57,19 +57,9 @@ const shares = {
         window.appSettings.selectedBudget = {
             id: shareData.id,
             data: shareData.data
-        };
-        switchTemplate.switch('costsListing')
-                            
-        switchTemplate.switch('costsListing', (context) => {
-            context.editContext('title', budgetsData.data.title);
-            context.editContext('meta', `
-                ${moment.unix(budgetsData.data.period.start.seconds).format('D MMM')} tot ${moment.unix(budgetsData.data.period.end.seconds).format('D MMM')}
-                – ${budgetsData.data.people.paying + budgetsData.data.people.free} personen
-            `);
-            context.editContext('comments', budgetsData.data.comment);
-        });
-        render.costs();
-        
+        };                            
+
+        render.costs(budgetsData);
         ui.shareMode(true);
     }
 }

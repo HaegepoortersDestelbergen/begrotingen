@@ -61,17 +61,10 @@ const user = {
                 console.log('prohibited access')
                 break;
             case 'read':
-                render.budgets();
-                switchTemplate.switch('budgetsListing', (context) => {
-                    context.editContext('group', window.appSettings.group)
-                });
                 ui.readMode(true);
                 break;
             case 'write':
-                render.budgets();
-                switchTemplate.switch('budgetsListing', (context) => {
-                    context.editContext('group', window.appSettings.group)
-                });
+                ui.readMode(false);
                 break;
             
             default:

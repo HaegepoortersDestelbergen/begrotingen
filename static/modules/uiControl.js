@@ -9,10 +9,11 @@ import {user} from './userControl';
 
 moment.locale('nl-be');
 
-const render = {
-    totalBudget: 0,
-    
+const render = {    
     async budgets() {
+        switchTemplate.switch('budgetsListing', (context) => {
+            context.editContext('group', window.appSettings.group)
+        });
         const data = await budget.getAll();
         if (data.length > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = '';
         
@@ -51,7 +52,18 @@ const render = {
         else if (insertBefore == true) item.prepend('[data-section="step2"] [data-label="budgetsList"]');
     },
     
-    async costs() {
+    async costs(inputData) {
+        const budgetsData = window.appSettings.selectedBudget || inputData;
+        
+        switchTemplate.switch('costsListing', (context) => {
+            context.editContext('title', budgetsData.data.title);
+            context.editContext('meta', `
+                ${moment.unix(budgetsData.data.period.start.seconds).format('D MMM')} tot ${moment.unix(budgetsData.data.period.end.seconds).format('D MMM')}
+                – ${budgetsData.data.people.paying + budgetsData.data.people.free} personen
+            `);
+            context.editContext('comments', budgetsData.data.comment);
+        });
+        
         const data = await costs.getAll();
         if (data.length > 0) node('[data-label="costsList"]').innerHTML = '';
         data.forEach(doc => {            
@@ -62,10 +74,14 @@ const render = {
     
     cost(doc, insertBefore = false) {
         const item = new Element('div');
-        const budgetData = window.appSettings.selectedBudget.data
         contextSwitch.setType(doc.data.type);
         
-        item.class(['list__item', 'item', 'animate__animated', 'animate__fadeIn']);
+        const cost = costs.calculateCost(doc.data.amount, doc.data.when, doc.data.type)
+        const price = contextSwitch.price(doc.data.amount, doc.data.when);
+        
+        if (doc.data.type != 'income') render.totalBudget(budget.addCost({id: doc.id, cost: cost}));
+        
+        item.class(['list__item', 'item', 'animate__animated', 'animate__faster', 'animate__fadeIn']);
         item.attributes([
             ['data-firebase', doc.id]
         ])
@@ -76,7 +92,7 @@ const render = {
                     ${doc.data.comment != '' ? `<small class="comment">${doc.data.comment}</small>` : ``}
                 </div>
                 <div class="body__append">
-                    <h5>${contextSwitch.price(doc.data.amount, doc.data.when)} euro</h5>
+                    <h5>${price} euro</h5>
                     <small>${contextSwitch.priceComment()}</small>
                 </div>
             </div>
@@ -85,15 +101,13 @@ const render = {
                 <div class="item__behind">
                     <div class="row">
                         <div class="col-12 col-lg-4">
-                            <p class="mb-2">${contextSwitch.priceSinglePayer(contextSwitch.price(doc.data.amount, doc.data.when))}</p>
+                            <p class="mb-2">${contextSwitch.priceSinglePayer(price)}</p>
                             <small>${contextSwitch.priceSinglePayerComment()}</small>
                         </div>
                         <div class="col-12 col-lg-8 d-flex justify-content-end align-items-center">
-                            <div class="btn-group btn-group--floating">
-                                <button class="btn ml-auto mt-auto" data-action="editCost">Bewerken <i class="bx bx-chevron-down" data-toggle="collapse" data-target="[data-collapse='costEdit_${doc.id}']"></i></button>
-                                <div class="collapse btn-group__float" data-collapse="costEdit_${doc.id}">
-                                    <button class="btn">Verwijderen</button>
-                                </div>
+                            <div class="btn-group ml-auto">
+                            <button class="btn btn--sub btn--icon" data-action="deleteCost"><i class='bx bx-trash-alt'></i> Verwijderen</button>
+                                <button class="btn" data-action="editCost">Bewerken</button>
                             </div>
                         </div>
                     </div>
@@ -105,13 +119,24 @@ const render = {
                 </div>
             </div>
         `)
+        
         return item;
     },
     
-    addCost(amount) {
-        this.totalBudget = this.totalBudget + amount;
-        node('[data-template-context="priceTotal"]').innerHTML = pricify(this.totalBudget);
-        node('[data-template-context="priceSinglePayer"]').innerHTML = pricify(this.totalBudget/window.appSettings.selectedBudget.data.people.paying) + ' per persoon';
+    deleteCost(id) {
+        const item = node(`[data-label="costsList"] .list__item[data-firebase="${id}"]`);
+        item.addEventListener('animationend', () => {
+            item.remove();
+        });
+        item.classList.add('animate__fadeOut');
+        
+        budget.removeCost(id);
+        render.totalBudget();
+    },
+    
+    totalBudget(amount = budget.returnTotal()) {
+        node('[data-template-context="priceTotal"]').innerHTML = pricify(amount);
+        node('[data-template-context="priceSinglePayer"]').innerHTML = pricify(amount/window.appSettings.selectedBudget.data.people.paying) + ' per persoon';
     },
     
     async costEditForm(costData) {
@@ -207,23 +232,18 @@ const contextSwitch = {
     price(price, when) {       
         switch (this.costType) {
             case 'fixed':
-                render.addCost(costs.calculateCost(price, when, this.costType))
                 return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'per-person':
-                render.addCost(costs.calculateCost(price, when, this.costType))
                 return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'per-payer':
-                render.addCost(costs.calculateCost(price, when, this.costType))
                 return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'per-free':
-                render.addCost(costs.calculateCost(price, when, this.costType))
                 return '+' + costs.calculateCost(price, when, this.costType)
                 break;
             case 'income':
-                render.addCost(costs.calculateCost(price, when, this.costType))
                 return '-' + costs.calculateCost(price, when, this.costType)
                 break;
         
@@ -334,13 +354,15 @@ const ui = {
     },
     
     readMode(bool) {
+        console.log('readmode', bool || ui.modes.read);
         ui.modes.read = bool;
         
-        if (bool == true) {
+        if (bool == true || ui.modes.read == true) {
             const nodesToHide = [
                 node('[data-form="newCost"]'),
                 node('[data-form="newBudget"]'),
                 node(`[data-target="[data-collapse='newBudget']"]`),
+                node(`[data-target="[data-modal='budgetShare']"]`),
             ]
             
             nodesToHide.map(n => {

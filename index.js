@@ -1,5 +1,5 @@
 import {ui, switchTemplate, render} from './static/modules/uiControl';
-import {budget, costs, extractFormData} from './static/modules/dataControl';
+import {budget, costs, extractFormData, data, search} from './static/modules/dataControl';
 import {eventCallback, node, cookies} from 'cutleryjs';
 import moment from 'moment';
 import 'moment/locale/nl-be';
@@ -30,6 +30,18 @@ const app = {
             }, false)
         })
         
+        document.addEventListener('keyup', (event) => {
+            eventCallback('.form--search', (target) => {
+                const formData = extractFormData(target);
+                
+                search.do({
+                    container: node('[data-label="budgetsList"]'),
+                    items: '.list__item',
+                    query: formData.get('query')
+                })
+            }, false)
+        })
+        
         document.addEventListener('click', (event) => { 
             clickEvent.set(event);
              
@@ -40,16 +52,8 @@ const app = {
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
-                                
-                switchTemplate.switch('costsListing', (context) => {
-                    context.editContext('title', budgetsData.data.title);
-                    context.editContext('meta', `
-                        ${moment.unix(budgetsData.data.period.start.seconds).format('D MMM')} tot ${moment.unix(budgetsData.data.period.end.seconds).format('D MMM')}
-                        – ${budgetsData.data.people.paying + budgetsData.data.people.free} personen
-                    `);
-                    context.editContext('comments', budgetsData.data.comment);
-                });
                 render.costs();
+                user.accessControl();             
             }, false)
             
             if (ui.shareMode() != true) eventCallback('[data-nav-section]', (target) => {
@@ -69,9 +73,16 @@ const app = {
                 const costData = await costs.get(id);
                 const container = await parent.querySelector('[data-label="editCostForm"]');
                 container.innerHTML = await render.costEditForm(costData);
-                console.log(costData);
                 document.querySelector(`[data-firebase="${id}"] [name="type"] option[value="${costData.data.type}"]`).selected = true;
                 document.querySelector(`[data-firebase="${id}"] [name="when"] option[value="${costData.data.when}"]`).selected = true;
+            })
+            
+            if (ui.shareMode() != true || ui.readMode() != true) eventCallback('deleteCost', (target) => {
+                const parent = target.parentElement.closest('[data-firebase]');
+                const id = window.appSettings.edit.cost = parent.dataset.firebase;
+                const budgetId = window.appSettings.selectedBudget.id;
+                
+                costs.delete(budgetId, id);
             })
         })
         
@@ -88,6 +99,7 @@ const app = {
             
             eventCallback('#form_step1', (target) => {
                 window.appSettings.group = extractFormData(event.target).get('group');
+                render.budgets();
                 user.accessControl();
             }, false);
             
