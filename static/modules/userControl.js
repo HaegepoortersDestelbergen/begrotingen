@@ -1,5 +1,5 @@
 import {auth} from './plugins/firebase';
-import {ui, switchTemplate, render} from './uiControl';
+import {ui, templates, render} from './uiControl';
 import {data} from './dataControl';
 import {node, formError, clickEvent} from './utils';
 
@@ -9,11 +9,11 @@ const user = {
             if (state) {
                 user.active = await this.getUserData(state.uid);
                 
-                switchTemplate.switch('groupSelect', () => {
+                templates.switch('groupSelect', () => {
                     user.ui(user.active.data.access);
                 }, true);
             } else {
-                switchTemplate.switch('userLogIn');
+                templates.switch('userLogIn');
             }
         })
     },
@@ -33,7 +33,7 @@ const user = {
     },
     
     checkForLogIn() {
-        if (ui.shareMode() != true) switchTemplate.switch('groupSelect');
+        if (ui.shareMode() != true) templates.switch('groupSelect');
     },
     
     async getUserData(id) {

@@ -1,4 +1,4 @@
-import {ui, switchTemplate, render} from './static/modules/uiControl';
+import {ui, templates, render} from './static/modules/uiControl';
 import {budget, costs, extractFormData, data, search} from './static/modules/dataControl';
 import {eventCallback, node, cookies} from 'cutleryjs';
 import moment from 'moment';
@@ -31,7 +31,16 @@ const app = {
         })
         
         document.addEventListener('keyup', (event) => {
-            eventCallback('.form--search', (target) => {
+            eventCallback('[data-section="step2"] .form--search', (target) => {
+                const formData = extractFormData(target);                
+                search.do({
+                    container: node('[data-label="budgetsList"]'),
+                    items: '.list__item',
+                    query: formData.get('query')
+                })
+            }, false);
+            
+            eventCallback('[data-section="step3"] .form--search', (target) => {
                 const formData = extractFormData(target);                
                 search.do({
                     container: node('[data-label="costsList"]'),
@@ -58,7 +67,7 @@ const app = {
             if (ui.shareMode() != true) eventCallback('[data-nav-section]', (target) => {
                 target = target.dataset.navSection;
                 
-                switchTemplate.switch(target, () => {
+                templates.switch(target, () => {
                     if (target == 'budgetsListing') render.budgets();
                 });
                 ui.init();

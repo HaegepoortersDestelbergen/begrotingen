@@ -11,7 +11,7 @@ moment.locale('nl-be');
 
 const render = {    
     async budgets() {
-        switchTemplate.switch('budgetsListing', (context) => {
+        templates.switch('budgetsListing', (context) => {
             context.editContext('group', window.appSettings.group)
         });
         const data = await budget.getAll();
@@ -30,21 +30,23 @@ const render = {
         ])
         
         item.inner(`
-            <div class="item__icon">
-                <i class='bx bx-calendar-alt'></i>
-            </div>
-            <div class="item__body body">
-                <div class="body__prepend">
-                    <span class="body__title">${doc.data.title}</span>
-                    <small class="body__comment">${doc.data.comment}</small>
+            <div class="item__wrapper">
+                <div class="item__icon">
+                    <i class='bx bx-calendar-alt'></i>
                 </div>
-                <div class="body__append">
-                    <span>
-                        ${moment.unix(doc.data.period.end.seconds).format('D MMM')}
-                        tot 
-                        ${moment.unix(doc.data.period.start.seconds).format('D MMM')}
-                    </span>
-                    <small>3436 euro</small>
+                <div class="item__body body">
+                    <div class="body__prepend">
+                        <span class="body__title">${doc.data.title}</span>
+                        <small class="body__comment">${doc.data.comment}</small>
+                    </div>
+                    <div class="body__append">
+                        <span>
+                            ${moment.unix(doc.data.period.end.seconds).format('D MMM')}
+                            tot 
+                            ${moment.unix(doc.data.period.start.seconds).format('D MMM')}
+                        </span>
+                        <small>3436 euro</small>
+                    </div>
                 </div>
             </div>
         `);
@@ -55,7 +57,7 @@ const render = {
     async costs(inputData) {
         const budgetsData = window.appSettings.selectedBudget || inputData;
         
-        switchTemplate.switch('costsListing', (context) => {
+        templates.switch('costsListing', (context) => {
             context.editContext('title', budgetsData.data.title);
             context.editContext('meta', `
                 ${moment.unix(budgetsData.data.period.start.seconds).format('D MMM')} tot ${moment.unix(budgetsData.data.period.end.seconds).format('D MMM')}
@@ -374,13 +376,13 @@ const ui = {
     }
 }
 
-const switchTemplate = {
+const templates = {
     getTemplate(templateName) {
         this.template = node(`template[data-template="${templateName}"]`);
     },
     
     switch(templateName, callback, afterLoad = false) {
-        switchTemplate.getTemplate(templateName);
+        templates.getTemplate(templateName);
         
         this.templateHTML = this.template.content.cloneNode(true).querySelector('*');
         const app = node('#app');
@@ -397,7 +399,10 @@ const switchTemplate = {
         context.innerHTML = innerHTML;
     },
     
-    
+    return(templateName) {
+        templates.getTemplate(templateName);
+        return this.template.content.cloneNode(true).querySelector('*');
+    }
 }
 
 Array.from(document.querySelectorAll('.modal')).forEach(bsNode => new Modal(bsNode))
@@ -410,6 +415,6 @@ Array.from(document.querySelectorAll('.collapse')).forEach(bsNode => {
 export {
     render,
     ui,
-    switchTemplate,
+    templates,
     contextSwitch
 }

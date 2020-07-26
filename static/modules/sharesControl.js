@@ -1,6 +1,6 @@
 import Navigo from 'navigo';
 import {budget} from './dataControl'
-import {switchTemplate, render, ui} from './uiControl'
+import {templates, render, ui} from './uiControl'
 import moment from 'moment';
 import {db} from './plugins/firebase';
 import {data} from './dataControl';

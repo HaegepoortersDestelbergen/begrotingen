@@ -185,9 +185,12 @@
                 <div class="container">
                     <div class="d-flex align-items-center justify-content-between mb-5" data-label="costsTopActions">
                         <button class="btn btn--nav-back" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht budgetten</button>
-                        <button type="button" class="btn btn--icon" data-toggle="modal" data-target="[data-modal='budgetShare']">
-                            <i class='bx bx-share-alt'></i> delen
-                        </button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn--icon" data-toggle="modal" data-target="[data-modal='budgetShare']">
+                                <i class='bx bx-share-alt'></i> delen
+                            </button>
+                            <button class="btn">Nieuwe kost</button>
+                        </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
@@ -262,14 +265,15 @@
                 </form>
                 <div class="list" data-label="costsList">
                     <!-- costslisting -->
-                    
-                    <div class="list__not-found d-none">
-                        <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
-                        <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
-                    </div>
                 </div>
             </div>
             
+        </div>
+    </template>
+    <template data-template="listItemNotFound">
+        <div class="list__not-found animate__animated animate__fadeIn">
+            <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
+            <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
         </div>
     </template>
     

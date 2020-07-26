@@ -1,6 +1,5 @@
 .list {
     &__item {
-        padding: 1.2rem 1.4rem;
         background-color: $blue100;
         border-radius: $bd-radius;
     }
@@ -12,6 +11,14 @@
         margin-bottom: 1rem;
         max-height: 100vh !important;
         overflow: hidden;
+        
+        &__wrapper {
+            min-width: 100%;
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
         
         &__icon {
             align-self: flex-start;

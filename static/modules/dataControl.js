@@ -1,5 +1,5 @@
 import {db} from './plugins/firebase';
-import {render, contextSwitch} from './uiControl';
+import {render, contextSwitch, templates} from './uiControl';
 import {Element} from 'cutleryjs';
 
 const data = {
@@ -230,14 +230,10 @@ const extractFormData = (formNode) => {
 
 const search = {
     do({container, items, query}) {
-        // set container
         search.container = container;
         if (typeof container == 'string') search.container = node(container);
-        
-        // get listitems
         const listItems = search.container.querySelectorAll(items);
         
-        // lowercase searchquery
         query = query.toLowerCase();
         
         listItems.forEach(item => {
@@ -255,9 +251,11 @@ const search = {
     },
     
     notFound(bool = true) {        
+        const illustration = templates.return('listItemNotFound');
         const notFound = search.container.querySelector('.list__not-found');
-        if (bool == true && notFound) notFound.classList.remove('d-none');
-        else if (bool == false && notFound) notFound.classList.add('d-none');
+        
+        if (bool == true && notFound == null) search.container.append(illustration);
+        else if (bool == false && notFound) notFound.remove();
     },
     
     hide(node) {
