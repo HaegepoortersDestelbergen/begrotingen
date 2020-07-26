@@ -32,10 +32,9 @@ const app = {
         
         document.addEventListener('keyup', (event) => {
             eventCallback('.form--search', (target) => {
-                const formData = extractFormData(target);
-                
+                const formData = extractFormData(target);                
                 search.do({
-                    container: node('[data-label="budgetsList"]'),
+                    container: node('[data-label="costsList"]'),
                     items: '.list__item',
                     query: formData.get('query')
                 })

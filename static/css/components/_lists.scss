@@ -10,6 +10,8 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 1rem;
+        max-height: 100vh !important;
+        overflow: hidden;
         
         &__icon {
             align-self: flex-start;
@@ -49,5 +51,9 @@
             }
         }
         
+        &.animate__fadeOut {
+            max-height: 0vh !important;
+            margin: 0px;
+        }
     } 
 }

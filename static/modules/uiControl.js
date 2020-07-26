@@ -395,7 +395,9 @@ const switchTemplate = {
     editContext(contextCaller, innerHTML) {
         const context = this.templateHTML.querySelector(`[data-template-context="${contextCaller}"]`);
         context.innerHTML = innerHTML;
-    }
+    },
+    
+    
 }
 
 Array.from(document.querySelectorAll('.modal')).forEach(bsNode => new Modal(bsNode))

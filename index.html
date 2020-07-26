@@ -202,7 +202,7 @@
                     </div>
                     <form id="form_step2" class="form form--search mt-4">
                         <div class="form__wrapper search">
-                            <input type="text" class="search__input" placeholder="Zoek op titel, commentaar of budget">
+                            <input type="text" class="search__input" name="query" placeholder="Zoek op titel, commentaar of budget">
                             <div class="search__addons">
                                 <div class="addon">
                                     Sorteer op datum
@@ -262,8 +262,11 @@
                 </form>
                 <div class="list" data-label="costsList">
                     <!-- costslisting -->
-                    <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
-                    <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
+                    
+                    <div class="list__not-found d-none">
+                        <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
+                        <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
+                    </div>
                 </div>
             </div>
             

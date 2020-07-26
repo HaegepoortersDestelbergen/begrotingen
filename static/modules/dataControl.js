@@ -1,5 +1,6 @@
 import {db} from './plugins/firebase';
 import {render, contextSwitch} from './uiControl';
+import {Element} from 'cutleryjs';
 
 const data = {
     async getByPath(path) {
@@ -208,7 +209,6 @@ const loadTestData = async () => {
 
 const extractFormData = (formNode) => {
     // https://stackoverflow.com/a/14438954/9357283
-    
     const names = new Set();
     const formData = new FormData(formNode);
     const returnData = new Map();
@@ -230,22 +230,52 @@ const extractFormData = (formNode) => {
 
 const search = {
     do({container, items, query}) {
-        if (typeof container == 'string') container = node(container);
-        items = container.querySelectorAll(items);
+        // set container
+        search.container = container;
+        if (typeof container == 'string') search.container = node(container);
         
-        // items.map(item => {
-        //     item.innerHTML.contains(query);
-        // })
+        // get listitems
+        const listItems = search.container.querySelectorAll(items);
         
-        // filter alternative
+        // lowercase searchquery
+        query = query.toLowerCase();
         
-        // if no docs found, make new cost
+        listItems.forEach(item => {
+            const check = item.innerText.toLowerCase().includes(query);
+            if (check == true) search.show(item);
+            else if (check == false) search.hide(item);
+        })
+        
+        const resultCount = search.container.querySelectorAll(`${items}:not(.animate__fadeOut)`).length;
+        if (resultCount == 0) {
+            search.notFound();
+        } else {
+            search.notFound(false);
+        }
     },
     
-    false() {
-        return 'img';
+    notFound(bool = true) {        
+        const notFound = search.container.querySelector('.list__not-found');
+        if (bool == true && notFound) notFound.classList.remove('d-none');
+        else if (bool == false && notFound) notFound.classList.add('d-none');
+    },
+    
+    hide(node) {
+        if (node.classList.contains('animate__fadeOut') == false) {
+            node.classList.remove('animate__fadeIn');
+            node.classList.add('animate__fadeOut');
+        }
+    },
+    
+    show(node) {
+        if (node.classList.contains('animate__fadeOut') == true) {
+            node.classList.add('animate__fadeIn');
+            node.classList.remove('animate__fadeOut');
+        }
     }
 }
+
+// const cloudinaryUpload
 
 export {
     data,
