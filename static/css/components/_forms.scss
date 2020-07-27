@@ -92,10 +92,7 @@ form, *:not(.btn-group) {
 .search {
     display: flex;
     width: 100%;
-    padding: 1rem;
-    border-radius: $bd-radius;
-    background-color: $grey200;
-    box-shadow: $shadow-lg;
+
     
     input {
         width: inherit;
@@ -112,5 +109,38 @@ form, *:not(.btn-group) {
     .addon {
         white-space: nowrap;
         color: $blue300;
+    }
+}
+
+.search-box {
+    padding: .4rem 1rem;
+    background-color: $grey200;
+    box-shadow: $shadow-lg;
+    border-radius: $bd-radius;
+    
+    &:focus, &:focus-within {
+        box-shadow: $shadow-lg;
+        background-color: $grey200;
+        color: $blue500;
+    }
+    
+    input {
+        margin: 0px;
+        padding: 0px;
+        background: none;
+        font-weight: 600;
+        font-size: 1rem;
+        color: $blue500;
+        
+        &::placeholder {
+            color: $blue300;
+        }
+        
+        &:focus, &:focus-within {
+            outline: none;
+            box-shadow: none;
+            background: none;
+            color: $blue500;
+        }
     }
 }

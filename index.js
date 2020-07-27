@@ -1,11 +1,12 @@
 import {ui, templates, render} from './static/modules/uiControl';
 import {budget, costs, extractFormData, data, search} from './static/modules/dataControl';
-import {eventCallback, node, cookies} from 'cutleryjs';
+import {eventCallback, node, cookies, Element} from 'cutleryjs';
 import moment from 'moment';
 import 'moment/locale/nl-be';
 import {shares} from './static/modules/sharesControl';
 import {user} from './static/modules/userControl';
 import {clickEvent} from './static/modules/utils';
+import {Collapse} from 'bootstrap';
 
 moment.locale('nl-be');
 window.appSettings = {
@@ -31,21 +32,29 @@ const app = {
         })
         
         document.addEventListener('keyup', (event) => {
-            eventCallback('[data-section="step2"] .form--search', (target) => {
+            eventCallback('[data-section="step2"] [data-form="newBudget"]', (target) => {
                 const formData = extractFormData(target);                
                 search.do({
                     container: node('[data-label="budgetsList"]'),
                     items: '.list__item',
-                    query: formData.get('query')
+                    query: formData.get('title')
+                }, (container, found) => {
+                    const btn = container.querySelector(`[data-target="[data-collapse='newBudgetMeta']"]`)
+                    if (btn && found == true) btn.classList.add('d-none');
+                    else if (btn && found == false) btn.classList.remove('d-none')
                 })
             }, false);
             
-            eventCallback('[data-section="step3"] .form--search', (target) => {
+            eventCallback('[data-section="step3"] [data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);                
                 search.do({
                     container: node('[data-label="costsList"]'),
                     items: '.list__item',
-                    query: formData.get('query')
+                    query: formData.get('title')
+                }, (container, found) => {
+                    const btn = container.querySelector(`[data-target="[data-collapse='newCostMeta']"]`)
+                    if (btn && found == true) btn.classList.add('d-none');
+                    else if (btn && found == false) btn.classList.remove('d-none')
                 })
             }, false)
         })

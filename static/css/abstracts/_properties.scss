@@ -5,3 +5,12 @@
 .text-color-blue {color: $blue500}
 .text-color-blue-300 {color: $blue300}
 .text-color-blue-200 {color: $blue200}
+.text-color-blue-100 {color: $blue100}
+
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    
+    .form-label {
+        color: $grey200;
+    }
+}

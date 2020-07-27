@@ -16,20 +16,20 @@
     <div id="app">
     </div>
     <template data-template="userLogIn">
-        <section data-section="step0" class="animate__animated animate__zoomIn animate__faster">
-            <div class="login-wrapper login-wrapper--form login-wrapper--validating">
-                <h1 class="text-center mb-5 font-weight-bold">Haegepoorters<br>begrotingen</h1>
+        <section data-section="step0" class="" style="background-image: url('https://res.cloudinary.com/haegepoortersbe/image/upload/w_1200/v1568911122/IMG_2238-compressor_xixx32.jpg'); background-size: cover;">
+            <div class="backdrop-blur login-wrapper login-wrapper--form animate__animated animate__zoomIn animate__faster">
+                <!-- <h1 class="text-center mb-5 font-weight-bold text-light">Haegepoorters<br>begrotingen</h1> -->
                 <div class="card mx-auto">
                     <div class="card__icon card__icon--top">
                         <i class='bx bx-user-circle'></i>
                     </div>
                     <form data-form="logIn">
-                        <h2 class="mb-0 text-center text-color-blue font-weight-bold">Aanmelden</h2>
+                        <h2 class="mb-0 text-center text-color-blue-100 font-weight-bold">Aanmelden</h2>
                         <p class="d-none text-color-blue">Deze login ontvang je van de takverantwoordelijke of webmaster</p>
                         <div class="row mt-4">
                             <div class="col-12 mb-4">
                                 <div class="form-label">Tak email</div>
-                                <input required type="email" class="form-control" name="email" placeholder="tak@haegepoorters.be" value="" autocomplete="none">
+                                <input required type="email" class="form-control" name="email" placeholder="tak@haegepoorters.be" value="" autocomplete="off">
                             </div>
                             <div class="col-12">
                                 <div class="form-label">Wachtwoord</div>
@@ -42,8 +42,8 @@
                         <button type="submit" class="btn mx-auto">Volgende</button>
                     </form>
                     <div data-label="logInLoader" class="flex-column align-items-center justify-content-center">
-                        <h2 class="mb-0 text-center text-color-blue font-weight-bold">Je wordt aangemeld</h2>
-                        <div class="spinner-border mt-4" role="status">
+                        <h2 class="mb-0 text-center text-color-blue-100 font-weight-bold">Je wordt aangemeld</h2>
+                        <div class="spinner-border mt-4 text-color-blue-100" role="status">
                             <span class="sr-only">Loading...</span>
                           </div>
                     </div>
@@ -122,55 +122,46 @@
                             <h2 class="display-3 font-weight-bold mb-0" data-template-context="group">Welpen</h2>
                             <h4>Overzicht van begrotingen</h4>
                         </div>
-                        <button class="btn" type="button" data-toggle="collapse" data-target="[data-collapse='newBudget']">Nieuwe begroting</button>
+                        <button class="btn" type="button" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
                     </div>
-                    <form id="form_step2" class="form form--search mt-4">
-                        <div class="form__wrapper search">
-                            <input type="text" class="search__input" name="query" placeholder="Zoek op titel, commentaar of budget">
-                            <div class="search__addons">
-                                <div class="addon">
-                                    Sorteer op datum
+                    <form data-form="newBudget" class="mt-4">
+                        <div class="row">
+                            <div class="col">
+                                <div class="search-box">
+                                    <input class="form-control" type="text" id="newBudget_title" name="title" autocomplete="off" placeholder="Zoek of maak een begroting">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="collapse" data-collapse="newBudgetMeta">
+                            <div class="row mt-4">
+                                <div class="col-12 col-lg-6">
+                                    <!-- <div class="form-label">Opmerkingen</div> -->
+                                    <input class="form-control small" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
+                                    <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
+                                </div>
+                            </div>
+    
+                            <div class="row mt-3 mb-3">  
+                                <div class="col">
+                                    <div class="form-label">Start periode</div>
+                                    <input class="form-control" name="period-start" type="date" id="newBudget_periodStart">
+                                </div>
+                                <div class="col">
+                                    <div class="form-label">Einde periode</div>
+                                    <input class="form-control" name="period-end" type="date" id="newBudget_periodEnd">
+                                </div>
+                            </div>
+    
+                            <div class="btn-group mt-4 mx-auto" data-toggle="collapse" data-target="[data-collapse='newBudget']">
+                                <button type="reset" class="btn btn--sub" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Annuleren</button>
+                                <button type="submit" class="btn btn--main" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Begroting aanmaken</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </header>
             <div class="container animate__animated animate__fadeInUp">
-                <form data-form="newBudget">
-                    <div class="list">
-                        <div class="list__item item mb-3 py-4">
-                            <div class="item__icon h-100 align-self-start">
-                                <i class='bx bx-calendar-plus'></i>
-                            </div>
-                            <div class="item__body body d-flex flex-column">
-                                <div class="mb-0 body__prepend">
-                                    <input class="form-control h5" type="text" id="newBudget_title" name="title" autocomplete="none" placeholder="Klik voor een nieuwe begroting" data-toggle="collapse" data-target="[data-collapse='newBudget']">
-                                    <input class="form-control small w-50" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
-                                    <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
-                                </div>
-                                <div class="body__append collapse" data-collapse="newBudget">
-                                    <hr>
-                                    <div class="row mt-3 mb-3">  
-                                        <div class="col">
-                                            <div class="form-label">Start periode</div>
-                                            <input class="form-control" name="period-start" type="date" id="newBudget_periodStart">
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-label">Einde periode</div>
-                                            <input class="form-control" name="period-end" type="date" id="newBudget_periodEnd">
-                                        </div>
-                                    </div>
-
-                                    <div class="btn-group mt-4 mx-auto" data-toggle="collapse" data-target="[data-collapse='newBudget']">
-                                        <button type="reset" class="btn btn--sub">Annuleren</button>
-                                        <button type="submit" class="btn btn--main">Begroting aanmaken</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                
                 <div class="list" data-label="budgetsList">
                     <!-- budgetlisting -->
                     <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="200px" alt="">
@@ -189,7 +180,7 @@
                             <button type="button" class="btn btn--icon" data-toggle="modal" data-target="[data-modal='budgetShare']">
                                 <i class='bx bx-share-alt'></i> delen
                             </button>
-                            <button class="btn">Nieuwe kost</button>
+                            <button class="btn" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">Nieuwe kost</button>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
@@ -203,66 +194,55 @@
                             <p data-template-context="priceSinglePayer" class="text-color-blue-300 small">5,02 euro per lid</p>
                         </div>
                     </div>
-                    <form id="form_step2" class="form form--search mt-4">
-                        <div class="form__wrapper search">
-                            <input type="text" class="search__input" name="query" placeholder="Zoek op titel, commentaar of budget">
-                            <div class="search__addons">
-                                <div class="addon">
-                                    Sorteer op datum
+                    <form data-form="newCost" class="mt-5">
+                        <div class="row">
+                            <div class="col">
+                                <div class="search-box">
+                                    <input class="form-control" type="text" id="newCost_title" name="title" autocomplete="off" placeholder="Zoek of maak een nieuwe kost">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="collapse" data-collapse="newCostMeta">
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <input class="form-control small w-50" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
+                                    <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
+                                </div>
+                            </div>
+                            <div class="row mt-3 mb-3">  
+                                <div class="col">
+                                    <div class="form-label">Bedrag €</div>
+                                    <input class="form-control" name="amount" type="number" step=".01" id="newCost_amount" placeholder="115.57">
+                                </div>
+                                <div class="col">
+                                    <div class="form-label">Type</div>
+                                    <select class="form-select" name="type" aria-label="Default select example">
+                                        <option selected value="fixed">Vaste kost</option>
+                                        <option value="per-person">Kost per persoon</option>
+                                        <option value="per-payer">Kost per betalende persoon</option>
+                                        <option value="per-free">Kost per gratis persoon</option>
+                                        <option value="income">Inkomst</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <div class="form-label">Aantal keren</div>
+                                    <select class="form-select" name="when" aria-label="Default select example">
+                                        <option selected value="onetime">Eenmalig</option>
+                                        <option value="per-day">Per dag</option>
+                                        <option value="per-night">Per nacht</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="btn-group mt-4 mx-auto" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">
+                                <button type="reset" class="btn btn--sub">Annuleren</button>
+                                <button type="submit" class="btn btn--main">Begroting aanmaken</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </header>
             <div class="container animate__animated animate__fadeInUp">
-                <form data-form="newCost">
-                    <div class="list">
-                        <div class="list__item item mb-3 py-4">
-                            <div class="item__icon h-100 align-self-start">
-                                <i class='bx bx-coin'></i>
-                            </div>
-                            <div class="item__body body d-flex flex-column">
-                                <div class="mb-0 body__prepend">
-                                    <input class="form-control h5" type="text" id="newCost_title" name="title" autocomplete="none" placeholder="Nieuwe kost" data-toggle="collapse" data-target="[data-collapse='newCost']">
-                                    <input class="form-control small w-50" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
-                                    <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
-                                </div>
-                                <div class="body__append collapse" data-collapse="newCost">
-                                    <hr>
-                                    <div class="row mt-3 mb-3">  
-                                        <div class="col">
-                                            <div class="form-label">Bedrag €</div>
-                                            <input class="form-control" name="amount" type="number" step=".01" id="newCost_amount" placeholder="115.57">
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-label">Type</div>
-                                            <select class="form-select" name="type" aria-label="Default select example">
-                                                <option selected value="fixed">Vaste kost</option>
-                                                <option value="per-person">Kost per persoon</option>
-                                                <option value="per-payer">Kost per betalende persoon</option>
-                                                <option value="per-free">Kost per gratis persoon</option>
-                                                <option value="income">Inkomst</option>
-                                            </select>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-label">Aantal keren</div>
-                                            <select class="form-select" name="when" aria-label="Default select example">
-                                                <option selected value="onetime">Eenmalig</option>
-                                                <option value="per-day">Per dag</option>
-                                                <option value="per-night">Per nacht</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="btn-group mt-4 mx-auto" data-toggle="collapse" data-target="[data-collapse='newCost']">
-                                        <button type="reset" class="btn btn--sub">Annuleren</button>
-                                        <button type="submit" class="btn btn--main">Begroting aanmaken</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                
                 <div class="list" data-label="costsList">
                     <!-- costslisting -->
                 </div>
@@ -274,6 +254,8 @@
         <div class="list__not-found animate__animated animate__fadeIn">
             <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
             <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
+            <button class="btn mt-4 mx-auto d-none" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">Nieuwe kost</button>
+            <button class="btn mt-4 mx-auto d-none" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
         </div>
     </template>
     

@@ -229,7 +229,7 @@ const extractFormData = (formNode) => {
 }
 
 const search = {
-    do({container, items, query}) {
+    do({container, items, query}, notFoundCallback) {
         search.container = container;
         if (typeof container == 'string') search.container = node(container);
         const listItems = search.container.querySelectorAll(items);
@@ -245,8 +245,10 @@ const search = {
         const resultCount = search.container.querySelectorAll(`${items}:not(.animate__fadeOut)`).length;
         if (resultCount == 0) {
             search.notFound();
+            if (notFoundCallback) notFoundCallback(search.container, false);
         } else {
             search.notFound(false);
+            if (notFoundCallback) notFoundCallback(search.container, true);
         }
     },
     
