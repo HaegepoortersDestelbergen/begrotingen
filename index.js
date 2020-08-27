@@ -7,6 +7,7 @@ import {shares} from './static/modules/sharesControl';
 import {user} from './static/modules/userControl';
 import {clickEvent} from './static/modules/utils';
 import {Collapse} from 'bootstrap';
+import Navigo from 'navigo';
 
 moment.locale('nl-be');
 window.appSettings = {
@@ -16,12 +17,25 @@ window.appSettings = {
 };
 
 
+const root = location.origin;
+const useHash = true; // Defaults to: false
+const hash = '#s'; // Defaults to: '#'
+const router = new Navigo(root, useHash, hash);
+
+
 const app = {
     async init() {
         app.listeners();
-        user.init();
         ui.init();
-        shares.init();
+        
+        router.on('/:id', async (params) => {            
+            shares.init(params);
+        })
+        .notFound(() => {
+            console.log('route not found')
+            user.init();
+        })
+        .resolve()
     },
     
     listeners() {

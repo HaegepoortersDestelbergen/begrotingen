@@ -46,12 +46,8 @@ const user = {
                
         const groups = ['kapoenen', 'welpen', 'woudlopers', 'jonggivers', 'givers', 'groepsleiding'];
         groups.forEach(group => {
-            const input = node(`#form_step1 input[value="${group}"]`);
-            const label = node(`#form_step1 input[value="${group}"]+label`);
-            if (accessData[group] == 'none' && input) {
-                input.remove();
-                label.remove();
-            }
+            const input = node(`#form_step1 input[value="${group}"]`).closest('.form__group');
+            if (accessData[group] == 'none' && input) input.remove();
         })
     },
     

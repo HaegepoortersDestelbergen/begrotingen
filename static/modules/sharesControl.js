@@ -1,4 +1,3 @@
-import Navigo from 'navigo';
 import {budget} from './dataControl'
 import {templates, render, ui} from './uiControl'
 import moment from 'moment';
@@ -6,21 +5,24 @@ import {db} from './plugins/firebase';
 import {data} from './dataControl';
 import { node } from './utils';
 
-const root = location.origin;
-const useHash = true; // Defaults to: false
-const hash = '#s'; // Defaults to: '#'
-const router = new Navigo(root, useHash, hash);
+// https://console.firebase.google.com/u/3/project/begrotingen-haegepoorters/firestore/data~2Fshares
 
 const shares = {
-    init() {
-        router.on('/:id', async (params) => {
-            const shareData = await shares.getShareData(params.id);
-            const valid = shares.valid(shareData);
+    async init(params) {     
+        shares.watchForElements();
+        const shareData = await shares.getShareData(params.id);
+        const valid = shares.valid(shareData);
+        if (valid == true) shares.pass(shareData);
+        
+        
+    },
+    
+    watchForElements() {
+        const elementToObserve = node('body');
+        const observer = new MutationObserver(() => {
             ui.shareMode(true);
-            
-            if (valid == true) shares.pass(shareData);
-        })
-        .resolve();
+        });
+        observer.observe(elementToObserve, {subtree: true, childList: true});
     },
     
     async new(formData) {
@@ -34,17 +36,17 @@ const shares = {
     },
     
     async getShareData(id) {
-        const snapshot = await db.collection('shares').doc(id).get();
-        const data = snapshot.data();
+        const snapshot = db.collection('shares').doc('zO78hVCY61uFEyTLHImK');
+        const data = await snapshot.get();
         return {
             id: id,
-            data: data
+            data: data.data()
         }
     },
     
     valid(shareData) {
         const now = moment();
-        const validDate = moment(shareData.data.validity.seconds*1000);
+        const validDate = moment(shareData.data.validity);
         const diff = now.diff(validDate, 'days');
         
         if (diff > 0) {console.log('share not valid'); return false}
@@ -53,14 +55,9 @@ const shares = {
     
     async pass(shareData) {
         const budgetsData = await budget.get(shareData.data.target);
-        
-        window.appSettings.selectedBudget = {
-            id: shareData.id,
-            data: shareData.data
-        };                            
+        window.appSettings.selectedBudget = budgetsData;
 
-        render.costs(budgetsData);
-        ui.shareMode(true);
+        await render.costs(budgetsData);
     }
 }
 

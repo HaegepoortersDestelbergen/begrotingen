@@ -130,6 +130,8 @@ const costs = {
     },
     
     async getAll() {
+        console.log('getAll')
+        console.log(window.appSettings.selectedBudget.id)
         const snapshot = await costs.getCollection().get();
         const data = snapshot.docs.map((querySnapshot) => {
             return {

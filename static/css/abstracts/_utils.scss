@@ -1,0 +1,30 @@
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+);
+
+$sizes: (
+    25: 25%,
+    50: 50%,
+    75: 75%,
+    100: 100%,
+    fit: fit-content
+);
+
+@each $label, $size in $sizes {
+    .w-#{$label} {
+        width: $size !important;
+    }
+    
+    @each $break, $point in $breakpoints {
+        @media screen and (min-width: $point) {
+            .w-#{$break}-#{$label} {
+                width: $size !important;
+            }
+        }
+    }
+}
+
+

@@ -1,8 +1,9 @@
-// @import "~bootstrap/scss/bootstrap";
+@import "~/node_modules/bootstrap/scss/bootstrap";
 
 @import './abstracts/mixins';
 @import './abstracts/variables';
 @import './abstracts/properties';
+@import './abstracts/utils';
 
 @import './base/base';
 @import './base/fonts';
