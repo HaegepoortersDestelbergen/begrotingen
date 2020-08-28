@@ -1,8 +1,12 @@
 // STEPS
 
 [data-section="step0"] {
-    display: grid;
-    place-items: center;
+    // display: grid;
+    // place-items: center;
+    
+    [data-form="logIn"] {
+        input {background-color: $blue100;}
+    }
     
     .card {
         padding: 2rem;
@@ -11,9 +15,9 @@
     }
     
     .login-wrapper {
-        backdrop-filter: blur(10px);
-        background-color: #e1e9ea77;
-        border-radius: $bd-radius;
+        // backdrop-filter: blur(10px);
+        // background-color: #e1e9ea77;
+        // border-radius: $bd-radius;
         
         .spinner-border {color: $blue500;}
         

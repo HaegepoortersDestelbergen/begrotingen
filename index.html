@@ -18,9 +18,40 @@
         </div>
     </div>
     <template data-template="userLogIn">
-        <section data-section="step0" class="" style="background-image: url('https://res.cloudinary.com/haegepoortersbe/image/upload/w_1200/v1568911122/IMG_2238-compressor_xixx32.jpg'); background-size: cover;">
-            <div class="backdrop-blur login-wrapper login-wrapper--form animate__animated animate__zoomIn animate__faster">
-                <!-- <h1 class="text-center mb-5 font-weight-bold text-light">Haegepoorters<br>begrotingen</h1> -->
+        <section data-section="step0" class="">
+            <div class="row h-100">
+                <div class="login-wrapper login-wrapper--form col-12 col-md-4 p-5 d-flex justify-content-center align-items-center">
+                    <form data-form="logIn">
+                        <h2 class="mb-0 text-center text-color-blue-400 font-weight-bold">Aanmelden</h2>
+                        <p class="d-none text-color-blue">Deze login ontvang je van de takverantwoordelijke of webmaster</p>
+                        <div class="row mt-4">
+                            <div class="col-12 mb-4">
+                                <div class="form-label">Tak email</div>
+                                <input required type="email" class="form-control" name="email" placeholder="tak@haegepoorters.be" value="" autocomplete="off">
+                            </div>
+                            <div class="col-12">
+                                <div class="form-label">Wachtwoord</div>
+                                <input required type="password" class="form-control" name="password" value="" placeholder=" ">
+                            </div>
+                        </div>
+                        <div class="form__error">
+                            Deze gegevens kloppen niet, probeer het opnieuw
+                        </div>
+                        <button type="submit" class="btn mx-auto ">Volgende</button>
+                    </form>
+                    <div data-label="logInLoader" class="flex-column align-items-center justify-content-center">
+                        <h2 class="mb-0 text-center text-color-blue-300 font-weight-bold">Je wordt aangemeld</h2>
+                        <div class="spinner-border mt-4 text-color-blue-100" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-8 d-none d-md-block p-0" style="background-image: url('https://res.cloudinary.com/haegepoortersbe/image/upload/w_1200/v1598573563/z50b7hf4s32tqkb455gu.jpg'); background-size: cover;">
+                    
+                </div>
+            </div>
+            <!-- <div class="backdrop-blur login-wrapper login-wrapper--form animate__animated animate__zoomIn animate__faster">
+                <h1 class="text-center mb-5 font-weight-bold text-light">Haegepoorters<br>begrotingen</h1>
                 <div class="card mx-auto">
                     <div class="card__icon card__icon--top">
                         <i class='bx bx-user-circle'></i>
@@ -50,7 +81,7 @@
                           </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </section>
     </template>
     <template data-template="groupSelect">

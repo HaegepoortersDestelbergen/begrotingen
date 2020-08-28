@@ -1,5 +1,5 @@
 import {pricify, periodDifference} from './utils'
-import {node, Element} from 'cutleryjs'
+import {node, Element, returnNode} from 'cutleryjs'
 import {budget, costs} from './dataControl'
 import moment from 'moment';
 import 'moment/locale/nl-be';
@@ -15,7 +15,12 @@ const render = {
             context.editContext('group', window.appSettings.group)
         });
         const data = await budget.getAll();
-        if (data.length > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = '';
+        const recordCount = data.length;
+        
+        if (recordCount > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = ''
+        else {
+            templates.showError('[data-label="budgetsList"]')
+        }
         
         data.forEach(doc => {
             render.budget(doc);
@@ -349,7 +354,6 @@ const ui = {
                 node('[data-label="costsTopActions"]'),
                 ...node('[data-sharemode="remove"]', true)      
             ]
-            console.log(itemsToHide);
             itemsToHide.map(n => {if (n) n.remove()})
         }
         
@@ -403,6 +407,31 @@ const templates = {
     return(templateName) {
         templates.getTemplate(templateName);
         return this.template.content.cloneNode(true).querySelector('*');
+    },
+    
+    showError(node) {
+        const el = returnNode(node);
+        const loader = el.querySelector('.spinner-border');
+        
+        if (loader) loader.remove();
+        const illustration = templates.return('listItemNotFound');
+        el.append(illustration);
+        
+        templates.watchToRemoveError(el);
+    },
+    
+    removeError(node) {
+        const el = node.querySelector('.list__not-found');
+        el.remove();
+    },
+    
+    watchToRemoveError(element) {
+        const elementToObserve = element
+        const observer = new MutationObserver((watch) => {
+            const added = watch[0].addedNodes.length
+            if (added != 0) templates.removeError(element);
+        });
+        observer.observe(elementToObserve, {subtree: true, childList: true});
     }
 }
 

@@ -10,11 +10,10 @@ import { node } from './utils';
 const shares = {
     async init(params) {     
         shares.watchForElements();
+        
         const shareData = await shares.getShareData(params.id);
         const valid = shares.valid(shareData);
         if (valid == true) shares.pass(shareData);
-        
-        
     },
     
     watchForElements() {
@@ -36,7 +35,7 @@ const shares = {
     },
     
     async getShareData(id) {
-        const snapshot = db.collection('shares').doc('zO78hVCY61uFEyTLHImK');
+        const snapshot = db.collection('shares').doc(id);
         const data = await snapshot.get();
         return {
             id: id,
@@ -50,7 +49,7 @@ const shares = {
         const diff = now.diff(validDate, 'days');
         
         if (diff > 0) {console.log('share not valid'); return false}
-        else {console.log('share not valid'); return true}
+        else {console.log('share valid'); return true}
     },
     
     async pass(shareData) {
