@@ -70,6 +70,7 @@
     border-radius: 120px;
     
     .btn {
+        width: 100%;
         margin-top: 0 !important;
         margin-right: 1rem;
         border-radius: 120px !important;
@@ -122,3 +123,17 @@
         }
     }
 }
+
+@media (min-width: 576px) {}
+
+@media (min-width: 768px) {}
+
+@media (min-width: 992px) {
+    .btn-group {
+        .btn {
+            width: fit-content;
+        }
+    }
+}
+
+@media (min-width: 1200px) {}

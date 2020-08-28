@@ -47,32 +47,36 @@
 [data-section="step1"] .form { 
     width: fit-content;
     margin: 0 auto;
+    
+    // [data-label="groupList"]
       
     &__group {
-        margin-right: 2rem;
-        // max-width: fit-content;
+        flex-basis: 50%;
+        margin-bottom: 2rem;
         
         &:last-child {margin-right: 0;}
-        
         input {display: none;}
         
         label {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            width: 150px;
+            width: 100%;
             padding: 1.5rem 2rem 1.2rem 2rem;
             background-color: $blue100;
             font-weight: bold;
             color: $blue500;
             text-align: center;
             border-radius: 26px;
+            
+            span {font-size: 1.8rem;}
         }
         
         svg {
-            height: 100px;
-            max-width: 100px;
-            margin-bottom: 1rem;
+            --d: 60px;
+            height: var(--d);
+            max-width: var(--d);
+            margin-right: 2rem;
             fill: $blue500 !important;
             
             * {fill: #4D777B !important;}
@@ -106,3 +110,30 @@
 //         all: inherit;
 //     }
 // }
+
+@media (min-width: 576px) {}
+
+@media (min-width: 768px) {}
+
+@media (min-width: 992px) {
+    [data-section="step1"] .form__group {
+        margin-right: 2rem;
+        
+        label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 150px; // big
+            
+            span {font-size: inherit;}
+        }
+        
+        svg {
+            --d: 100px;
+            margin-bottom: 1rem;
+            margin-right: 0;
+        }
+    }
+}
+
+@media (min-width: 1200px) {}

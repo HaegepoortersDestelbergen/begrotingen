@@ -86,13 +86,13 @@
     </template>
     <template data-template="groupSelect">
         <section data-section="step1" class="m-auto">
-            <div class="wrapper">
+            <div class="wrapper p-4">
                 <div class="animate__animated animate__fadeInDown animate__faster">
                     <h1 class="display-4 mb-0 text-center font-weight-bold">Welke tak?</h1>
                     <h4 class="text-center">Kies een tak om een begroting voor op te maken</h4>
                 </div>
                 <form id="form_step1" class="form d-flex flex-column mt-5">
-                    <div class="d-flex flex-row justify-content-center animate__animated animate__zoomIn animate__faster">
+                    <div data-label="groupList" class="d-flex flex-column flex-lg-row justify-content-center animate__animated animate__zoomIn animate__faster">
                         <div class="form__group">
                             <input type="radio" name="group" id="group_1" value="kapoenen" required>
                             <label for="group_1">
@@ -136,7 +136,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="btn-group mx-auto mt-5 animate__animated animate__fadeInUp animate__faster">
+                    <div class="btn-group mx-auto mt-4 mt-lg-5 mb-4 mb-lg-0 animate__animated animate__fadeInUp animate__faster">
                         <button type="button" data-action="logOut" class="btn btn--sub">Afmelden</button>
                         <button type="submit" class="btn">Volgende</button>
                     </div>

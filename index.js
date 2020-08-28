@@ -52,9 +52,10 @@ const app = {
                     items: '.list__item',
                     query: formData.get('title')
                 }, (container, found) => {
-                    const btn = container.querySelector(`[data-target="[data-collapse='newBudgetMeta']"]`)
-                    if (btn && found == true) btn.classList.add('d-none');
-                    else if (btn && found == false) btn.classList.remove('d-none')
+                    // console.log(found);
+                    // console.log(container);
+                    // if (found == false) templates.showError(container)
+                    // if (found == true) templates.removeError(container)
                 })
             }, false);
             
@@ -65,9 +66,10 @@ const app = {
                     items: '.list__item',
                     query: formData.get('title')
                 }, (container, found) => {
-                    const btn = container.querySelector(`[data-target="[data-collapse='newCostMeta']"]`)
-                    if (btn && found == true) btn.classList.add('d-none');
-                    else if (btn && found == false) btn.classList.remove('d-none')
+                    // console.log(found);
+                    // console.log(container);
+                    // if (found == false) templates.showError(container)
+                    // if (found == true) templates.removeError(container)
                 })
             }, false)
         })

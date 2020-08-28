@@ -26,7 +26,6 @@ const render = {
         const $budgets = node('[data-label="budgetsList"]')
         if (recordCount > 0) $budgets.innerHTML = '';
         else templates.showError($budgets);
-        templates.watchForError($budgets);
         
         data.forEach(doc => {
             render.budget(doc);
@@ -85,7 +84,6 @@ const render = {
         const $costs = node('[data-label="costsList"]');
         if (recordCount > 0) $costs.innerHTML = '';
         else templates.showError($costs);
-        templates.watchForError($costs);
         
         data.forEach(doc => {            
             const item = render.cost(doc);
@@ -123,8 +121,8 @@ const render = {
                 <hr>
                 <div class="item__behind">
                     <div class="row">
-                        <div class="col-12 col-lg-4">
-                            <p class="mb-2">${contextSwitch.priceSinglePayer(price)}</p>
+                        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+                            <p class="mb-0">${contextSwitch.priceSinglePayer(price)}</p>
                             <small>${contextSwitch.priceSinglePayerComment()}</small>
                         </div>
                         <div class="col-12 col-lg-8 d-flex justify-content-end align-items-center">
@@ -424,13 +422,15 @@ const templates = {
     },
     
     showError(element) {
+        console.log('show error')
         element = returnNode(element);
         
-        // remove loader if 
+        // remove loader if it exists
         const loader = element.querySelector('.spinner-border');
         if (loader) loader.remove();
         
         const message = templates.return('listItemNotFound');
+        console.log(message);
         element.append(message);
         
         templates.watchForError(element);
@@ -444,7 +444,7 @@ const templates = {
     
     watchForError(element) {
         const elementToObserve = returnNode(element);
-        const observer = new MutationObserver((watch) => {
+        const observer = new MutationObserver((watch) => {           
             const childCount = elementToObserve.querySelectorAll('.list__item').length;
             
             const added = watch[0].addedNodes.length;
