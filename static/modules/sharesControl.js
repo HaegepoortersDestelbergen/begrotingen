@@ -12,8 +12,14 @@ const shares = {
         shares.watchForElements();
         
         const shareData = await shares.getShareData(params.id);
-        const valid = shares.valid(shareData);
-        if (valid == true) shares.pass(shareData);
+        if (shareData.data != undefined) {
+            const valid = shares.valid(shareData);
+            if (valid == true) shares.pass(shareData);
+            else shares.unvalidate(shareData);
+        } else {
+            console.log('sharecode not available');
+            templates.switch('shareNotFound');
+        }
     },
     
     watchForElements() {
@@ -57,6 +63,11 @@ const shares = {
         window.appSettings.selectedBudget = budgetsData;
 
         await render.costs(budgetsData);
+    },
+    
+    async unvalidate(shareData) {
+        const deleted = await db.doc(`shares/${shareData.id}`).delete();
+        console.log(deleted);
     }
 }
 

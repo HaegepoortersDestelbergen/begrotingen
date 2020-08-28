@@ -32,7 +32,6 @@ const app = {
             shares.init(params);
         })
         .notFound(() => {
-            console.log('route not found')
             user.init();
         })
         .resolve()
@@ -186,7 +185,9 @@ const app = {
                 }, listItem.dataset.firebase, listItem);
             }, false)
         })
-    }
+    },
+    
+    
 }
 
 app.init();

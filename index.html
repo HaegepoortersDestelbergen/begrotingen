@@ -179,11 +179,11 @@
                             <div class="row mt-3 mb-3">  
                                 <div class="col">
                                     <div class="form-label">Start periode</div>
-                                    <input class="form-control" name="period-start" type="date" id="newBudget_periodStart">
+                                    <input class="form-control" name="period-start" type="date" data-date="now" id="newBudget_periodStart">
                                 </div>
                                 <div class="col">
                                     <div class="form-label">Einde periode</div>
-                                    <input class="form-control" name="period-end" type="date" id="newBudget_periodEnd">
+                                    <input class="form-control" name="period-end" type="date" data-date="now" id="newBudget_periodEnd">
                                 </div>
                             </div>
     
@@ -228,8 +228,8 @@
                             <p data-template-context="comments" class="small mb-0">Hier komt wat commentaar</p>
                         </div>
                         <div class="text-right">
-                            <h2 data-template-context="priceTotal" class="text-color-blue font-weight-bold mb-0">115,57 euro</h2>
-                            <p data-template-context="priceSinglePayer" class="text-color-blue-300 small">5,02 euro per lid</p>
+                            <h2 data-template-context="priceTotal" class="text-color-blue font-weight-bold mb-0">0 euro</h2>
+                            <p data-template-context="priceSinglePayer" class="text-color-blue-300 small">0 euro per lid</p>
                         </div>
                     </div>
                     <form data-form="newCost" class="mt-5">
@@ -280,12 +280,13 @@
                 </div>
             </header>
             <div class="container animate__animated animate__fadeInUp">
-                
                 <div class="list" data-label="costsList">
                     <!-- costslisting -->
+                    <div class="spinner-border d-block mx-auto mt-5 text-color-blue" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
             </div>
-            
         </div>
     </template>
     <template data-template="listItemNotFound">
@@ -294,6 +295,17 @@
             <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
             <button class="btn mt-4 mx-auto d-none" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">Nieuwe kost</button>
             <button class="btn mt-4 mx-auto d-none" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
+        </div>
+    </template>
+    
+    <template data-template="shareNotFound">
+        <div data-section="shareNotFound" class="d-flex flex-column justify-content-center align-items-center">
+            <a href="https://www.google.com/search?q=computer+says+no" target="_blank">
+                <img class="mb-4 img--round" src="https://res.cloudinary.com/haegepoortersbe/image/upload/v1598633138/uhujsjocl5n4bhdqrsmu.gif" alt="" width="200px" height="200px">
+            </a>
+            <h3>Share niet (meer) beschibaar</h3>
+            <p>Je gebruikt waarschijnlijk een share die niet meer geldig is</p>
+            <a href="." class="btn">Aanmelden</a>
         </div>
     </template>
     
@@ -308,7 +320,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-label">Link geldig tot</div>
-                                <input class="form-control" type="date" name="date">
+                                <input class="form-control" type="date" data-date="now" name="date">
                             </div>
                         </div>
                     </div>

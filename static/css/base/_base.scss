@@ -12,6 +12,11 @@ img {
     user-select: none;
     -webkit-user-drag: none;
     pointer-events: none;
+    object-fit: cover;
+    
+    &.img--round {
+        border-radius: 120px;
+    }
 }
 
 #app {

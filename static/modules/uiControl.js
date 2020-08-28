@@ -10,17 +10,23 @@ import {user} from './userControl';
 moment.locale('nl-be');
 
 const render = {    
+    init() {
+        forms.setDates();
+    },
+    
     async budgets() {
+        render.init();
+        
         templates.switch('budgetsListing', (context) => {
             context.editContext('group', window.appSettings.group)
         });
         const data = await budget.getAll();
         const recordCount = data.length;
         
-        if (recordCount > 0) node('[data-section="step2"] [data-label="budgetsList"]').innerHTML = ''
-        else {
-            templates.showError('[data-label="budgetsList"]')
-        }
+        const $budgets = node('[data-label="budgetsList"]')
+        if (recordCount > 0) $budgets.innerHTML = '';
+        else templates.showError($budgets);
+        templates.watchForError($budgets);
         
         data.forEach(doc => {
             render.budget(doc);
@@ -28,6 +34,8 @@ const render = {
     },
     
     budget(doc, insertBefore = false) {
+        render.init();
+        
         const item = new Element('div');
         item.class(['list__item', 'item']);
         item.attributes([
@@ -60,7 +68,7 @@ const render = {
     },
     
     async costs(inputData = window.appSettings.selectedBudget, callback) {
-        const budgetsData = inputData
+        const budgetsData = inputData;
         
         templates.switch('costsListing', (context) => {
             context.editContext('title', budgetsData.data.title);
@@ -72,7 +80,13 @@ const render = {
         });
         
         const data = await costs.getAll();
-        if (data.length > 0) node('[data-label="costsList"]').innerHTML = '';
+        const recordCount = data.length;
+        
+        const $costs = node('[data-label="costsList"]');
+        if (recordCount > 0) $costs.innerHTML = '';
+        else templates.showError($costs);
+        templates.watchForError($costs);
+        
         data.forEach(doc => {            
             const item = render.cost(doc);
             item.append('[data-section="step3"] [data-label="costsList"]');
@@ -409,29 +423,46 @@ const templates = {
         return this.template.content.cloneNode(true).querySelector('*');
     },
     
-    showError(node) {
-        const el = returnNode(node);
-        const loader = el.querySelector('.spinner-border');
+    showError(element) {
+        element = returnNode(element);
         
+        // remove loader if 
+        const loader = element.querySelector('.spinner-border');
         if (loader) loader.remove();
-        const illustration = templates.return('listItemNotFound');
-        el.append(illustration);
         
-        templates.watchToRemoveError(el);
+        const message = templates.return('listItemNotFound');
+        element.append(message);
+        
+        templates.watchForError(element);
     },
     
-    removeError(node) {
-        const el = node.querySelector('.list__not-found');
-        el.remove();
+    removeError(element) {
+        element = returnNode(element);
+        const message = element.querySelector('.list__not-found');
+        if (message) message.remove();
     },
     
-    watchToRemoveError(element) {
-        const elementToObserve = element
+    watchForError(element) {
+        const elementToObserve = returnNode(element);
         const observer = new MutationObserver((watch) => {
-            const added = watch[0].addedNodes.length
-            if (added != 0) templates.removeError(element);
+            const childCount = elementToObserve.querySelectorAll('.list__item').length;
+            
+            const added = watch[0].addedNodes.length;
+            const removed = watch[0].removedNodes.length;
+            
+            if (added != 0) templates.removeError(elementToObserve);
+            if (childCount == 0) templates.showError(elementToObserve);
         });
         observer.observe(elementToObserve, {subtree: true, childList: true});
+    }
+}
+
+const forms = {
+    setDates() {
+        const dates = node('[data-date="now"]', true);
+        dates.forEach(n => {
+            n.valueAsDate = new Date();
+        })
     }
 }
 
