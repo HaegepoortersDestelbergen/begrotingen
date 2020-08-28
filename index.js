@@ -118,6 +118,7 @@ const app = {
         
         document.addEventListener('submit', (event) => {
             event.preventDefault();
+            // event.target.reset();
             
             eventCallback('[data-form="logIn"]', (target) => {
                 const formData = extractFormData(target);                
@@ -133,8 +134,9 @@ const app = {
                 user.accessControl();
             }, false);
             
-            if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , () => {
-                const formData = extractFormData(event.target)
+            if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , (target) => {
+                const formData = extractFormData(target)
+                target.reset();
                 
                 budget.add({
                     tak: window.appSettings.group,
@@ -154,6 +156,7 @@ const app = {
             
             if (ui.shareMode() != true || ui.readMode() != true) eventCallback('[data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);
+                target.reset();
                 
                 costs.add({
                     title: formData.get('title'),
@@ -186,8 +189,6 @@ const app = {
             }, false)
         })
     },
-    
-    
 }
 
 app.init();

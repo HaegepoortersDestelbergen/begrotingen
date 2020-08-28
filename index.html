@@ -92,7 +92,7 @@
                     <h4 class="text-center">Kies een tak om een begroting voor op te maken</h4>
                 </div>
                 <form id="form_step1" class="form d-flex flex-column mt-5">
-                    <div class="d-flex justify-content-center animate__animated animate__zoomIn animate__faster">
+                    <div class="d-flex flex-row justify-content-center animate__animated animate__zoomIn animate__faster">
                         <div class="form__group">
                             <input type="radio" name="group" id="group_1" value="kapoenen" required>
                             <label for="group_1">
@@ -163,7 +163,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="search-box">
-                                    <input class="form-control" type="text" id="newBudget_title" name="title" autocomplete="off" placeholder="Zoek of maak een begroting">
+                                    <input class="form-control no-border" type="text" id="newBudget_title" name="title" autocomplete="off" placeholder="Zoek of maak een begroting">
                                 </div>
                             </div>
                         </div>
@@ -236,7 +236,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="search-box">
-                                    <input class="form-control" type="text" id="newCost_title" name="title" autocomplete="off" placeholder="Zoek of maak een nieuwe kost">
+                                    <input class="form-control no-border" type="text" id="newCost_title" name="title" autocomplete="off" placeholder="Zoek of maak een nieuwe kost">
                                 </div>
                             </div>
                         </div>
@@ -290,7 +290,7 @@
         </div>
     </template>
     <template data-template="listItemNotFound">
-        <div class="list__not-found animate__animated animate__fadeIn">
+        <div class="list__not-found animate__animated animate__fadeIn mb-5">
             <img class="d-block mx-auto mt-5" src="./static/images/illustrations/undraw_searching_p5ux.svg" height="140px" alt="">
             <h5 class="text-center mt-5">We konden geen uitgaven vinden</h5>
             <button class="btn mt-4 mx-auto d-none" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">Nieuwe kost</button>

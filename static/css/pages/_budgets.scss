@@ -4,7 +4,7 @@
     }
     
     
-    [data-form="newBudget"] {
+    [data-form="newBudget"] {        
         .body__prepend input {
             font-size: 1.25rem;
             font-weight: bold;
@@ -25,7 +25,8 @@
             }
         }
         
-        .body__append {            
+        .body__append {          
+              
             text-align: unset;
         }
     }

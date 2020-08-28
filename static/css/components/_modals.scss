@@ -1,3 +1,7 @@
+body.modal-open #app {
+    filter: blur(4px);
+}
+
 .modal {
     $modal-padding: 1rem;
     
@@ -12,8 +16,8 @@
     
     &-content {
         padding: $modal-padding;
-        background-color: rgba(255, 255, 255, 0.445);
-        backdrop-filter: blur(12px);
+        background-color: rgb(255, 255, 255);
+        // backdrop-filter: blur(12px);
         border: none;
         border-radius: $bd-radius;
         @include shadow-lg;
@@ -21,9 +25,11 @@
     
     input {
         background-color: $blue200;
+        border: 2px solid #e1e9ea;
     }
     
     &-backdrop.show {
         opacity: .15;
+        // backdrop-filter: blur(12px)
     }
 }

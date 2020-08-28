@@ -33,8 +33,11 @@
 }
 
 [data-section="step1"] {
-    @include flex-center;
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    @include flex-center;
     
     .wrapper {
         height: auto;
@@ -47,6 +50,7 @@
       
     &__group {
         margin-right: 2rem;
+        // max-width: fit-content;
         
         &:last-child {margin-right: 0;}
         
@@ -70,6 +74,8 @@
             max-width: 100px;
             margin-bottom: 1rem;
             fill: $blue500 !important;
+            
+            * {fill: #4D777B !important;}
         }
     }
     
@@ -88,6 +94,11 @@
     [data-template-context="group"] {
         text-transform: capitalize;
     }
+}
+
+[data-section="shareNotFound"] {
+    width: 100vw;
+    height: 100vh;
 }
 
 // .form--embedded {

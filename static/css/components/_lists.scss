@@ -53,6 +53,12 @@
                 font-weight: 500;
             }
             
+            &__prepend {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
             &__append {
                 text-align: right;
             }

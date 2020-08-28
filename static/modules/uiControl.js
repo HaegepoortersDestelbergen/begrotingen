@@ -50,7 +50,7 @@ const render = {
                 <div class="item__body body">
                     <div class="body__prepend">
                         <span class="body__title">${doc.data.title}</span>
-                        <small class="body__comment">${doc.data.comment}</small>
+                        ${doc.data.comment != '' ? `<small class="body__comment">${doc.data.comment}</small>` : ``}
                     </div>
                     <div class="body__append">
                         <span>
@@ -129,7 +129,7 @@ const render = {
                         </div>
                         <div class="col-12 col-lg-8 d-flex justify-content-end align-items-center">
                             <div class="btn-group ml-auto">
-                            <button class="btn btn--sub btn--icon" data-action="deleteCost"><i class='bx bx-trash-alt'></i> Verwijderen</button>
+                            <button class="btn btn--sub btn--icon" data-action="deleteCost" data-sharemode="remove"><i class='bx bx-trash-alt'></i> Verwijderen</button>
                                 <button class="btn" data-action="editCost" data-sharemode="remove">Bewerken</button>
                             </div>
                         </div>
