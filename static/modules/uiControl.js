@@ -409,6 +409,9 @@ const templates = {
         if (callback && afterLoad == true) callback(this);
         
         ui.init();
+        
+        const siteTitle = seo.siteTitles(templateName)
+        seo.setTitle(siteTitle)
     },
     
     editContext(contextCaller, innerHTML) {
@@ -463,6 +466,26 @@ const forms = {
         dates.forEach(n => {
             n.valueAsDate = new Date();
         })
+    }
+}
+
+const seo = {
+    siteTitles(templateName) {
+        const group = window.appSettings.group ? window.appSettings.group : 'groep';
+        const costTitle = window.appSettings.selectedBudget ? window.appSettings.selectedBudget.data.title : 'kost'
+        const title = {
+            userLogIn: 'aanmelden',
+            groupSelect: 'takken',
+            budgetsListing: group,
+            costsListing: `${costTitle} - ${group}`,
+            shareNotFound: 'oops'
+        }[templateName];
+        return title != '' ? title : 'overzicht';
+    },
+    
+    setTitle(text = 'takken') {
+        const title = node('title');
+        title.innerHTML = `${text} | Begrotingen Haegepoorters`;
     }
 }
 
