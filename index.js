@@ -116,6 +116,11 @@ const app = {
                 
                 costs.delete(budgetId, id);
             })
+            
+            eventCallback('[data-label="costsList"] .list__item [data-label="editCostForm"] button[type="reset"]', (target) => {
+                const form = target.parentNode.closest('[data-label="editCostForm"]');
+                form.innerHTML = '';
+            }, false)
         })
         
         document.addEventListener('submit', (event) => {
@@ -139,6 +144,7 @@ const app = {
             if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , (target) => {
                 const formData = extractFormData(target)
                 target.reset();
+                search.reset('[data-label="budgetsList"]');
                 
                 budget.add({
                     tak: window.appSettings.group,
@@ -153,12 +159,13 @@ const app = {
                         free: 9
                     },
                     created: Date.now()
-                })
+                });
             }, false);
             
             if (ui.shareMode() != true || ui.readMode() != true) eventCallback('[data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);
                 target.reset();
+                search.reset('[data-label="costsList"]');
                 
                 costs.add({
                     title: formData.get('title'),

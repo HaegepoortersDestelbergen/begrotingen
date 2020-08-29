@@ -1,6 +1,6 @@
 import {db} from './plugins/firebase';
 import {render, contextSwitch, templates} from './uiControl';
-import {Element} from 'cutleryjs';
+import {Element, returnNode} from 'cutleryjs';
 
 const data = {
     async getByPath(path) {
@@ -230,12 +230,10 @@ const extractFormData = (formNode) => {
 
 const search = {
     do({container, items, query}, notFoundCallback) {
-        search.container = container;
-        if (typeof container == 'string') search.container = node(container);
+        search.container = returnNode(container)
         const listItems = search.container.querySelectorAll(items);
         
         query = query.toLowerCase();
-        
         listItems.forEach(item => {
             const check = item.innerText.toLowerCase().includes(query);
             if (check == true) search.show(item);
@@ -272,6 +270,15 @@ const search = {
             node.classList.add('animate__fadeIn');
             node.classList.remove('animate__fadeOut');
         }
+    },
+    
+    reset(container, items = '.list__item') {
+        container = search.container || returnNode(container);
+        const listItems = search.container.querySelectorAll(items);
+        listItems.forEach(item => {
+            search.show(item);
+        })
+        search.notFound(false);
     }
 }
 
