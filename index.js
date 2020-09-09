@@ -1,11 +1,11 @@
-import {ui, templates, render} from './static/modules/uiControl';
+import {ui, templates, render, createToast, fadeOutNode} from './static/modules/uiControl';
 import {budget, costs, extractFormData, data, search} from './static/modules/dataControl';
-import {eventCallback, node, cookies, Element} from 'cutleryjs';
+import {eventCallback, node, cookies, Element, connection} from 'cutleryjs';
 import moment from 'moment';
 import 'moment/locale/nl-be';
 import {shares} from './static/modules/sharesControl';
 import {user} from './static/modules/userControl';
-import {clickEvent} from './static/modules/utils';
+import {clickEvent, updateClipboard} from './static/modules/utils';
 import {Collapse} from 'bootstrap';
 import Navigo from 'navigo';
 
@@ -35,6 +35,16 @@ const app = {
             user.init();
         })
         .resolve()
+        
+        createToast({
+            title: 'App was loaded [no content]',
+            timer: 100000
+        })
+        
+        createToast({
+            content: 'App was loaded [no title]',
+            timer: 100000
+        })
     },
     
     listeners() {
@@ -76,6 +86,16 @@ const app = {
         
         document.addEventListener('click', (event) => { 
             clickEvent.set(event);
+            
+            eventCallback('closeToast', (target) => {
+                const toast = target.parentNode.closest('.toast');
+                fadeOutNode(toast);
+            })
+            
+            eventCallback('[data-clipboard]', (target) => {
+                const content = target.dataset.clipboard;
+                updateClipboard(content);
+            }, false)
              
             eventCallback('logOut', () => {
                 user.logOut();
@@ -84,38 +104,50 @@ const app = {
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
-                render.costs();
+                await render.costs(window.appSettings.selectedBudget, );
                 user.accessControl();             
             }, false)
             
-            if (ui.shareMode() != true) eventCallback('[data-nav-section]', (target) => {
-                target = target.dataset.navSection;
-                
-                templates.switch(target, () => {
-                    if (target == 'budgetsListing') render.budgets();
-                });
-                ui.init();
-                user.ui();
-            }, false)
+            eventCallback('[data-form="newCost"] button[type="reset"]', search.reset, false)
             
-            if (ui.shareMode() != true || ui.readMode() != true) eventCallback('editCost', async (target) => {
-                const parent = target.parentElement.closest('[data-firebase]');
-                const id = window.appSettings.edit.cost = parent.dataset.firebase;
-                
-                const costData = await costs.get(id);
-                const container = await parent.querySelector('[data-label="editCostForm"]');
-                container.innerHTML = await render.costEditForm(costData);
-                document.querySelector(`[data-firebase="${id}"] [name="type"] option[value="${costData.data.type}"]`).selected = true;
-                document.querySelector(`[data-firebase="${id}"] [name="when"] option[value="${costData.data.when}"]`).selected = true;
-            })
+            eventCallback('demoLogin', user.demoLogin);
             
-            if (ui.shareMode() != true || ui.readMode() != true) eventCallback('deleteCost', (target) => {
-                const parent = target.parentElement.closest('[data-firebase]');
-                const id = window.appSettings.edit.cost = parent.dataset.firebase;
-                const budgetId = window.appSettings.selectedBudget.id;
+            // if sharemode and readmode are disabled
+            if (ui.shareMode() != true || ui.readMode() != true) {
+                eventCallback('editCost', async (target) => {
+                    const parent = target.parentElement.closest('[data-firebase]');
+                    const id = window.appSettings.edit.cost = parent.dataset.firebase;
+                    
+                    const costData = await costs.get(id);
+                    const container = await parent.querySelector('[data-label="editCostForm"]');
+                    container.innerHTML = await render.costEditForm(costData);
+                                    
+                    document.querySelector(`[data-firebase="${id}"] [name="type"] option[value="${costData.data.type}"]`).selected = true;
+                    document.querySelector(`[data-firebase="${id}"] [name="type"] option[value="${costData.data.type}"]`).selected = true;
+                    document.querySelector(`[data-firebase="${id}"] [data-label="previewNewCostIcons"] [value="${costData.data.category || 'other'}"]`).checked = true;
+                })
                 
-                costs.delete(budgetId, id);
-            })
+                eventCallback('deleteCost', (target) => {
+                    const parent = target.parentElement.closest('[data-firebase]');
+                    const id = window.appSettings.edit.cost = parent.dataset.firebase;
+                    const budgetId = window.appSettings.selectedBudget.id;
+                    
+                    costs.delete(budgetId, id);
+                })
+            }
+            
+            // if sharemode only is disabled
+            if (ui.shareMode() != true) {
+                eventCallback('[data-nav-section]', (target) => {
+                    target = target.dataset.navSection;
+                    
+                    templates.switch(target, () => {
+                        if (target == 'budgetsListing') render.budgets();
+                    });
+                    ui.init();
+                    user.ui();
+                }, false)
+            }
             
             eventCallback('[data-label="costsList"] .list__item [data-label="editCostForm"] button[type="reset"]', (target) => {
                 const form = target.parentNode.closest('[data-label="editCostForm"]');
@@ -143,6 +175,8 @@ const app = {
             
             if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , (target) => {
                 const formData = extractFormData(target)
+                console.log(formData);
+                
                 target.reset();
                 search.reset('[data-label="budgetsList"]');
                 
@@ -155,8 +189,8 @@ const app = {
                         end: new Date(formData.get('period-end'))
                     },
                     people: {
-                        paying: 29,
-                        free: 9
+                        paying: formData.get('people-paying'),
+                        free: formData.get('people-free')
                     },
                     created: Date.now()
                 });
@@ -164,12 +198,16 @@ const app = {
             
             if (ui.shareMode() != true || ui.readMode() != true) eventCallback('[data-form="newCost"]', (target) => {
                 const formData = extractFormData(target);
+                
+                // reset cost form & search ui
                 target.reset();
                 search.reset('[data-label="costsList"]');
                 
+                // add cost to firebase
                 costs.add({
                     title: formData.get('title'),
                     comment: formData.get('comments'),
+                    category: formData.get('category'),
                     amount: formData.get('amount'),
                     type: formData.get('type'),
                     when: formData.get('when'),
@@ -191,11 +229,56 @@ const app = {
                 costs.edit({
                     title: formData.get('title'),
                     comment: formData.get('comments'),
+                    category: formData.get('category'),
                     amount: formData.get('amount'),
                     type: formData.get('type'),
                     when: formData.get('when'),
                 }, listItem.dataset.firebase, listItem);
             }, false)
+            
+            eventCallback('[data-form="editBudget"]', (target) => {
+                const formData = extractFormData(target);
+                const id = window.appSettings.selectedBudget.id;
+                
+                budget.edit({
+                    title: formData.get('title'),
+                    comment: formData.get('comments'),
+                    period: {
+                        start: new Date(formData.get('period-start')),
+                        end: new Date(formData.get('period-end'))
+                    },
+                    people: {
+                        paying: formData.get('people-paying'),
+                        free: formData.get('people-free')
+                    },
+                }, id);
+            }, false)
+        })
+        
+        connection.watch((state) => {
+            if (state == 3) window.appSettings.connectionState == state;
+            if (state == 2 || state == 1 ) {
+                window.appSettings.connectionState = state
+                createToast({
+                    title: 'Trage internetverbinding',
+                    content: 'We detecteerden dat je een trage internetverbinding hebt. Zorg voor een betere verbinding zodat deze app beter werkt.',
+                    timer: 10000
+                })
+            }
+            if (state == 0) {
+                window.appSettings.connectionState = state
+                createToast({
+                    title: 'Internetverbinding verbroken',
+                    content: 'Doordat je geen verbinding hebt met het internet zal deze app niet goed functioneren.',
+                    timer: 10000
+                })
+            }
+            
+            if (state == 3 && state > window.appSettings.connectionState) createToast({
+                title: 'Internetverbinding optimaal',
+                content: 'We detecteerden een verbeterde internetverbinding.',
+                timer: 8000
+            })
         })
     },
 }

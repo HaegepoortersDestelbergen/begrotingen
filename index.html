@@ -37,7 +37,10 @@
                         <div class="form__error">
                             Deze gegevens kloppen niet, probeer het opnieuw
                         </div>
-                        <button type="submit" class="btn mx-auto ">Volgende</button>
+                        <div class="btn-group mx-auto mt-4">
+                            <button type="submit" class="btn">Volgende</button>
+                            <button type="button" data-action="demoLogin" class="btn btn--sub">Demo bekijken</button>
+                        </div>
                     </form>
                     <div data-label="logInLoader" class="flex-column align-items-center justify-content-center">
                         <h2 class="mb-0 text-center text-color-blue-300 font-weight-bold">Je wordt aangemeld</h2>
@@ -135,6 +138,13 @@
                                 <span>Groepsleiding</span>
                             </label>
                         </div>
+                        <div class="form__group">
+                            <input type="radio" name="group" id="group_7" value="demo" required>
+                            <label for="group_7">
+                                <img data-src="tak_demo.svg" alt="Demo">
+                                <span>Demo</span>
+                            </label>
+                        </div>
                     </div>
                     <div class="btn-group mx-auto mt-4 mt-lg-5 mb-4 mb-lg-0 animate__animated animate__fadeInUp animate__faster">
                         <button type="button" data-action="logOut" class="btn btn--sub">Afmelden</button>
@@ -156,10 +166,10 @@
                             <h4>Overzicht van begrotingen</h4>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6 d-flex justify-content-end align-items-center">
-                            <button class="btn w-100 w-md-fit" type="button" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
+                            <button class="btn w-100 w-md-fit" type="button" data-readmode="remove" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
                         </div>
                     </div>
-                    <form data-form="newBudget" class="mt-4">
+                    <form data-form="newBudget" data-readmode="remove" class="mt-4">
                         <div class="row">
                             <div class="col">
                                 <div class="search-box">
@@ -184,6 +194,17 @@
                                 <div class="col">
                                     <div class="form-label">Einde periode</div>
                                     <input class="form-control" name="period-end" type="date" data-date="now" id="newBudget_periodEnd">
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3 mb-3">  
+                                <div class="col">
+                                    <div class="form-label">Betalende personen</div>
+                                    <input class="form-control" name="people-paying" type="number" id="newBudget_paying" value="0">
+                                </div>
+                                <div class="col">
+                                    <div class="form-label">Niet-betalende personen</div>
+                                    <input class="form-control" name="people-free" type="number" id="newBudget_free" value="0">
                                 </div>
                             </div>
     
@@ -215,10 +236,11 @@
                     <div class="d-flex align-items-center justify-content-between mb-5" data-label="costsTopActions">
                         <button class="btn btn--nav-back" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht budgetten</button>
                         <div class="btn-group">
-                            <button type="button" class="btn btn--icon" data-toggle="modal" data-target="[data-modal='budgetShare']">
+                            <button type="button" class="btn btn--sub" data-readmode="remove" data-toggle="collapse" data-target="[data-collapse='editBudget']">Bewerken</button>
+                            <button type="button" class="btn btn--icon" data-readmode="remove" data-toggle="modal" data-target="[data-modal='budgetShare']">
                                 <i class='bx bx-share-alt'></i> delen
                             </button>
-                            <button class="btn" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">Nieuwe kost</button>
+                            <button class="btn" data-readmode="remove" data-toggle="collapse" data-target="[data-collapse='newCostMeta']">Nieuwe kost</button>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
@@ -232,7 +254,37 @@
                             <p data-template-context="priceSinglePayer" class="text-color-blue-300 small">0 euro per lid</p>
                         </div>
                     </div>
-                    <form data-form="newCost" class="mt-5">
+                    <div class="collapse" data-readmode="remove" data-collapse="editBudget">
+                        <form data-form="editBudget" class="mt-4">
+                            <input class="form-control mb-3" type="text" name="title" autocomplete="off" placeholder="Titel begroting">
+                            <input class="form-control small" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
+                            <div class="row mt-3 mb-3">  
+                                <div class="col">
+                                    <div class="form-label">Start periode</div>
+                                    <input class="form-control" name="period-start" type="date">
+                                </div>
+                                <div class="col">
+                                    <div class="form-label">Einde periode</div>
+                                    <input class="form-control" name="period-end" type="date">
+                                </div>
+                            </div>
+                            <div class="row mt-3 mb-3">  
+                                <div class="col">
+                                    <div class="form-label">Betalende personen</div>
+                                    <input class="form-control" name="people-paying" type="number" value="0">
+                                </div>
+                                <div class="col">
+                                    <div class="form-label">Niet-betalende personen</div>
+                                    <input class="form-control" name="people-free" type="number" value="0">
+                                </div>
+                            </div>
+                            <div class="btn-group mt-4 mx-auto" data-toggle="collapse" data-target="[data-collapse='editBudget']">
+                                <button type="button" class="btn btn--sub">Annuleren</button>
+                                <button type="submit" class="btn btn--main">Begroting opslaan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <form data-readmode="remove" data-form="newCost" class="mt-5">
                         <div class="row">
                             <div class="col">
                                 <div class="search-box">
@@ -242,12 +294,64 @@
                         </div>
                         <div class="collapse" data-collapse="newCostMeta">
                             <div class="row mt-4">
-                                <div class="col">
-                                    <input class="form-control small w-50" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
+                                <div class="col-12">
+                                    <input class="form-control small" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
                                     <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
                                 </div>
                             </div>
-                            <div class="row mt-3 mb-3">  
+                            <div class="row mt-4">
+                                <div class="col-12" data-label="previewNewCostIcons">
+                                    <div class="form-label">Categorie</div>
+                                    <div class="wrapper">
+                                        <label>
+                                            <input type="radio" name="category" value="shopping" checked>
+                                            <i class='bx bx-shopping-bag'></i>
+                                            Inkopen
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="food">
+                                            <i class='bx bx-restaurant'></i>
+                                            Eten
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="location">
+                                            <i class='bx bx-building-house'></i>
+                                            Locatie
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="drinks">
+                                            <i class='bx bx-drink'></i>
+                                            Drank
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="transport">
+                                            <i class='bx bx-train'></i>
+                                            Transport
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="night">
+                                            <i class='bx bx-bed'></i>
+                                            Nacht
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="insurance">
+                                            <i class='bx bx-check-shield'></i>
+                                            Verzekering
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="gwe">
+                                            <i class='bx bx-plug'></i>
+                                            GWL
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="category" value="other">
+                                            <i class='bx bx-coin'></i>
+                                            Andere
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">  
                                 <div class="col">
                                     <div class="form-label">Bedrag €</div>
                                     <input class="form-control" name="amount" type="number" step=".01" id="newCost_amount" placeholder="115.57">
@@ -297,7 +401,6 @@
             <button class="btn mt-4 mx-auto d-none" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
         </div>
     </template>
-    
     <template data-template="shareNotFound">
         <div data-section="shareNotFound" class="d-flex flex-column justify-content-center align-items-center">
             <a class="mb-4" href="https://www.google.com/search?q=computer+says+no" target="_blank">
@@ -343,11 +446,16 @@
                     <div class="modal-footer">
                         <div class="btn-group ml-auto">
                             <button type="button" class="btn btn--sub" data-dismiss="modal">Sluiten</button>
-                            <button type="button" class="btn">Link kopieren</button>
+                            <button type="button" data-label="copyShareUrl" class="btn">Link kopieren</button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <div id="toasts" class="toasts">
+        <div class="toasts__wrapper">
         </div>
     </div>
     

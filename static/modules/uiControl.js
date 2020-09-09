@@ -1,10 +1,10 @@
 import {pricify, periodDifference} from './utils'
 import {node, Element, returnNode} from 'cutleryjs'
-import {budget, costs} from './dataControl'
+import {budget, costs, search} from './dataControl'
 import moment from 'moment';
 import 'moment/locale/nl-be';
 import { Modal, Collapse } from 'bootstrap';
-import {kap, wel, wol, jgv, giv, grl} from '../../static/modules/svgs';
+import {kap, wel, wol, jgv, giv, grl, demo} from '../../static/modules/svgs';
 import {user} from './userControl';
 
 moment.locale('nl-be');
@@ -57,13 +57,25 @@ const render = {
                             tot 
                             ${moment.unix(doc.data.period.start.seconds).format('D MMM')}
                         </span>
-                        <small>3436 euro</small>
+                        <small>${doc.data.people.paying + doc.data.people.free} personen</small>
                     </div>
                 </div>
             </div>
         `);
         if (insertBefore == false) item.append('[data-section="step2"] [data-label="budgetsList"]');
         else if (insertBefore == true) item.prepend('[data-section="step2"] [data-label="budgetsList"]');
+    },
+    
+    updatedBudget(data) {
+        console.log(data);
+        const meta = `
+            ${moment(data.period.start).format('D MMM')} tot ${moment(data.period.end).format('D MMM')}
+            – ${data.people.paying + data.people.free} personen
+        `;
+        
+        templates.editContext('title', data.title, false);
+        templates.editContext('meta', meta, false);
+        templates.editContext('comments', data.comment, false);
     },
     
     async costs(inputData = window.appSettings.selectedBudget, callback) {
@@ -90,58 +102,81 @@ const render = {
             item.append('[data-section="step3"] [data-label="costsList"]');
         })
         
+        render.budgetEditForm(budgetsData.data)
+        
         if (callback) callback();
     },
     
     cost(doc, insertBefore = false) {
         const item = new Element('div');
-        contextSwitch.setType(doc.data.type);
+        const data = doc.data;
+        contextSwitch.setType(data.type);
         
-        const cost = costs.calculateCost(doc.data.amount, doc.data.when, doc.data.type)
-        const price = contextSwitch.price(doc.data.amount, doc.data.when);
+        const cost = costs.calculateCost(data.amount, data.when, data.type)
+        const price = contextSwitch.price(data.amount, data.when);
         
-        if (doc.data.type != 'income') render.totalBudget(budget.addCost({id: doc.id, cost: cost}));
+        if (data.type != 'income') render.totalBudget(budget.addCost({id: doc.id, cost: cost}));
         
         item.class(['list__item', 'item', 'animate__animated', 'animate__faster', 'animate__fadeIn']);
         item.attributes([
             ['data-firebase', doc.id]
         ])
         item.inner(`
-            <div class="item__body body" data-toggle="collapse" data-target="[data-collapse='${doc.id}']">
+        <div class="item__wrapper" data-toggle="collapse" data-target="[data-collapse='${doc.id}']">
+            <div class="item__icon">${render.costIcon(data.category)}</div>
+            <div class="item__body body">
                 <div class="body__prepend">
-                    <h5 class="title">${doc.data.title}</h5>
-                    ${doc.data.comment != '' ? `<small class="comment">${doc.data.comment}</small>` : ``}
+                    <h5 class="title mb-0">${data.title}</h5>
+                    ${data.comment != '' ? `<small class="comment">${data.comment}</small>` : ``}
                 </div>
                 <div class="body__append">
                     <h5>${price} euro</h5>
                     <small>${contextSwitch.priceComment()}</small>
                 </div>
             </div>
-            <div class="collapse" data-collapse="${doc.id}" data-parent="[data-label='costsList']">
-                <hr>
-                <div class="item__behind">
-                    <div class="row">
-                        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-                            <p class="mb-0">${contextSwitch.priceSinglePayer(price)}</p>
-                            <small>${contextSwitch.priceSinglePayerComment()}</small>
-                        </div>
-                        <div class="col-12 col-lg-8 d-flex justify-content-end align-items-center">
-                            <div class="btn-group ml-auto">
-                            <button class="btn btn--sub btn--icon" data-action="deleteCost" data-sharemode="remove"><i class='bx bx-trash-alt'></i> Verwijderen</button>
-                                <button class="btn" data-action="editCost" data-sharemode="remove">Bewerken</button>
-                            </div>
-                        </div>
+        </div>
+        <div class="collapse" data-collapse="${doc.id}" data-parent="[data-label='costsList']">
+            <hr>
+            <div class="item__behind">
+                <div class="row">
+                    <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+                        <p class="mb-0">${contextSwitch.priceSinglePayer(price)}</p>
+                        <small>${contextSwitch.priceSinglePayerComment()}</small>
                     </div>
-                    <div class="row">
-                        <div class="col" data-label="editCostForm">
-                            <!-- editingform -->
+                    <div class="col-12 col-lg-8 d-flex justify-content-end align-items-center">
+                        <div class="btn-group ml-auto">
+                        <button class="btn btn--sub btn--icon" data-action="deleteCost" data-readmode="remove" data-sharemode="remove"><i class='bx bx-trash-alt'></i> Verwijderen</button>
+                            <button class="btn" data-action="editCost" data-readmode="remove" data-sharemode="remove">Bewerken</button>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col" data-label="editCostForm">
+                        <!-- editingform -->
+                    </div>
+                </div>
             </div>
+        </div>
         `)
         
         return item;
+    },
+    
+    costIcon(cat) {     
+        cat = cat != undefined ? cat : 'other';
+        const icon = {
+            shopping: 'bx-shopping-bag',
+            food: 'bx-restaurant',
+            location: 'bx-building-house',
+            drinks: 'bx-drink',
+            transport: 'bx-train',
+            night: 'bx-bed',
+            insurance: 'bx-check-shield',
+            gwe: 'bx-plug',
+            other: 'bx-coin',
+        }[cat];
+        
+        return `<i class='bx ${icon}'></i>`
     },
     
     deleteCost(id) {
@@ -160,7 +195,7 @@ const render = {
         node('[data-template-context="priceSinglePayer"]').innerHTML = pricify(amount/window.appSettings.selectedBudget.data.people.paying) + ' per persoon';
     },
     
-    async costEditForm(costData) {
+    costEditForm(costData) {
         // const id = window.appSettings.edit.cost = node.dataset.firebase;
         
         return `
@@ -169,7 +204,59 @@ const render = {
                 <div class="row mb-4">
                     <div class="col">
                         <input class="form-control h5" type="text" id="newCost_title" name="title" autocomplete="none" value="${costData.data.title}">
-                        <input class="form-control small w-50" type="text" name="comments" value="${costData.data.comment}">
+                        <input class="form-control small" type="text" name="comments" value="${costData.data.comment}">
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-12" data-label="previewNewCostIcons">
+                        <div class="form-label">Categorie</div>
+                        <div class="wrapper">
+                            <label>
+                                <input type="radio" name="category" value="shopping" checked>
+                                <i class='bx bx-shopping-bag'></i>
+                                Inkopen
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="food">
+                                <i class='bx bx-restaurant'></i>
+                                Eten
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="location">
+                                <i class='bx bx-building-house'></i>
+                                Locatie
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="drinks">
+                                <i class='bx bx-drink'></i>
+                                Drank
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="transport">
+                                <i class='bx bx-train'></i>
+                                Transport
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="night">
+                                <i class='bx bx-bed'></i>
+                                Nacht
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="insurance">
+                                <i class='bx bx-check-shield'></i>
+                                Verzekering
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="gwe">
+                                <i class='bx bx-plug'></i>
+                                GWL
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="other">
+                                <i class='bx bx-coin'></i>
+                                Andere
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="row"> 
@@ -202,6 +289,19 @@ const render = {
                 </div>
             </form>
         `;
+    },
+    
+    budgetEditForm(budgetData) {
+        const form = node('[data-form="editBudget"]');
+        
+        if (form) {
+            form.querySelector('[name="title"]').value = budgetData.title;
+            form.querySelector('[name="comments"]').value = budgetData.comment;
+            form.querySelector('[name="period-start"]').value = moment.unix(budgetData.period.start.seconds).format('yyyy-MM-DD')
+            form.querySelector('[name="period-end"]').value = moment.unix(budgetData.period.end.seconds).format('yyyy-MM-DD')
+            form.querySelector('[name="people-paying"]').value = budgetData.people.paying;
+            form.querySelector('[name="people-free"]').value = budgetData.people.free;
+        }
     }
 }
 
@@ -347,6 +447,7 @@ const ui = {
             jgv: document.querySelectorAll('img[data-src="tak_jgv.svg"]'),
             giv: document.querySelectorAll('img[data-src="tak_giv.svg"]'),
             grl: document.querySelectorAll('img[data-src="tak_grl.svg"]'),
+            demo: document.querySelectorAll('img[data-src="tak_demo.svg"]'),
         }
         
         takImages.kap.forEach(img => {img.outerHTML = kap})
@@ -355,6 +456,7 @@ const ui = {
         takImages.jgv.forEach(img => {img.outerHTML = jgv})
         takImages.giv.forEach(img => {img.outerHTML = giv})
         takImages.grl.forEach(img => {img.outerHTML = grl})
+        takImages.demo.forEach(img => {img.outerHTML = demo})
     },
     
     shareMode(bool) {    
@@ -373,15 +475,15 @@ const ui = {
     },
     
     readMode(bool) {
-        console.log('readmode', bool || ui.modes.read);
         ui.modes.read = bool;
         
         if (bool == true || ui.modes.read == true) {
             const nodesToHide = [
                 node('[data-form="newCost"]'),
                 node('[data-form="newBudget"]'),
-                node(`[data-target="[data-collapse='newBudget']"]`),
-                node(`[data-target="[data-modal='budgetShare']"]`),
+                node(`[data-target="[data-collapse='newBudgetMeta']"]`),
+                node(`[data-target="[data-modal='budgetShare']"`),
+                ...node('[data-readmode="remove"]', true)
             ]
             
             nodesToHide.map(n => {
@@ -395,33 +497,43 @@ const ui = {
 
 const templates = {
     getTemplate(templateName) {
-        this.template = node(`template[data-template="${templateName}"]`);
+        return node(`template[data-template="${templateName}"]`);
     },
     
     switch(templateName, callback, afterLoad = false) {
-        templates.getTemplate(templateName);
+        // get template
+        const temp = templates.getTemplate(templateName);
         
-        this.templateHTML = this.template.content.cloneNode(true).querySelector('*');
+        // get template html
+        this.templateHTML = temp.content.cloneNode(true).querySelector('*');
         const app = node('#app');
         
+        // execute callback after or before app html is set
         if (callback && afterLoad == false) callback(this);
         app.innerHTML = this.templateHTML.outerHTML;
         if (callback && afterLoad == true) callback(this);
         
+        // add ui
         ui.init();
+        user.accessControl();
         
+        // initialize search functions
+        search.init();
+        
+        // set site title
         const siteTitle = seo.siteTitles(templateName)
         seo.setTitle(siteTitle)
     },
     
-    editContext(contextCaller, innerHTML) {
-        const context = this.templateHTML.querySelector(`[data-template-context="${contextCaller}"]`);
-        context.innerHTML = innerHTML;
+    editContext(contextCaller, text, fromTemplate = true) {
+        const source = fromTemplate == true ? this.templateHTML : document;
+        const context = fromTemplate == true ? source.querySelector(`[data-template-context="${contextCaller}"]`) : source.querySelector(`[data-template-context="${contextCaller}"]`);
+        if (context) context.innerHTML = text;
     },
     
     return(templateName) {
-        templates.getTemplate(templateName);
-        return this.template.content.cloneNode(true).querySelector('*');
+        const temp = templates.getTemplate(templateName);
+        return temp.content.cloneNode(true).querySelector('*');
     },
     
     showError(element) {
@@ -489,6 +601,48 @@ const seo = {
     }
 }
 
+const createToast = ({title, content, timer = 6000}) => {
+    const animateDuraction = 2000;
+
+    const toast = new Element('div');
+    toast.class(['toast', 'animate__animated', 'animate__fadeInUp', 'animate__faster']);
+    toast.inner(`
+      <div class="toast__wrapper">
+        <div class="toast__controls">
+          <div data-action="closeToast">
+            <i class='bx bx-x'></i>
+          </div>
+        </div>
+        <div class="toast__content">
+            ${title ? `<h5 class="toast__title">${title}</h5>` :  ''}
+            ${content ? `
+                <div class="toast__body">
+                    <p>${content}</p>
+                </div>
+            ` : ''}
+        </div>
+      </div>
+      <div class="toast__timer"></div>
+    `);
+    toast.attributes([
+      ['style', `--timer-duration: ${timer}ms`]
+    ])
+    toast.append('#toasts .toasts__wrapper');
+    setTimeout(() => {  
+      fadeOutNode(toast.return());    
+    }, timer)
+    setTimeout(() => {      
+      toast.return().remove();
+    }, timer + animateDuraction)
+}
+  
+const fadeOutNode = (el) => {
+    el.classList.remove('animate__fadeInUp');
+    el.classList.add('animate__fadeOutDown');
+}
+
+const notify = {}
+
 Array.from(document.querySelectorAll('.modal')).forEach(bsNode => new Modal(bsNode))
 Array.from(document.querySelectorAll('.collapse')).forEach(bsNode => {
     new Collapse(bsNode, {
@@ -500,5 +654,7 @@ export {
     render,
     ui,
     templates,
-    contextSwitch
+    contextSwitch,
+    createToast,
+    fadeOutNode
 }

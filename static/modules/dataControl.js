@@ -1,6 +1,7 @@
 import {db} from './plugins/firebase';
-import {render, contextSwitch, templates} from './uiControl';
-import {Element, returnNode} from 'cutleryjs';
+import {render, contextSwitch, templates, createToast} from './uiControl';
+import {Element, returnNode, node} from 'cutleryjs';
+import {Collapse} from 'bootstrap'
 
 const data = {
     async getByPath(path) {
@@ -41,6 +42,7 @@ const data = {
 
 const budget = {
     async add({tak, title, comment, period, people}) {
+        console.log(title, 'added');
         db.collection('takken').add({
             group: window.appSettings.group,
             title: title,
@@ -53,8 +55,18 @@ const budget = {
             const budgetData = await budget.get(response.id);
             render.budget({id: budgetData.id, data: budgetData.data}, true);
         })
+        .then(() => {
+            createToast({
+                title: 'Budget aanmaken',
+                content: 'Budget werd aangemaakt'
+            })
+        })
         .catch((error) => {
             console.error("Error writing document: ", error);
+            createToast({
+                title: 'Budget aanmaken',
+                content: 'Budget kon niet worden aangemaakt'
+            })
         });
     },
     
@@ -76,6 +88,43 @@ const budget = {
             }
         })
         return data;
+    },
+    
+    async edit({tak, title, comment, period, people}, id) {
+        const appSettingsData = window.appSettings.selectedBudget.data;
+        appSettingsData.title = title;
+        appSettingsData.comment = comment;
+        appSettingsData.period = period;
+        appSettingsData.people = people;
+        
+        db.collection('takken').doc(id).update({
+            group: window.appSettings.group,
+            title: title,
+            comment: comment,
+            period: period,
+            people: people,
+            edited: (new Date).getTime() 
+        }).then(() => {
+            render.updatedBudget({title, comment, period, people});
+        }).then(() => {
+            createToast({
+                title: 'Budget aangepast',
+                content: 'Budget werd opgeslagen'
+            })
+        }).catch((err) => {
+            console.log(err);
+            createToast({
+                title: 'Fout bij opslaan',
+                content: 'Budget kon niet worden opgeslaan'
+            })
+        })
+    },
+    
+    delete() {
+        createToast({
+            title: 'Budget verwijderen',
+            content: 'Kost werd verwijderd'
+        })
     },
     
     total: new Map(),
@@ -109,23 +158,33 @@ const costs = {
         return db.collection('takken').doc(window.appSettings.selectedBudget.id).collection('costs')
     },
     
-    async add({title, comment, amount, type, when}) {
+    async add({title, comment, category, amount, type, when}) {
         costs.getCollection().add({
             title: title,
             comment: comment,
+            category: category,
             amount: amount,
             type: type,
             when: when,
             created: new Date()
         })
         .then(async (response) => {
-            console.log(response.id);
             // const costData = await costs.getCollection().doc(response.id).get();
             render.cost({id: response.id, data: {title, comment, amount, type, when}})
                   .prepend('[data-section="step3"] [data-label="costsList"]');
         })
+        .then(() => {
+            createToast({
+                title: 'Kost aanmaken',
+                content: 'Kost werd aangemaakt'
+            })
+        })
         .catch((error) => {
             console.error("Error writing document: ", error);
+            createToast({
+                title: 'Kost aanmaken',
+                content: 'Kost kon niet worden aangemaakt'
+            })
         });
     },
     
@@ -148,22 +207,32 @@ const costs = {
         };
     },
     
-    async edit({title, comment, amount, type, when}, id, listItem) {
+    async edit({title, comment, category, amount, type, when}, id, listItem) {
         costs.getCollection().doc(id).update({
             title: title,
             comment: comment,
+            category: category,
             amount: amount,
             type: type,
             when: when,
             edited: new Date()
         }).then(() => {
-            const updatedListItem = render.cost({id: id, data: {title, comment, amount, type, when}}).el;
+            const updatedListItem = render.cost({id: id, data: {title, comment, category,amount, type, when}}).el;
             updatedListItem.classList.add('animate__fadeIn');
             
             listItem.classList.add('animate__fadeOut');
             listItem.outerHTML = updatedListItem.outerHTML;
+        }).then(()=> {
+            createToast({
+                title: 'Kost aangepast',
+                content: 'Kost werd opgeslagen'
+            })
         }).catch(err => {
             console.log(err);
+            createToast({
+                title: 'Fout bij opslaan',
+                content: 'Budget kon niet worden opgeslaan'
+            })
         })
         
         // replace current with new generated
@@ -172,6 +241,10 @@ const costs = {
     async delete(budget, id) {
         await db.doc(`takken/${budget}/costs/${id}`).delete();
         render.deleteCost(id);
+        createToast({
+            title: 'Kost verwijderen',
+            content: 'Kost werd verwijderd'
+        })
     },
     
     calculateCost(price, when, costType) {
@@ -229,6 +302,13 @@ const extractFormData = (formNode) => {
 }
 
 const search = {
+    init() {
+        const newCostFormCollapse = node('[data-collapse="newCostMeta"]');
+        if (newCostFormCollapse) this.newCostFormCollapse = new Collapse(newCostFormCollapse, {
+            toggle: false
+        });
+    },
+    
     do({container, items, query}, notFoundCallback) {
         search.container = returnNode(container)
         const listItems = search.container.querySelectorAll(items);
@@ -256,6 +336,10 @@ const search = {
         
         if (bool == true && notFound == null) search.container.append(illustration);
         else if (bool == false && notFound) notFound.remove();
+        
+        // collapse new cost form
+        if (bool == true && this.newCostFormCollapse) this.newCostFormCollapse.show()
+        else if (this.newCostFormCollapse) this.newCostFormCollapse.hide()
     },
     
     hide(node) {

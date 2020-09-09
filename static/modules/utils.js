@@ -99,6 +99,24 @@ const clickEvent = {
     },
 }
 
+const copyToPasteboard = (selector) => {
+    const target = event.target.closest('pre')
+    if (target) {
+        const text = target.innerText;
+        navigator.permissions.query({name: "clipboard-write"}).then(result => {
+            if (result.state == "granted" || result.state == "prompt") updateClipboard(text);
+        });
+    }
+}
+
+const updateClipboard = (newClip) => {
+    navigator.clipboard.writeText(newClip).then(() => {
+      console.log('written to clipboard')
+    }, () => {
+      console.log('couldn\'t write to clipboard')
+    });
+}
+
 export {
     node,
     eventCallback,
@@ -106,5 +124,6 @@ export {
     pricify,
     periodDifference,
     formError,
-    clickEvent
+    clickEvent,
+    updateClipboard
 }

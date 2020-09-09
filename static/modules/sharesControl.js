@@ -1,5 +1,5 @@
 import {budget} from './dataControl'
-import {templates, render, ui} from './uiControl'
+import {templates, render, ui, createToast} from './uiControl'
 import moment from 'moment';
 import {db} from './plugins/firebase';
 import {data} from './dataControl';
@@ -35,9 +35,13 @@ const shares = {
             validity: formData.validity,
             target: formData.target,
         })
+        
+        const url = `${window.location.origin}/#s/${id}`;
+        
         await node('[data-form="budgetShare"]').classList.add('d-none');
         await node('[data-label="linkPreview"]').classList.add('d-block');
-        node('[data-label="linkPreview"] input').value = `${window.location.origin}/#s/${id}`;
+        node('[data-label="linkPreview"] input').value = url;
+        node('[data-label="copyShareUrl"]').setAttribute('data-clipboard', url);
     },
     
     async getShareData(id) {
@@ -67,6 +71,7 @@ const shares = {
     
     async unvalidate(shareData) {
         const deleted = await db.doc(`shares/${shareData.id}`).delete();
+        templates.switch('shareNotFound');
         console.log(deleted);
     }
 }

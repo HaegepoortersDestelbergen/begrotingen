@@ -1,10 +1,10 @@
 import {auth} from './plugins/firebase';
-import {ui, templates, render} from './uiControl';
+import {ui, templates, render, createToast} from './uiControl';
 import {data} from './dataControl';
 import {node, formError, clickEvent} from './utils';
 
-const user = {
-    async init() {
+const user = {   
+    async init() {        
         auth.onAuthStateChanged(async state => {
             if (state) {
                 user.active = await this.getUserData(state.uid);
@@ -19,6 +19,10 @@ const user = {
     },
     
     logIn({email, passw}) {
+        createToast({
+            title: 'Login',
+            content: 'Je wordt aangemeld',
+        })
         user.logInScreen(false);
         auth.signInWithEmailAndPassword(email, passw)
         .then(resp => {console.log(resp)})
@@ -28,7 +32,22 @@ const user = {
         });
     },
     
+    demoLogin() {
+        // createToast({
+        //     title: 'Demo login',
+        //     content: 'Demo omgeving wordt ingeladen',
+        // })
+        user.logIn({
+            email: 'demo@haegepoorters.be',
+            passw: 'demo123'
+        })
+    },
+    
     logOut() {
+        createToast({
+            title: 'Afmelden',
+            content: 'Je wordt afgemeld',
+        })
         auth.signOut();
     },
     
@@ -44,7 +63,7 @@ const user = {
     async ui(accessData = null) {
         if (accessData == null) {accessData = user.active.data.access};
                
-        const groups = ['kapoenen', 'welpen', 'woudlopers', 'jonggivers', 'givers', 'groepsleiding'];
+        const groups = ['kapoenen', 'welpen', 'woudlopers', 'jonggivers', 'givers', 'groepsleiding', 'demo'];
         groups.forEach(group => {
             const input = node(`#form_step1 input[value="${group}"]`).closest('.form__group');
             if (accessData[group] == 'none' && input) input.remove();
@@ -52,7 +71,8 @@ const user = {
     },
     
     accessControl() {
-        switch (user.active.data.access[window.appSettings.group]) {
+        const access = user.active ? user.active.data.access[window.appSettings.group] : 'none';
+        switch (access) {
             case 'none':
                 console.log('prohibited access')
                 break;

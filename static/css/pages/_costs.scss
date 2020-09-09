@@ -4,6 +4,7 @@
     }
     
     [data-form="newCost"] {
+        
         .body__prepend input {
             font-size: 1.25rem;
             font-weight: bold;
@@ -36,7 +37,7 @@
             padding: 0;
             
             .item__body {
-                padding: 1.2rem 1.4rem 1.4rem 1.4rem;
+                // padding: 1.2rem 1.4rem 1.4rem 1.4rem;
             }
             
             hr {
@@ -69,6 +70,51 @@
             &__behind {
                 width: 100%;
             }
+        }
+    }
+}
+
+[data-label="previewNewCostIcons"] {
+    .wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -.5rem;
+        margin-right: -.5rem;
+    }
+    
+    label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: fit-content;
+        margin: .5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 70%;
+        font-weight: 600;
+        text-align: center;
+    }
+    
+    .bx {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 0.4rem;
+        border-radius: 100%;
+        background-color: #97B3B5;
+        color: white;
+        font-size: 1.6rem;
+    }
+    
+    input {
+        display: none;
+        
+        &:not(:checked) + .bx {
+            border: 2px solid #97B3B5;
+            background: transparent;
+            color: #97B3B5;
         }
     }
 }
