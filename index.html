@@ -13,44 +13,50 @@
 </head>
 <body>
     <div id="app">
-        <div class="spinner-border mt-4 text-color-blue" role="status">
-            <span class="sr-only">Loading...</span>
+        <div style="min-height: 100vh;" class="w-100 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-color-blue" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
     </div>
     <template data-template="userLogIn">
-        <section data-section="step0" class="">
-            <div class="row h-100" style="min-height: 100vh;">
-                <div class="login-wrapper login-wrapper--form col-12 col-md-4 p-5 d-flex justify-content-center align-items-center">
-                    <form data-form="logIn">
-                        <h2 class="mb-0 text-center text-color-blue-400 font-weight-bold">Aanmelden</h2>
-                        <p class="d-none text-color-blue">Deze login ontvang je van de takverantwoordelijke of webmaster</p>
-                        <div class="row mt-4">
-                            <div class="col-12 mb-4">
-                                <div class="form-label">Tak email</div>
-                                <input required type="email" class="form-control" name="email" placeholder="tak@haegepoorters.be" value="" autocomplete="off">
+        <section data-section="step0">
+            <div class="container-fluid">
+                <div class="row h-100" style="min-height: 100vh;">
+                    <div class="login-wrapper login-wrapper--form col-12 col-md-auto d-flex justify-content-center align-items-center">
+                        <div class="p-5">
+                            <form data-form="logIn">
+                                <h2 class="mb-0 text-center text-color-blue-400 font-weight-bold">Aanmelden</h2>
+                                <p class="d-none text-color-blue">Deze login ontvang je van de takverantwoordelijke of webmaster</p>
+                                <div class="row mt-4">
+                                    <div class="col-12 mb-4">
+                                        <div class="form-label">Tak email</div>
+                                        <input required type="email" class="form-control" name="email" placeholder="tak@haegepoorters.be" value="" autocomplete="off">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-label">Wachtwoord</div>
+                                        <input required type="password" class="form-control" name="password" value="" placeholder=" ">
+                                    </div>
+                                </div>
+                                <div class="form__error">
+                                    Deze gegevens kloppen niet, probeer het opnieuw
+                                </div>
+                                <div class="btn-group mx-auto mt-4">
+                                    <button type="button" data-action="demoLogin" class="btn btn--sub">Demo bekijken</button>
+                                    <button type="submit" class="btn">Aanmelden</button>
+                                </div>
+                            </form>
+                            <div data-label="logInLoader" class="flex-column align-items-center justify-content-center">
+                                <h2 class="mb-0 text-center text-color-blue-300 font-weight-bold">Je wordt aangemeld</h2>
+                                <div class="spinner-border mt-4 text-color-blue-100" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
                             </div>
-                            <div class="col-12">
-                                <div class="form-label">Wachtwoord</div>
-                                <input required type="password" class="form-control" name="password" value="" placeholder=" ">
-                            </div>
                         </div>
-                        <div class="form__error">
-                            Deze gegevens kloppen niet, probeer het opnieuw
-                        </div>
-                        <div class="btn-group mx-auto mt-4">
-                            <button type="submit" class="btn">Volgende</button>
-                            <button type="button" data-action="demoLogin" class="btn btn--sub">Demo bekijken</button>
-                        </div>
-                    </form>
-                    <div data-label="logInLoader" class="flex-column align-items-center justify-content-center">
-                        <h2 class="mb-0 text-center text-color-blue-300 font-weight-bold">Je wordt aangemeld</h2>
-                        <div class="spinner-border mt-4 text-color-blue-100" role="status">
-                            <span class="sr-only">Loading...</span>
-                          </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-8 d-none d-md-block p-0" style="background-image: url('https://res.cloudinary.com/haegepoortersbe/image/upload/w_1200/v1598573563/z50b7hf4s32tqkb455gu.jpg'); background-size: cover;">
-                    
+                    <div class="col-12 col-md d-none d-md-block" style="background-image: url('https://res.cloudinary.com/haegepoortersbe/image/upload/w_1200/v1598573563/z50b7hf4s32tqkb455gu.jpg'); background-size: cover;">
+                        
+                    </div>
                 </div>
             </div>
             <!-- <div class="backdrop-blur login-wrapper login-wrapper--form animate__animated animate__zoomIn animate__faster">

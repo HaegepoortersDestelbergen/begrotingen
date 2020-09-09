@@ -72,20 +72,10 @@ const user = {
     
     accessControl() {
         const access = user.active ? user.active.data.access[window.appSettings.group] : 'none';
-        switch (access) {
-            case 'none':
-                console.log('prohibited access')
-                break;
-            case 'read':
-                ui.readMode(true);
-                break;
-            case 'write':
-                ui.readMode(false);
-                break;
-            
-            default:
-                break;
-        }
+        
+        if (access == 'none') console.log('prohibited access')
+        if (access == 'read') ui.readMode(true);
+        if (access == 'write') ui.readMode(false);
     },
     
     logInScreen(bool = true) {

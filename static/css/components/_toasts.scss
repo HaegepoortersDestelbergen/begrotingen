@@ -15,11 +15,17 @@
         --timer-duration: 2000ms;
         
         position: relative;
-        margin-bottom: 2rem;
+        margin-bottom: 1.4rem;
+        min-width: 250px;
         width: fit-content;
         background-color: #f8f8f8;
         border-radius: 8px;
         border: none;
+        
+        &:last-child {
+            margin-bottom: 0;
+            border-radius: 8px 8px 0px 0px;
+        }
         
         &__wrapper {
             position: relative;

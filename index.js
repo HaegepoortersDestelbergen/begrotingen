@@ -95,9 +95,7 @@ const app = {
                 updateClipboard(content);
             }, false)
              
-            eventCallback('logOut', () => {
-                user.logOut();
-            })
+            eventCallback('logOut', user.logOut)
             
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
@@ -109,10 +107,6 @@ const app = {
             eventCallback('[data-form="newCost"] button[type="reset"]', search.reset, false)
             
             eventCallback('demoLogin', user.demoLogin);
-            
-            eventCallback('deleteBudget', () => {
-                budget.delete();
-            });
             
             // if sharemode and readmode are disabled
             if (ui.shareMode() != true || ui.readMode() != true) {
@@ -136,6 +130,10 @@ const app = {
                     
                     costs.delete(budgetId, id);
                 })
+                
+                eventCallback('deleteBudget', () => {
+                    budget.delete();
+                });
             }
             
             // if sharemode only is disabled

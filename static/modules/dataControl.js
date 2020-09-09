@@ -121,13 +121,12 @@ const budget = {
     
     async delete(id = window.appSettings.selectedBudget.id) {  
         await db.collection('takken').doc(id).delete();
-        // templates.switch('budgetsListing');
         await render.budgets();
-        // user.accessControl();      
-        // createToast({
-        //     title: 'Budget verwijderen',
-        //     content: 'Budget werd verwijderd'
-        // })
+        user.accessControl();      
+        createToast({
+            title: 'Budget verwijderen',
+            content: 'Budget werd verwijderd'
+        })
     },
     
     total: new Map(),

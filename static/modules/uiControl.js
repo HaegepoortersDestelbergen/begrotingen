@@ -22,10 +22,7 @@ const render = {
         });
         const data = await budget.getAll();
         const recordCount = data.length;
-        
-        const $budgets = node('[data-label="budgetsList"]')
-        if (recordCount > 0) $budgets.innerHTML = '';
-        else templates.showError($budgets);
+        render.resetListingField(node('[data-label="budgetsList"]'), recordCount)
         
         data.forEach(doc => {
             render.budget(doc);
@@ -92,10 +89,7 @@ const render = {
         
         const data = await costs.getAll();
         const recordCount = data.length;
-        
-        const $costs = node('[data-label="costsList"]');
-        if (recordCount > 0) $costs.innerHTML = '';
-        else templates.showError($costs);
+        render.resetListingField(node('[data-label="costsList"]'), recordCount)
         
         data.forEach(doc => {            
             const item = render.cost(doc);
@@ -302,6 +296,12 @@ const render = {
             form.querySelector('[name="people-paying"]').value = budgetData.people.paying;
             form.querySelector('[name="people-free"]').value = budgetData.people.free;
         }
+    },
+    
+    resetListingField(node, recordCount) {
+        if (recordCount > 0) node.innerHTML = '';
+        else templates.showError(node);
+        templates.watchForError(node);
     }
 }
 
@@ -537,7 +537,6 @@ const templates = {
     },
     
     showError(element) {
-        console.log('show error')
         element = returnNode(element);
         
         // remove loader if it exists
@@ -548,7 +547,7 @@ const templates = {
         console.log(message);
         element.append(message);
         
-        templates.watchForError(element);
+        // templates.watchForError(element);
     },
     
     removeError(element) {
@@ -565,8 +564,11 @@ const templates = {
             const added = watch[0].addedNodes.length;
             const removed = watch[0].removedNodes.length;
             
+            console.log(added, removed)
+            console.log(watch[0].removedNodes)
+            
             if (added != 0) templates.removeError(elementToObserve);
-            if (childCount == 0) templates.showError(elementToObserve);
+            // if (childCount == 0) templates.showError(elementToObserve);
         });
         observer.observe(elementToObserve, {subtree: true, childList: true});
     }
