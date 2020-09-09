@@ -105,8 +105,8 @@ const app = {
             }, false)
             
             eventCallback('[data-form="newCost"] button[type="reset"]', search.reset, false)
-            
             eventCallback('demoLogin', user.demoLogin);
+            eventCallback('[data-label="copyShareUrl"]', shares.copyUrlFeedback, false);
             
             // if sharemode and readmode are disabled
             if (ui.shareMode() != true || ui.readMode() != true) {

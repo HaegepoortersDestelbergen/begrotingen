@@ -73,6 +73,13 @@ const shares = {
         const deleted = await db.doc(`shares/${shareData.id}`).delete();
         templates.switch('shareNotFound');
         console.log(deleted);
+    },
+    
+    copyUrlFeedback() {
+        createToast({
+            title: 'Url gekopieerd',
+            content: 'Plak hem waar nodig'
+        })
     }
 }
 
