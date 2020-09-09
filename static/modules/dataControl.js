@@ -1,5 +1,6 @@
 import {db} from './plugins/firebase';
 import {render, contextSwitch, templates, createToast} from './uiControl';
+import {user} from './userControl'
 import {Element, returnNode, node} from 'cutleryjs';
 import {Collapse} from 'bootstrap'
 
@@ -54,8 +55,6 @@ const budget = {
         .then(async (response) => {
             const budgetData = await budget.get(response.id);
             render.budget({id: budgetData.id, data: budgetData.data}, true);
-        })
-        .then(() => {
             createToast({
                 title: 'Budget aanmaken',
                 content: 'Budget werd aangemaakt'
@@ -120,11 +119,15 @@ const budget = {
         })
     },
     
-    delete() {
-        createToast({
-            title: 'Budget verwijderen',
-            content: 'Kost werd verwijderd'
-        })
+    async delete(id = window.appSettings.selectedBudget.id) {  
+        await db.collection('takken').doc(id).delete();
+        // templates.switch('budgetsListing');
+        await render.budgets();
+        // user.accessControl();      
+        // createToast({
+        //     title: 'Budget verwijderen',
+        //     content: 'Budget werd verwijderd'
+        // })
     },
     
     total: new Map(),

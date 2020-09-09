@@ -16,12 +16,10 @@ window.appSettings = {
     }
 };
 
-
 const root = location.origin;
 const useHash = true; // Defaults to: false
 const hash = '#s'; // Defaults to: '#'
 const router = new Navigo(root, useHash, hash);
-
 
 const app = {
     async init() {
@@ -36,15 +34,15 @@ const app = {
         })
         .resolve()
         
-        createToast({
-            title: 'App was loaded [no content]',
-            timer: 100000
-        })
+        // createToast({
+        //     title: 'App was loaded [no content]',
+        //     timer: 100000
+        // })
         
-        createToast({
-            content: 'App was loaded [no title]',
-            timer: 100000
-        })
+        // createToast({
+        //     content: 'App was loaded [no title]',
+        //     timer: 100000
+        // })
     },
     
     listeners() {
@@ -104,13 +102,17 @@ const app = {
             eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
                 const budgetsData = await budget.get(target.dataset.firebase);
                 window.appSettings.selectedBudget = budgetsData;
-                await render.costs(window.appSettings.selectedBudget, );
+                await render.costs(window.appSettings.selectedBudget);
                 user.accessControl();             
             }, false)
             
             eventCallback('[data-form="newCost"] button[type="reset"]', search.reset, false)
             
             eventCallback('demoLogin', user.demoLogin);
+            
+            eventCallback('deleteBudget', () => {
+                budget.delete();
+            });
             
             // if sharemode and readmode are disabled
             if (ui.shareMode() != true || ui.readMode() != true) {
@@ -173,14 +175,10 @@ const app = {
                 user.accessControl();
             }, false);
             
-            if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , (target) => {
+            if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , async (target) => {
                 const formData = extractFormData(target)
-                console.log(formData);
                 
-                target.reset();
-                search.reset('[data-label="budgetsList"]');
-                
-                budget.add({
+                await budget.add({
                     tak: window.appSettings.group,
                     title: formData.get('title'),
                     comment: formData.get('comments'),
@@ -194,6 +192,9 @@ const app = {
                     },
                     created: Date.now()
                 });
+                
+                target.reset();
+                search.reset('[data-label="budgetsList"]');
             }, false);
             
             if (ui.shareMode() != true || ui.readMode() != true) eventCallback('[data-form="newCost"]', (target) => {

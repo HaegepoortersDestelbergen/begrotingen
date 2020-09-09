@@ -179,7 +179,7 @@
                         </div>
                         <div class="collapse" data-collapse="newBudgetMeta">
                             <div class="row mt-4">
-                                <div class="col-12 col-lg-6">
+                                <div class="col-12">
                                     <!-- <div class="form-label">Opmerkingen</div> -->
                                     <input class="form-control small" type="text" name="comments" placeholder="Typ hier enkele opmerkingen">
                                     <!-- <div class="form-text">Klik op de titel om te beginnen</div> -->
@@ -278,9 +278,14 @@
                                     <input class="form-control" name="people-free" type="number" value="0">
                                 </div>
                             </div>
-                            <div class="btn-group mt-4 mx-auto" data-toggle="collapse" data-target="[data-collapse='editBudget']">
-                                <button type="button" class="btn btn--sub">Annuleren</button>
-                                <button type="submit" class="btn btn--main">Begroting opslaan</button>
+                            <div class="mt-4 d-flex justify-content-between">
+                                <div class="btn-group">
+                                    <button type="button" data-action="deleteBudget" class="btn btn--sub btn--icon"><i class="bx bx-trash-alt"></i> Verwijder budget</button>
+                                </div>
+                                <div class="btn-group" data-toggle="collapse" data-target="[data-collapse='editBudget']">
+                                    <button type="button" class="btn btn--sub">Annuleren</button>
+                                    <button type="submit" class="btn btn--main">Begroting opslaan</button>
+                                </div>
                             </div>
                         </form>
                     </div>
