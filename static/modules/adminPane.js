@@ -1,13 +1,25 @@
 import {user} from './userControl';
 import {app} from '../../index';
 import {Element, node} from 'cutleryjs';
-import { createToast } from './uiControl';
+import { createToast, ui } from './uiControl';
 import { db } from './plugins/firebase';
 
 const admin = {
-    async init() {
-        await admin.listUsers();
-        admin.selectFirstUser();
+    async init(role) {
+        if (role == 'admin') {
+            ui.adminMode(true);
+            await admin.listUsers();
+            admin.selectFirstUser();
+        } else {
+            ui.adminMode(false);
+        }
+    },
+    
+    removeForUser() {
+        const $nodes = node('[data-access="admin"]', true);
+        $nodes.forEach(n => {
+            n.remove();
+        })
     },
     
     async listUsers() {
@@ -37,7 +49,6 @@ const admin = {
             </label>
         `);
         item.append('[data-access="adminPane"] [data-label="userList"] ul');
-        console.log(item.return());
     },
     
     selectFirstUser() {

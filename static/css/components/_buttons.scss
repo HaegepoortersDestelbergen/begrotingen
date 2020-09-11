@@ -96,8 +96,13 @@
         &:last-child {margin-right: 0;}
         
         &--sub {
-            background-color: transparentize($blue500, $amount: 0.5);
+            // background-color: transparentize($blue500, $amount: 0.5);
+            background-color: #AABABC;
             // margin-right: 0rem;
+        }
+        
+        &--fit {
+            max-width: fit-content;
         }
     }
     

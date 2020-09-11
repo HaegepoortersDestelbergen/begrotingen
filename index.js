@@ -30,13 +30,13 @@ const app = {
     async init() {
         app.listeners();
         ui.init();
-        await admin.init();
+
         
         router.on('/:id', async (params) => {            
             shares.init(params);
         })
         .notFound(() => {
-            user.init();
+            user.init();    
         })
         .resolve()
         
@@ -55,11 +55,6 @@ const app = {
         document.addEventListener('change', (event) => {            
             if (ui.shareMode() != true) eventCallback('#form_step1', (target) => {
                 target.classList.add('change--changed');
-            }, false)
-            
-            eventCallback('[data-label="userList"]', (target) => {
-                const id = target.querySelector('input:checked').value;
-                admin.loadUserConfigForm(id);
             }, false)
         })
         
@@ -145,11 +140,21 @@ const app = {
                 eventCallback('deleteBudget', () => {
                     budget.delete();
                 });
-                
-                eventCallback('deleteUser', () => {
-                    user.delete({id: admin.currentUser.id});
-                })
             }
+            
+            
+            // if adminmode is enabled
+            // if (ui.adminMode() != false) {
+            // }
+            
+            eventCallback('deleteUser', () => {
+                user.delete({id: admin.currentUser.id});
+            })
+            
+            eventCallback('[data-label="userList"]', (target) => {
+                const id = target.querySelector('input:checked').value;
+                admin.loadUserConfigForm(id);
+            }, false)
             
             // if sharemode only is disabled
             if (ui.shareMode() != true) {
@@ -250,15 +255,6 @@ const app = {
                 }, id);
             }, false)
             
-            eventCallback('[data-form="userConfig"]', (target) => {
-                const formData = getFormData(target);
-                admin.saveData(formData);
-                
-                
-                // const role = formData.get('user-type');
-                // user.setRole({role: role});
-            }, false)
-            
             if (ui.shareMode() != true || ui.readMode() != true) {
                 eventCallback('[data-form="newCost"]', (target) => {
                     const formData = extractFormData(target);
@@ -277,7 +273,9 @@ const app = {
                         when: formData.get('when'),
                     })
                 }, false);
-                
+            }
+            
+            if (ui.adminMode() != true) {
                 eventCallback('[data-form="addUser"]', (target) => {
                     const formData = extractFormData(target);
                     
@@ -287,7 +285,6 @@ const app = {
                         name: formData.get('name')
                     })                    
                 }, false);
-                
             }
         })
         

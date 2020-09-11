@@ -73,7 +73,7 @@
 [data-modal="adminPane"] .modal-content {
     max-height: 90vh;
     padding: 0px;
-    overflow: scroll;
+    overflow-y: scroll;
     
     --tab-pane-spacing: 2rem;
     

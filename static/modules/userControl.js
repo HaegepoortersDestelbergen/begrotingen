@@ -7,18 +7,22 @@ import {app} from '../../index'
 import { admin } from './adminPane';
 
 const user = {   
-    async init() {        
+    async init() {     
         auth.onAuthStateChanged(async state => {
             if (state) {
                 user.active = await this.getUserData(state.uid);
+                const role = await user.active.data.role;
+                
+                admin.init(role);
                 
                 templates.switch('groupSelect', () => {
                     user.ui(user.active.data.access);
                 }, true);
             } else {
                 templates.switch('userLogIn');
+                admin.init();
             }
-        })
+        });
     },
     
     async get(id) {
@@ -140,6 +144,7 @@ const user = {
     },
     
     logOut() {
+        admin.init();
         createToast({
             title: 'Afmelden',
             content: 'Je wordt afgemeld',

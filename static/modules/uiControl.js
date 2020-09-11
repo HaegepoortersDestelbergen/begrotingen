@@ -6,6 +6,7 @@ import 'moment/locale/nl-be';
 import { Modal, Collapse } from 'bootstrap';
 import {kap, wel, wol, jgv, giv, grl, demo} from '../../static/modules/svgs';
 import {user, domAccess} from './userControl';
+import { admin } from './adminPane';
 
 moment.locale('nl-be');
 
@@ -425,7 +426,8 @@ const contextSwitch = {
 const ui = {
     modes: {
         read: false,
-        share: false
+        share: false,
+        admin: false
     },
     
     init() {
@@ -495,6 +497,23 @@ const ui = {
         } else bool == false
         
         return ui.modes.read
+    },
+    
+    adminMode(bool) {
+        if (bool) ui.modes.admin = bool;
+        
+        const $adminModal = node('.modal[data-modal="adminPane"] .modal-content-wrapper');
+        const pane = templates.return('adminPane').outerHTML;
+        const error = templates.return('adminPaneError').outerHTML;
+        
+        if (ui.modes.admin == true) {
+            $adminModal.innerHTML = pane;
+        }
+        //  else if (ui.modes.admin == false) {
+        //     $adminModal.innerHTML = error;
+        // }
+        
+        return ui.modes.admin
     },
     
     detectChanges(callback) {
