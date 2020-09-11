@@ -10,7 +10,7 @@
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="begrotingen.haegepoorters.be/"/>
     <meta property="og:title" content="Begrotingen Haegepoorters Destelbergen"/>
-    <meta property="og:image" content="https://res.cloudinary.com/haegepoortersbe/image/upload/v1569792442/pnu7n9jraiym6inadwwm.jpg"/>
+    <meta property="og:image" content="https://res.cloudinary.com/haegepoortersbe/image/upload/w_1200/v1598573563/z50b7hf4s32tqkb455gu.jpg"/>
     
     <link rel="icon" type="image/png" href="./static/images/favicon.png"/>
     <link rel="stylesheet" href="static/css/main.scss">
@@ -21,6 +21,22 @@
     <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
 </head>
 <body>
+    <header>
+        <!-- <div data-access="adminBar">
+            <button class="btn" data-label="appSettings">app settings</button>
+            <button class="btn" data-label="userRights">user rights</button>
+        </div> -->
+        <!-- <div data-access="appSettings">
+            appsettings
+        </div> -->
+        
+        <!-- <form data-form="userRights">
+            <div data-label="rightsList">
+                
+            </div>
+            <button type="submit" class="btn">Rechten instellen</button>
+        </form> -->
+    </header>
     <div id="app">
         <div style="min-height: 100vh;" class="w-100 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-color-blue" role="status">
@@ -432,6 +448,12 @@
         </div>
     </template>
     
+    <div data-labe="fab">
+        <div class="btn-group">
+            <button type="button" class="btn btn--icon" data-toggle="modal" data-target="[data-modal='adminPane']"><i class='bx bx-cog'></i> Configuratie</button>
+        </div>
+    </div>
+    
     <div class="modal fade" data-modal="budgetShare" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" data-label="shareGenerate">
@@ -469,6 +491,230 @@
                             <button type="button" data-label="copyShareUrl" class="btn">Link kopieren</button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" data-modal="adminPane">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <h3 class="font-weight-bold text-center my-4">Configuratie</h3>
+                <div data-access="adminPane" class="">
+                    <div data-label="configSections">
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                              <a class="nav-link active" data-toggle="tab" href="[data-tab='userConfig']" role="tab" aria-controls="userConfig" aria-selected="true">Gebruikersrechten</a>
+                              <a class="nav-link" data-toggle="tab" href="[data-tab='addUser']" role="tab" aria-controls="nav-profile" aria-selected="false">Nieuwe gebruiker</a>
+                              <a class="nav-link" data-toggle="tab" href="[data-tab='appConfig']" role="tab" aria-controls="nav-profile" aria-selected="false">App configuratie</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" data-tab="userConfig" >
+                                <div data-label="userConfig" class="users row">
+                                    <div class="col-4">
+                                        <div data-label="userList" class="users__list list">
+                                            <div class="spinner-border text-color-blue" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <ul></ul>
+                                        </div>
+                                    </div>
+                                    <div class="col users__preview">
+                                        <div class="p-4">
+                                            <form data-form="userConfig" class="accordion">
+                                                <!-- user type -->
+                                                <div class="">
+                                                    <h4>Rol</h4>
+                                                    <p class="mb-4">De gebruikersrol staat voor de algemene rechten van de gebruiker. Dit bepaald tot welke onderdelen de gebruiker toegang heeft.</p>
+                                                    <div class="form-check">
+                                                        <label>
+                                                            <input class="form-check-input" type="radio" name="user-type" value="user" checked>
+                                                            <span class="form-label">user</span>
+                                                            <p class="small">Een 'user' kan alle toegekende groepen bekijken en de inhoud er van bekijken/bewerken. Dit is afhankelijk van de groepen die toegekend werd.</p>
+                                                        </label>
+                                                        <label>
+                                                            <input class="form-check-input" type="radio" name="user-type" value="poweruser">
+                                                            <span class="form-label">beheerder</span>
+                                                            <p class="small">Een 'beheerder' kan alles wat een gebruiker kan, maar kan sowieso alle groepen bekijken. Daarnaast kan dit type gebruiker ook enkele instellingen van de applicatie bewerken.</p>
+                                                        </label>
+                                                        <label>
+                                                            <input class="form-check-input" type="radio" name="user-type" value="admin">
+                                                            <span class="form-label">admin</span>
+                                                            <p class="small">Een 'admin' heeft toegang tot de volledige configuratie van de applicatie. Daarnaast kan deze gebruiker ook alle budgetten bekijken en bewerken.</p>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="mb-5">
+                                                    <h4>Toegangsrechten</h4>
+                                                    <p class="mb-4">Toegangsrechten bepalen tot welke groepen de gebruiker toegang heeft.</p>
+                                                    <div data-label="configGroups">
+                                                        <table>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <!-- user access -->
+                                                <div class="btn-group w-100" class="d-flex justify-content-between">
+                                                    <button type="button" data-action="deleteUser" class="btn btn--sub ml-auto">Gebruiker verwijderen</button>
+                                                    <button type="submit" class="btn ml-auto">Instellingen opslaan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade" data-tab="appConfig">
+                                App configuratie nog niet beschibaar
+                            </div>
+                            
+                            <div class="tab-pane fade" data-tab="addUser">
+                                <form data-form="addUser">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col-12 mb-4">
+                                                    <div class="form-label">Naam</div>
+                                                    <input required type="text" class="form-control" name="name" placeholder="gebruikersnaam" autocomplete="off">
+                                                </div>
+                                                <div class="col-12 mb-4">
+                                                    <div class="form-label">Email</div>
+                                                    <input required type="email" class="form-control" name="email" placeholder="tak@haegepoorters.be" autocomplete="off">
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-label">Wachtwoord</div>
+                                                    <input required type="password" class="form-control" name="password" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <table data-label="configGroups">
+                                                <tbody>
+                                                    <tr class="form-label">
+                                                        <th>tak</th>
+                                                        <th colspan="2">rechten</th>
+                                                    </tr>
+                                                </tbody>
+                                                <tr>
+                                                    <td>kapoenen</td>
+                                                    <td><label>
+                                                            <input type="radio" name="kapoenen" value="none" checked>
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="kapoenen" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="kapoenen" value="write">
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>welpen</td>
+                                                    <td><label>
+                                                            <input type="radio" name="welpen" value="none" checked>
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="welpen" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="welpen" value="write">
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>woudlopers</td>
+                                                    <td><label>
+                                                            <input type="radio" name="woudlopers" value="none" checked>
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="woudlopers" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="woudlopers" value="write">
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>jonggivers</td>
+                                                    <td><label>
+                                                            <input type="radio" name="jonggivers" value="none" checked>
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="jonggivers" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="jonggivers" value="write">
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>givers</td>
+                                                    <td><label>
+                                                            <input type="radio" name="givers" value="none" checked>
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="givers" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="givers" value="write">
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>groepsleiding</td>
+                                                    <td><label>
+                                                            <input type="radio" name="groepsleiding" value="none" checked>
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="groepsleiding" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="groepsleiding" value="write">
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>demo</td>
+                                                    <td><label>
+                                                            <input type="radio" name="demo" value="none">
+                                                            <span>none</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="demo" value="read">
+                                                            <span>read</span>
+                                                        </label></td>
+                                                    <td><label>
+                                                            <input type="radio" name="demo" value="write" checked>
+                                                            <span>write</span>
+                                                        </label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="form__error">
+                                        Deze gegevens kloppen niet, probeer het opnieuw
+                                    </div>
+                                    <button type="submit" class="btn mt-4 mx-auto">Gebruiker aanmaken</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- <a type="button" class="btn" data-toggle="tab" href="[data-tab='userConfig']">Gebruikers</a>
+                        <a type="button" class="btn" data-toggle="tab" href="[data-tab='appConfig']">App</a> -->
+                    </div>
+
                 </div>
             </div>
         </div>

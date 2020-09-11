@@ -1,4 +1,8 @@
 .collapse {
+    &__wrapper {
+        padding: 1.6rem;
+    }
+    
     &__body {
         padding: 1.6rem;
         background-color: $blue200;

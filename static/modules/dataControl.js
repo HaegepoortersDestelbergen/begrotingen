@@ -36,6 +36,7 @@ const data = {
     
     async createDoc(path, data) {
         const response = await db.collection(path).add(data);
+        console.log(response);
         console.log(response.id);
         return response.id;
     }

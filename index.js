@@ -1,10 +1,11 @@
 import {ui, templates, render, createToast, fadeOutNode} from './static/modules/uiControl';
 import {budget, costs, extractFormData, data, search} from './static/modules/dataControl';
-import {eventCallback, node, cookies, Element, connection} from 'cutleryjs';
+import {admin} from './static/modules/adminPane';
+import {eventCallback, node, cookies, Element, connection, getFormData} from 'cutleryjs';
 import moment from 'moment';
 import 'moment/locale/nl-be';
 import {shares} from './static/modules/sharesControl';
-import {user} from './static/modules/userControl';
+import {user, domAccess} from './static/modules/userControl';
 import {clickEvent, updateClipboard} from './static/modules/utils';
 import {Collapse} from 'bootstrap';
 import Navigo from 'navigo';
@@ -22,9 +23,14 @@ const hash = '#s'; // Defaults to: '#'
 const router = new Navigo(root, useHash, hash);
 
 const app = {
+    config: {
+        groups: ['kapoenen', 'welpen', 'woudlopers', 'jonggivers', 'givers', 'groepsleiding', 'demo']
+    },
+    
     async init() {
         app.listeners();
         ui.init();
+        await admin.init();
         
         router.on('/:id', async (params) => {            
             shares.init(params);
@@ -49,6 +55,11 @@ const app = {
         document.addEventListener('change', (event) => {            
             if (ui.shareMode() != true) eventCallback('#form_step1', (target) => {
                 target.classList.add('change--changed');
+            }, false)
+            
+            eventCallback('[data-label="userList"]', (target) => {
+                const id = target.querySelector('input:checked').value;
+                admin.loadUserConfigForm(id);
             }, false)
         })
         
@@ -134,6 +145,10 @@ const app = {
                 eventCallback('deleteBudget', () => {
                     budget.delete();
                 });
+                
+                eventCallback('deleteUser', () => {
+                    user.delete({id: admin.currentUser.id});
+                })
             }
             
             // if sharemode only is disabled
@@ -195,24 +210,6 @@ const app = {
                 search.reset('[data-label="budgetsList"]');
             }, false);
             
-            if (ui.shareMode() != true || ui.readMode() != true) eventCallback('[data-form="newCost"]', (target) => {
-                const formData = extractFormData(target);
-                
-                // reset cost form & search ui
-                target.reset();
-                search.reset('[data-label="costsList"]');
-                
-                // add cost to firebase
-                costs.add({
-                    title: formData.get('title'),
-                    comment: formData.get('comments'),
-                    category: formData.get('category'),
-                    amount: formData.get('amount'),
-                    type: formData.get('type'),
-                    when: formData.get('when'),
-                })
-            }, false);
-            
             eventCallback('[data-form="budgetShare"]', (target) => {
                 const formData = extractFormData(target);
             
@@ -252,6 +249,46 @@ const app = {
                     },
                 }, id);
             }, false)
+            
+            eventCallback('[data-form="userConfig"]', (target) => {
+                const formData = getFormData(target);
+                admin.saveData(formData);
+                
+                
+                // const role = formData.get('user-type');
+                // user.setRole({role: role});
+            }, false)
+            
+            if (ui.shareMode() != true || ui.readMode() != true) {
+                eventCallback('[data-form="newCost"]', (target) => {
+                    const formData = extractFormData(target);
+                    
+                    // reset cost form & search ui
+                    target.reset();
+                    search.reset('[data-label="costsList"]');
+                    
+                    // add cost to firebase
+                    costs.add({
+                        title: formData.get('title'),
+                        comment: formData.get('comments'),
+                        category: formData.get('category'),
+                        amount: formData.get('amount'),
+                        type: formData.get('type'),
+                        when: formData.get('when'),
+                    })
+                }, false);
+                
+                eventCallback('[data-form="addUser"]', (target) => {
+                    const formData = extractFormData(target);
+                    
+                    user.add({
+                        email: formData.get('email'),
+                        password: formData.get('password'),
+                        name: formData.get('name')
+                    })                    
+                }, false);
+                
+            }
         })
         
         connection.watch((state) => {

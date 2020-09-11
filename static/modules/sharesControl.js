@@ -80,6 +80,12 @@ const shares = {
             title: 'Url gekopieerd',
             content: 'Plak hem waar nodig'
         })
+    },
+    
+    getCurrentLinks() {
+        // check budget id
+        // check shares pointing to budget id
+        // list
     }
 }
 

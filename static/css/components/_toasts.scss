@@ -16,7 +16,7 @@
         
         position: relative;
         margin-bottom: 1.4rem;
-        min-width: 250px;
+        min-width: 500px;
         width: fit-content;
         background-color: #f8f8f8;
         border-radius: 8px;
@@ -48,7 +48,7 @@
         
         &__title {
             margin-bottom: 0.3rem;
-            font-size: 80%;
+            font-size: 90%;
             font-weight: bold;
             color: $blue500;
             text-transform: uppercase;
@@ -60,11 +60,11 @@
         }
         
         &__body * {
-            font-size: 90%;
+            font-size: 96%;
             color: #545454;
             color: #838383;
             // color: $blue300;
-            font-weight: 500;
+            font-weight: 600;
             
             &:last-child {margin-bottom: 0;}
         }

@@ -57,6 +57,24 @@
         min-width: 38px;
         padding: .375rem;
     }
+    
+    &--collapse-toggle {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 20px;
+        background-color: $blue100;
+        text-align: left;
+        color: $blue500;
+        
+        &:hover, &:active {
+            color: $blue500
+        }
+        
+        &:first-child {
+            margin-top: 0;
+        }
+    }
 }
 
 .btn-group {

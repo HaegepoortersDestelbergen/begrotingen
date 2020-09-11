@@ -5,7 +5,7 @@ import moment from 'moment';
 import 'moment/locale/nl-be';
 import { Modal, Collapse } from 'bootstrap';
 import {kap, wel, wol, jgv, giv, grl, demo} from '../../static/modules/svgs';
-import {user} from './userControl';
+import {user, domAccess} from './userControl';
 
 moment.locale('nl-be');
 
@@ -431,6 +431,9 @@ const ui = {
     init() {
         ui.svgReplacement();
         ui.generateCredits();
+        ui.detectChanges((watch) => {
+            user.setRoleForm();
+        })
     },
     
     generateCredits() {
@@ -492,6 +495,14 @@ const ui = {
         } else bool == false
         
         return ui.modes.read
+    },
+    
+    detectChanges(callback) {
+        const elementToObserve = returnNode('body');
+        const observer = new MutationObserver((watch) => {           
+            callback(watch);
+        });
+        observer.observe(elementToObserve, {subtree: true, childList: true});
     }
 }
 
@@ -516,6 +527,7 @@ const templates = {
         // add ui
         ui.init();
         user.accessControl();
+        domAccess.init();
         
         // initialize search functions
         search.init();
@@ -544,7 +556,6 @@ const templates = {
         if (loader) loader.remove();
         
         const message = templates.return('listItemNotFound');
-        console.log(message);
         element.append(message);
         
         // templates.watchForError(element);

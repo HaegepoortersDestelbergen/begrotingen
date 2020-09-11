@@ -14,5 +14,5 @@ var auth = firebase.auth();
 
 export {
     db,
-    auth
+    auth,
 }

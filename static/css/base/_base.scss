@@ -39,3 +39,11 @@ img {
         color: $blue500;
     }
 }
+
+[data-labe="fab"] {
+    --m: 30px;
+    
+    position: fixed;
+    right: var(--m);
+    bottom: var(--m);
+}
