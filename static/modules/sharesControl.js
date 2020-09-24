@@ -4,16 +4,23 @@ import moment from 'moment';
 import {db} from './plugins/firebase';
 import {data} from './dataControl';
 import { node } from './utils';
+import { router } from '../..';
 
 // https://console.firebase.google.com/u/3/project/begrotingen-haegepoorters/firestore/data~2Fshares
 
-const shares = {
-    async init(params) {     
+const shares = {    
+    easterIndex: -1,
+    
+    async init(id) {    
+        console.log('share init');
         shares.watchForElements();
         
-        const shareData = await shares.getShareData(params.id);
+        const shareData = await shares.getShareData(id);
         if (shareData.data != undefined) {
+            // validate
             const valid = shares.valid(shareData);
+            
+            // do if validated
             if (valid == true) shares.pass(shareData);
             else shares.unvalidate(shareData);
         } else {
@@ -36,7 +43,7 @@ const shares = {
             target: formData.target,
         })
         
-        const url = `${window.location.origin}/#s/${id}`;
+        const url = `${window.location.origin}/#/share/${id}`;
         
         await node('[data-form="budgetShare"]').classList.add('d-none');
         await node('[data-label="linkPreview"]').classList.add('d-block');
@@ -63,10 +70,9 @@ const shares = {
     },
     
     async pass(shareData) {
+        router.navigate(`/shares/${shareData.id}`);
         const budgetsData = await budget.get(shareData.data.target);
-        window.appSettings.selectedBudget = budgetsData;
-
-        await render.costs(budgetsData);
+        await render.costs(budgetsData, 'share');
     },
     
     async unvalidate(shareData) {
@@ -76,8 +82,15 @@ const shares = {
     },
     
     copyUrlFeedback() {
+        const eggs = ['url gekopieerd', 'dubbel gekopieerd', 'driemaal gekopieerd', 'dominator', 'mega kopie', 'onstopbaaaar'];
+        const index = shares.easterIndex;
+        if (index < 8) shares.easterIndex = shares.easterIndex+1;
+        else shares.easterIndex = 0;
+        
+        setTimeout(() => {shares.easterIndex = -1}, 9000)
+        
         createToast({
-            title: 'Url gekopieerd',
+            title: eggs[shares.easterIndex],
             content: 'Plak hem waar nodig'
         })
     },

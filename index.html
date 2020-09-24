@@ -22,6 +22,8 @@
 </head>
 <body>
     <header>
+        <!-- <div class="loader-test"></div> -->
+        
         <div data-label="headNotify">
             
         </div>
@@ -181,7 +183,8 @@
                         </div>
                     </div>
                     <div class="btn-group mx-auto mt-4 mt-lg-5 mb-4 mb-lg-0 animate__animated animate__fadeInUp animate__faster">
-                        <button type="button" data-action="logOut" class="btn btn--sub">Afmelden</button>
+                        <a href="/user/logout" class="btn btn--sub" data-navigo="">Afmelden</a>
+                        <!-- <button type="button" data-action="logOut" class="btn btn--sub">Afmelden</button> -->
                         <button type="submit" class="btn">Volgende</button>
                     </div>
                 </form>
@@ -193,7 +196,8 @@
         <div data-section="step2">
             <header class="py-5 mb-3 animate__animated animate__fadeInDown">
                 <div class="container">
-                    <button class="btn btn--nav-back mb-5" data-nav-section="groupSelect"><i class='bx bx-arrow-back'></i>Overzicht takken</button>
+                    <a href="/takken" data-navigo class="btn btn--nav-back mb-5"><i class='bx bx-arrow-back'></i>Overzicht takken</a>
+                    <!-- <button class="btn btn--nav-back mb-5" data-nav-section="groupSelect"><i class='bx bx-arrow-back'></i>Overzicht takken</button> -->
                     <div class="row mb-5 mb-md-0">
                         <div class="col-12 col-md-6 col-lg-6 mb-3 mb-lg-0">
                             <h2 class="display-3 font-weight-bold mb-0" data-template-context="group">Welpen</h2>
@@ -203,7 +207,7 @@
                             <button class="btn w-100 w-md-fit" type="button" data-readmode="remove" data-toggle="collapse" data-target="[data-collapse='newBudgetMeta']">Nieuwe begroting</button>
                         </div>
                     </div>
-                    <form data-form="newBudget" data-readmode="remove" class="mt-4">
+                    <form data-form="newBudget" class="mt-4">
                         <div class="row">
                             <div class="col">
                                 <div class="search-box">
@@ -211,7 +215,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="collapse" data-collapse="newBudgetMeta">
+                        <div class="collapse" data-collapse="newBudgetMeta" data-readmode="remove">
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <!-- <div class="form-label">Opmerkingen</div> -->
@@ -268,7 +272,8 @@
             <header class="py-5 mb-3 animate__animated animate__fadeInDown">
                 <div class="container">
                     <div class="d-flex align-items-center justify-content-between mb-5" data-label="costsTopActions">
-                        <button class="btn btn--nav-back" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht budgetten</button>
+                        <a class="btn btn--nav-back" href="/goback/budgets" data-navigo><i class='bx bx-arrow-back'></i>Overzicht budgetten</a>
+                        <!-- <button class="btn btn--nav-back" data-nav-section="budgetsListing"><i class='bx bx-arrow-back'></i>Overzicht budgetten</button> -->
                         <div class="btn-group">
                             <button type="button" class="btn btn--sub" data-readmode="remove" data-toggle="collapse" data-target="[data-collapse='editBudget']">Bewerken</button>
                             <button type="button" class="btn btn--icon" data-readmode="remove" data-toggle="modal" data-target="[data-modal='budgetShare']">
@@ -677,7 +682,16 @@
         </div>
     </template>
     
-    <div data-labe="fab">
+    <div data-label="contextMenu" class="menu d-none">
+        <div class="menu__wrapper">
+            <div class="menu__item" data-action="">Afmelden</div>
+            <div class="menu__item" data-action="">Admin</div>
+            <hr>
+            <div class="menu__item" data-action="">Verwijderen</div>
+        </div>
+    </div>
+    
+    <div data-label="fab">
         <div class="btn-group">
             <button type="button" class="btn btn--icon btn--sub" data-access="admin" data-toggle="modal" data-target="[data-modal='supportPane']"><i class='bx bx-support'></i> Support</button>
             <button type="button" class="btn btn--icon" data-access="admin" data-toggle="modal" data-target="[data-modal='adminPane']"><i class='bx bx-cog'></i> Configuratie</button>

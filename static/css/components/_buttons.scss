@@ -31,7 +31,7 @@
         }
         
         .bx {
-            position: absolute;
+            // position: absolute;
             top: 2px;
             right: 100%;
             padding-right: .5rem;
@@ -149,7 +149,11 @@
 
 @media (min-width: 576px) {}
 
-@media (min-width: 768px) {}
+@media (min-width: 768px) {
+    .btn--nav-back .bx {
+        position: absolute;
+    }
+}
 
 @media (min-width: 992px) {
     .btn-group {

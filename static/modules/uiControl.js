@@ -1,4 +1,4 @@
-import {pricify, periodDifference} from './utils'
+import {pricify, periodDifference, classSwitch} from './utils'
 import {node, Element, returnNode} from 'cutleryjs'
 import {budget, costs, search} from './dataControl'
 import moment from 'moment';
@@ -7,6 +7,7 @@ import { Modal, Collapse } from 'bootstrap';
 import {kap, wel, wol, jgv, giv, grl, demo} from '../../static/modules/svgs';
 import {user, domAccess} from './userControl';
 import { admin } from './adminPane';
+import { router } from '../..';
 
 moment.locale('nl-be');
 
@@ -15,28 +16,36 @@ const render = {
         forms.setDates();
     },
     
-    async budgets() {
+    async budgets(group = window.appSettings.group) {
+        window.appSettings.group = group;
+        
         render.init();
         
+        // switch to budget listing
         templates.switch('budgetsListing', (context) => {
-            context.editContext('group', window.appSettings.group)
+            context.editContext('group', group)
         });
-        const data = await budget.getAll();
+        
+        const data = await budget.getAll(group);
         const recordCount = data.length;
         render.resetListingField(node('[data-label="budgetsList"]'), recordCount)
         
         data.forEach(doc => {
             render.budget(doc);
         })
+        
+       router.navigate(`/takken/${group}`);
     },
     
     budget(doc, insertBefore = false) {
         render.init();
         
-        const item = new Element('div');
+        const item = new Element('a');
         item.class(['list__item', 'item']);
         item.attributes([
-            ['data-firebase', doc.id]
+            ['data-firebase', doc.id],
+            ['href', `/budgets/${doc.id}`],
+            ['data-navigo', ``]
         ])
         
         item.inner(`
@@ -76,9 +85,9 @@ const render = {
         templates.editContext('comments', data.comment, false);
     },
     
-    async costs(inputData = window.appSettings.selectedBudget, callback) {
+    async costs(inputData = window.appSettings.selectedBudget, mode = null) {
         const budgetsData = inputData;
-        
+                
         templates.switch('costsListing', (context) => {
             context.editContext('title', budgetsData.data.title);
             context.editContext('meta', `
@@ -88,33 +97,32 @@ const render = {
             context.editContext('comments', budgetsData.data.comment);
         });
         
-        const data = await costs.getAll();
+        const data = await costs.getAll(inputData.id);
         const recordCount = data.length;
         render.resetListingField(node('[data-label="costsList"]'), recordCount)
         
-        data.forEach(doc => {            
+        data.forEach(doc => {
             const item = render.cost(doc);
             item.append('[data-section="step3"] [data-label="costsList"]');
         })
         
-        render.budgetEditForm(budgetsData.data)
-        
-        if (callback) callback();
+        render.budgetEditForm(budgetsData.data);
+            
+        router.updatePageLinks();
     },
     
     cost(doc, insertBefore = false) {
         const item = new Element('div');
+        
         const data = doc.data;
         contextSwitch.setType(data.type);
-        
         const cost = costs.calculateCost(data.amount, data.when, data.type)
         const price = contextSwitch.price(data.amount, data.when);
-        
         if (data.type != 'income') render.totalBudget(budget.addCost({id: doc.id, cost: cost}));
         
         item.class(['list__item', 'item', 'animate__animated', 'animate__faster', 'animate__fadeIn']);
         item.attributes([
-            ['data-firebase', doc.id]
+            ['data-firebase', doc.id],
         ])
         item.inner(`
         <div class="item__wrapper" data-toggle="collapse" data-target="[data-collapse='${doc.id}']">
@@ -300,9 +308,11 @@ const render = {
     },
     
     resetListingField(node, recordCount) {
-        if (recordCount > 0) node.innerHTML = '';
-        else templates.showError(node);
-        templates.watchForError(node);
+        if (node) {
+            if (recordCount > 0) node.innerHTML = '';
+            else templates.showError(node);
+            templates.watchForError(node);
+        }
     }
 }
 
@@ -435,6 +445,7 @@ const ui = {
         ui.generateCredits();
         ui.detectChanges((watch) => {
             user.setRoleForm();
+            router.updatePageLinks();
         })
     },
     
@@ -485,8 +496,8 @@ const ui = {
         if (bool == true || ui.modes.read == true) {
             const nodesToHide = [
                 node('[data-form="newCost"]'),
-                node('[data-form="newBudget"]'),
-                node(`[data-target="[data-collapse='newBudgetMeta']"]`),
+                // node('[data-form="newBudget"]'),
+                // node(`[data-target="[data-collapse='newBudgetMeta']"]`),
                 node(`[data-target="[data-modal='budgetShare']"`),
                 ...node('[data-readmode="remove"]', true)
             ]
@@ -525,6 +536,34 @@ const ui = {
     }
 }
 
+const contextMenu = {
+    state: 0,
+    
+    menu() {
+        const menu = node('[data-label="contextMenu"]');
+        const styles = window.getComputedStyle(menu);
+        return menu;
+    },
+    
+    open(x, y) {
+        this.state = 1
+        
+        const menu = node('[data-label="contextMenu"]');
+        classSwitch(menu, 'd-none', 'd-block');
+    },
+    
+    close() {
+        this.state = 1
+        
+        const menu = node('[data-label="contextMenu"]');
+        classSwitch(menu, 'd-block', 'd-none');
+    },
+    
+    moveTo(x, y) {
+        
+    }
+}
+
 const templates = {
     getTemplate(templateName) {
         return node(`template[data-template="${templateName}"]`);
@@ -545,7 +584,7 @@ const templates = {
         
         // add ui
         ui.init();
-        user.accessControl();
+        // user.accessControl();
         domAccess.init();
         
         // initialize search functions
@@ -553,13 +592,22 @@ const templates = {
         
         // set site title
         const siteTitle = seo.siteTitles(templateName)
-        seo.setTitle(siteTitle)
+        seo.setTitle(siteTitle);
+        
+        // navigo
+        router.updatePageLinks();
     },
     
     editContext(contextCaller, text, fromTemplate = true) {
         const source = fromTemplate == true ? this.templateHTML : document;
-        const context = fromTemplate == true ? source.querySelector(`[data-template-context="${contextCaller}"]`) : source.querySelector(`[data-template-context="${contextCaller}"]`);
+        const context = source.querySelector(`[data-template-context="${contextCaller}"]`);
         if (context) context.innerHTML = text;
+    },
+    
+    editNode(contextCaller, fromTemplate = true) {
+        const source = fromTemplate == true ? this.templateHTML : document;
+        const context = source.querySelector(`[data-template-context="${contextCaller}"]`);
+        if (context) return context;
     },
     
     return(templateName) {
@@ -571,11 +619,13 @@ const templates = {
         element = returnNode(element);
         
         // remove loader if it exists
-        const loader = element.querySelector('.spinner-border');
-        if (loader) loader.remove();
-        
-        const message = templates.return('listItemNotFound');
-        element.append(message);
+        if (element) {
+            const loader = element.querySelector('.spinner-border');
+            if (loader) loader.remove();
+            
+            const message = templates.return('listItemNotFound');
+            element.append(message);
+        }
         
         // templates.watchForError(element);
     },
@@ -593,9 +643,6 @@ const templates = {
             
             const added = watch[0].addedNodes.length;
             const removed = watch[0].removedNodes.length;
-            
-            console.log(added, removed)
-            console.log(watch[0].removedNodes)
             
             if (added != 0) templates.removeError(elementToObserve);
             // if (childCount == 0) templates.showError(elementToObserve);

@@ -73,14 +73,16 @@ const budget = {
     async get(id) {
         const snapshot = await db.collection('takken').doc(id).get();
         const data = snapshot.data();
-        return {
+        const budgetData = {
             id: id,
             data: data
-        };
+        }
+        window.appSettings.selectedBudget = budgetData
+        return budgetData;
     },
     
-    async getAll() {
-        const snapshot = await db.collection('takken').where('group', '==', window.appSettings.group).get();
+    async getAll(group = window.appSettings.group) {
+        const snapshot = await db.collection('takken').where('group', '==', group).get();
         const data = snapshot.docs.map((querySnapshot) => {
             return {
                 id: querySnapshot.id,
@@ -156,9 +158,9 @@ const budget = {
 }
 
 const costs = {
-    getCollection() {
+    getCollection(id = window.appSettings.selectedBudget.id) {
         // return db.collection(window.appSettings.group).doc(window.appSettings.selectedBudget.id).collection('costs');
-        return db.collection('takken').doc(window.appSettings.selectedBudget.id).collection('costs')
+        return db.collection('takken').doc(id).collection('costs')
     },
     
     async add({title, comment, category, amount, type, when}) {
@@ -191,8 +193,8 @@ const costs = {
         });
     },
     
-    async getAll() {
-        const snapshot = await costs.getCollection().get();
+    async getAll(id = window.appSettings.selectedBudget.id) {
+        const snapshot = await costs.getCollection(id).get();
         const data = snapshot.docs.map((querySnapshot) => {
             return {
                 id: querySnapshot.id,
@@ -250,8 +252,7 @@ const costs = {
         })
     },
     
-    calculateCost(price, when, costType) {
-        const budgetData = window.appSettings.selectedBudget.data;
+    calculateCost(price, when, costType, budgetData = window.appSettings.selectedBudget.data) {
         let cost = null
         
         switch (costType) {

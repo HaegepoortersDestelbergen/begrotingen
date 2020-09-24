@@ -1,3 +1,4 @@
+import { returnNode } from 'cutleryjs';
 import moment from 'moment';
 
 const node = (selector, multiple = false) => {
@@ -117,6 +118,38 @@ const updateClipboard = (newClip) => {
     });
 }
 
+const classSwitch = (node, current, newer) => {
+    if (!node || !current || !newer) throw new Error('An attribute wasn\'t defined');
+    
+    const el = returnNode(node).classList;
+    el.remove(current); 
+    el.add(newer);
+}
+
+// const chainingTest = (current, newer) => {
+//     console.log('switch', current, newer);
+    
+//     const doCurrent = () => {
+//         console.log('done doing it', current);
+//         return methods;
+//     }
+    
+//     const doNewer = () => {
+//         console.log('done doing it', newer);
+//         return methods;
+//     }
+    
+//     // return methods
+//     const methods =  {
+//         doCurrent,
+//         doNewer
+//     }
+    
+//     return methods
+// }
+
+// chainingTest('currentClass', 'newCLass').doCurrent().doNewer();
+
 export {
     node,
     eventCallback,
@@ -125,5 +158,6 @@ export {
     periodDifference,
     formError,
     clickEvent,
-    updateClipboard
+    updateClipboard,
+    classSwitch
 }

@@ -9,6 +9,8 @@ import {user, domAccess} from './static/modules/userControl';
 import {clickEvent, updateClipboard} from './static/modules/utils';
 import {Collapse} from 'bootstrap';
 import Navigo from 'navigo';
+import {sesamCollapse} from 'sesam-collapse';
+import Mousetrap from 'mousetrap'
 
 moment.locale('nl-be');
 window.appSettings = {
@@ -17,10 +19,12 @@ window.appSettings = {
     }
 };
 
+const currentUrl = window.location.hash.replace('#', '');
 const root = location.origin;
 const useHash = true; // Defaults to: false
-const hash = '#s'; // Defaults to: '#'
+const hash = '#'; // Defaults to: '#'
 const router = new Navigo(root, useHash, hash);
+console.log(currentUrl);
 
 const app = {
     config: {
@@ -29,26 +33,54 @@ const app = {
     
     async init() {
         app.listeners();
-        ui.init();
-
+        await user.init();
         
-        router.on('/:id', async (params) => {            
-            shares.init(params);
+        ui.init();
+        sesamCollapse.initialize();
+        
+        router
+        .on(() => {
+            
+        })
+        .on('/share/:id', async (params) => {
+            user.accessControl();       
+            shares.init(params.id);
+        })
+        .on('/takken', async (params) => {
+            if (user.active) {
+                templates.switch('groupSelect');
+                user.ui(user.active.data.access)
+            } else {
+                router.navigate('/user/login')
+            }
+        })
+        .on('/takken/:group', async (params) => {  
+            render.budgets(params.group);
+            user.accessControl();
+        })
+        .on('/budgets/:budget', async (params) => {  
+            router.navigate(`/budgets/${params.budget}`); 
+            
+            const budgetsData = await budget.get(params.budget);
+            await render.costs(budgetsData); 
+            user.accessControl();
+        })
+        .on('/goback/budgets', () => {
+            console.log('go back');
+            const group = window.appSettings.selectedBudget.data.group;
+            render.budgets(group);
+        })
+        .on('/user/logout', () => {
+            user.logOut();
+        })
+        .on('/user/login', () => {
+            user.init();
         })
         .notFound(() => {
-            user.init();    
+            // router.navigate('/takken');
+            // user.init();    
         })
         .resolve()
-        
-        // createToast({
-        //     title: 'App was loaded [no content]',
-        //     timer: 100000
-        // })
-        
-        // createToast({
-        //     content: 'App was loaded [no title]',
-        //     timer: 100000
-        // })
     },
     
     listeners() {
@@ -103,12 +135,12 @@ const app = {
              
             eventCallback('logOut', user.logOut)
             
-            eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
-                const budgetsData = await budget.get(target.dataset.firebase);
-                window.appSettings.selectedBudget = budgetsData;
-                await render.costs(window.appSettings.selectedBudget);
-                user.accessControl();             
-            }, false)
+            // eventCallback('[data-label="budgetsList"] [data-firebase].list__item', async (target) => {
+            //     const budgetsData = await budget.get(target.dataset.firebase);
+            //     window.appSettings.selectedBudget = budgetsData;
+            //     await render.costs(window.appSettings.selectedBudget);
+            //     user.accessControl();             
+            // }, false)
             
             eventCallback('[data-form="newCost"] button[type="reset"]', search.reset, false)
             eventCallback('demoLogin', user.demoLogin);
@@ -166,6 +198,7 @@ const app = {
                     });
                     ui.init();
                     user.ui();
+                    router.navigate(``);
                 }, false)
             }
             
@@ -173,6 +206,14 @@ const app = {
                 const form = target.parentNode.closest('[data-label="editCostForm"]');
                 form.innerHTML = '';
             }, false)
+        })
+        
+        document.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            
+            const x = event.clientX;
+            const y = event.clientY;
+            console.log('contextmenu', x, y);
         })
         
         document.addEventListener('submit', (event) => {
@@ -188,9 +229,9 @@ const app = {
             }, false)
             
             eventCallback('#form_step1', (target) => {
-                window.appSettings.group = extractFormData(event.target).get('group');
-                render.budgets();
-                user.accessControl();
+                const group = extractFormData(event.target).get('group');
+                router.navigate(`/takken/${group}`);
+                user.accessControl(group);
             }, false);
             
             if (ui.readMode() != true) eventCallback('[data-form="newBudget"]' , async (target) => {
@@ -316,6 +357,25 @@ const app = {
     },
 }
 
+Mousetrap.bind('up up down down left right left right a b', () => {
+    createToast({
+        title: 'Achievement unlocked',
+        content: 'Konami!'
+    })
+});
+
+Mousetrap.bind('command+option+i', (event) => {
+    event.preventDefault();
+    
+    createToast({
+        title: 'Actie afgeraden',
+        content: 'Het wordt afgeraden om de development console te openen. Hackers kunnen je browser manipuleren in hun voordeel.'
+    })
+});
+
 app.init();
 
-export {app};
+export {
+    app, 
+    router
+};

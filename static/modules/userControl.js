@@ -3,26 +3,30 @@ import {ui, templates, render, createToast} from './uiControl';
 import {data, search} from './dataControl';
 import {formError} from './utils';
 import {node} from 'cutleryjs';
-import {app} from '../../index'
+import {app, router} from '../../index'
 import { admin } from './adminPane';
 
 const user = {   
-    async init() {     
-        auth.onAuthStateChanged(async state => {
-            if (state) {
-                user.active = await this.getUserData(state.uid);
-                const role = await user.active.data.role;
-                
-                admin.init(role);
-                
-                templates.switch('groupSelect', () => {
+    init() {     
+        return new Promise((succes, reject) => {
+            auth.onAuthStateChanged(async state => {
+                if (state) {                
+                    user.active = await this.getUserData(state.uid);
+                    const role = await user.active.data.role;
+                    succes(role);
+                    
+                    admin.init(role);
+                    router.navigate(`/takken`);
                     user.ui(user.active.data.access);
-                }, true);
-            } else {
-                templates.switch('userLogIn');
-                admin.init();
-            }
-        });
+                }
+                
+                if (!state) {    
+                    succes(null);            
+                    templates.switch('userLogIn');
+                    admin.init();
+                }
+            });
+        })    
     },
     
     async get(id) {
@@ -125,7 +129,10 @@ const user = {
         })
         user.logInScreen(false);
         auth.signInWithEmailAndPassword(email, passw)
-        .then(resp => {console.log(resp)})
+        .then(resp => {
+            router.navigate('/takken');
+            user.ui(user.active.data.access);
+        })
         .catch(err => {
             if (err.code == 'auth/user-not-found') formError('Deze gebruiker werd niet gevonden');
             user.logInScreen(true);
@@ -144,7 +151,10 @@ const user = {
     },
     
     logOut() {
-        admin.init();
+        user.active = undefined;
+        // router.navigate('')
+        // templates.switch('userLogIn');
+        // admin.init();
         createToast({
             title: 'Afmelden',
             content: 'Je wordt afgemeld',
@@ -162,21 +172,35 @@ const user = {
     },
     
     async ui(accessData = null) {
-        if (accessData == null) {accessData = user.active.data.access};
+        if (accessData == null) {accessData = user.active?.data.access};
                
         const groups = app.config.groups;
         groups.forEach(group => {
-            const input = node(`#form_step1 input[value="${group}"]`).closest('.form__group');
-            if (accessData[group] == 'none' && input) input.remove();
+            const $group = node(`#form_step1 input[value="${group}"]`);
+            if (accessData[group] == 'none' && $group) $group.closest('.form__group').remove();
         })
     },
     
-    accessControl() {
-        const access = user.active ? user.active.data.access[window.appSettings.group] : 'none';
+    accessControl(access = null) {
+        if (access == null) access = user.active ? user.active.data.access[window.appSettings.group] : 'none';
+        const shareMode = ui.modes.share;
         
-        if (access == 'none') console.log('prohibited access')
-        if (access == 'read') ui.readMode(true);
+        if (access == undefined) router.navigate('');
+        if (access == 'none' && shareMode == false) router.navigate('');
+        if (access == 'read' || access == 'share') ui.readMode(true);
         if (access == 'write') ui.readMode(false);
+        
+        // router.on('/budgets/:id', () => {
+        //     console.log('access budgets');
+        //     const rights = user.rights4Group(access);
+        //     console.log(rights);
+        // })
+        
+        return access;
+    },
+    
+    rights4Group(group = window.appSettings.group) {
+        return user.active.data.access[group];
     },
     
     logInScreen(bool = true) {
@@ -194,19 +218,7 @@ const user = {
     getRole() {
         if (user.active) return user.active.data.role;
     },
-    
-    async setRole({uid = user.active.id, role}) {
-        if (!uid) throw new Error('No uid defined');
-        user.active.data.role = role;
-        
-        try {
-            await db.doc(`users/${uid}`).set(user.active.data);
-            console.log('role saved')
-        } catch(err) {
-           console.log(err) 
-        }
-    },
-    
+
     setRoleForm(role) {
         const $form = node(`[data-form="userRole"]`)
         if (role && $form) {
