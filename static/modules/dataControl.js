@@ -63,6 +63,8 @@ const budget = {
         })
         .catch((error) => {
             console.error("Error writing document: ", error);
+            appError('Error writing document', error, budget.add);
+            
             createToast({
                 title: 'Budget aanmaken',
                 content: 'Budget kon niet worden aangemaakt'
@@ -114,7 +116,7 @@ const budget = {
                 content: 'Budget werd opgeslagen'
             })
         }).catch((err) => {
-            console.log(err);
+            appError('Error editing document', error, budget.edit);
             createToast({
                 title: 'Fout bij opslaan',
                 content: 'Budget kon niet worden opgeslaan'
@@ -185,7 +187,7 @@ const costs = {
             })
         })
         .catch((error) => {
-            console.error("Error writing document: ", error);
+            appError('Error writing document', error, costs.add);
             createToast({
                 title: 'Kost aanmaken',
                 content: 'Kost kon niet worden aangemaakt'
@@ -234,6 +236,7 @@ const costs = {
             })
         }).catch(err => {
             console.log(err);
+            appError('Error editing document', err, budget.edit);
             createToast({
                 title: 'Fout bij opslaan',
                 content: 'Budget kon niet worden opgeslaan'
@@ -277,6 +280,21 @@ const costs = {
         }
         return cost
     }
+}
+
+const appError = async (message, error = '', place = null, ) => {
+    data.createDoc('errors', {
+        message: message,
+        error: error,
+        time: new Date,
+        function: typeof place == 'function' ? place.toString() : place
+    })
+    
+    createToast({
+        title: 'Oeps',
+        content: 'Het lijkt er op dat er iets is foutgelopen. De fout is gemeld en je hoeft verder niks te doen.',
+        timer: 15000
+    })
 }
 
 const loadTestData = async () => {
@@ -378,5 +396,6 @@ export {
     costs,
     search,
     loadTestData,
-    extractFormData
+    extractFormData,
+    appError
 }

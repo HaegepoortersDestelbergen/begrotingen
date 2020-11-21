@@ -1,6 +1,6 @@
 import {auth, db} from './plugins/firebase';
 import {ui, templates, render, createToast} from './uiControl';
-import {data, search} from './dataControl';
+import {appError, data, search} from './dataControl';
 import {formError} from './utils';
 import {node} from 'cutleryjs';
 import {app, router} from '../../index'
@@ -70,10 +70,10 @@ const user = {
                 content: 'Gebruiker werd aangemaakt en aangemeld'
             })
         } catch (error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode)
-            console.log(errorMessage)
+            const {code, message} = error;
+            console.log(code, message);
+            
+            appError('Error writing document', error, user.add);
             
             createToast({
                 title: 'Oeps',
@@ -108,6 +108,8 @@ const user = {
         } catch (error) {
             console.log(error)
             
+            appError('Error deleting document', error, user.delete);
+            
             createToast({
                 title: 'Oeps',
                 content: 'Gebruiker kon niet worden verwijderd'
@@ -134,6 +136,8 @@ const user = {
             user.ui(user.active.data.access);
         })
         .catch(err => {
+            // appError('User was not found', err, user.logIn);
+            
             if (err.code == 'auth/user-not-found') formError('Deze gebruiker werd niet gevonden');
             user.logInScreen(true);
         });

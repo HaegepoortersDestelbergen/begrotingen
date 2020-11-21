@@ -1,5 +1,5 @@
 import {ui, templates, render, createToast, fadeOutNode} from './static/modules/uiControl';
-import {budget, costs, extractFormData, data, search} from './static/modules/dataControl';
+import {budget, costs, extractFormData, data, search, appError} from './static/modules/dataControl';
 import {admin} from './static/modules/adminPane';
 import {eventCallback, node, cookies, Element, connection, getFormData} from 'cutleryjs';
 import moment from 'moment';
@@ -10,7 +10,7 @@ import {clickEvent, updateClipboard} from './static/modules/utils';
 import {Collapse} from 'bootstrap';
 import Navigo from 'navigo';
 import {sesamCollapse} from 'sesam-collapse';
-import Mousetrap from 'mousetrap'
+import Mousetrap from 'mousetrap';
 
 moment.locale('nl-be');
 window.appSettings = {
