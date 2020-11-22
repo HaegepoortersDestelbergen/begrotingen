@@ -1,0 +1,26 @@
+.react-tabs {
+    &__tab, &__tab--selected {
+        border: none !important;
+        padding: .4rem 1rem;
+        border-top-left-radius: .25rem;
+        border-top-right-radius: .25rem;
+        @include label;
+        color: $blue400 !important;
+    }
+    
+    &__tab--selected {
+        background-color: $blue000 !important;
+        color: $blue500 !important;
+        user-select: none;
+    }
+    
+    &__tab-list {
+        margin-bottom: 0 !important;
+        border: none !important;
+    }
+    
+    &__tab-panel {
+        padding-top: 2.5rem; padding-bottom: 2.5rem;
+        background-color: $blue000;
+    }
+}

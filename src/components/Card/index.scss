@@ -1,0 +1,12 @@
+@import '../../scss/abstracts';
+
+.card {
+    padding: 1rem;
+    background-color: $blue100;
+    color: $blue500;
+    border-radius: $bdRadius;
+    
+    box-icon {
+        fill: $blue500;
+    }
+}

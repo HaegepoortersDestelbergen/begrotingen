@@ -1,0 +1,22 @@
+* {
+    &, &:focus, &:focus-within, &:active {
+        transition: all .3s ease;
+    }
+}
+
+html, body, #root, .App {
+    min-height: 100vh;
+}
+
+body {
+    font-family: 'Gilroy';
+    font-weight: 400;
+    color: #707070;
+}
+
+input, select, textarea, button {
+    &, &:focus, &:focus-within, &:active {
+        outline: none;
+        box-shadow: none;
+    }
+}
