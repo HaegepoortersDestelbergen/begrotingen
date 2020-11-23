@@ -17,13 +17,18 @@ export default ({ data, onClick, editable }) => {
         id: data.id
     }})
     
+    const handleDelete = (e) => {
+        deleteGroup()
+        if (!loading) e.target.closest('.card').remove();
+    }
+    
     return (
         <Card theme="group">
             <div className="d-flex gap--col">
                 <box-icon name='group'></box-icon> <strong>{ data.name }</strong>
             </div>
             <div>
-                <button className="btn btn--blank" onClick={deleteGroup}><box-icon name='x'></box-icon></button>
+                <button className="btn btn--blank" onClick={handleDelete}><box-icon name='x'></box-icon></button>
             </div>
         </Card>
     )

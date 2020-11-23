@@ -4,8 +4,8 @@ import { Card } from '../..';
 import './index.scss';
 
 const DELETE_USER = gql`
-    mutation deleteGroup($id: String) {
-        deleteGroup(id: $id) {
+    mutation deleteUser($id: String) {
+        deleteUser(id: $id) {
             id
             name
         }
@@ -17,13 +17,18 @@ export default ({ data, onClick, editable }) => {
         id: data.id
     }})
     
+    const handleDelete = (e) => {
+        deleteUser()
+        if (!loading) e.target.closest('.card').remove();
+    }
+    
     return (
         <Card theme="user">
             <div className="d-flex gap--col">
                 <box-icon name='user-circle'></box-icon> <strong>{ data.name }</strong>
             </div>
             <div>
-                <button className="btn btn--blank" onClick={deleteUser}><box-icon name='x'></box-icon></button>
+                <button className="btn btn--blank" onClick={handleDelete}><box-icon name='x'></box-icon></button>
             </div>
         </Card>
     )

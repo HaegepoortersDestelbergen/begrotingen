@@ -28,6 +28,7 @@ export default () => {
     const {loading: groupsLoading, data: groupsData, error: groupsError, refetch: groupsRefetch } = useQuery(GET_GROUPS);
     const {loading: userssLoading, data: usersData, error: usersError, refetch: usersRefetch } = useQuery(GET_USERS);
     const [update, updateList] = useState([]);
+    const [updatedUsers, updateUsers] = useState([]);
     
     const { group: allGroups } = groupsData || [];
     const { user: allUsers } = usersData || [];
@@ -35,6 +36,10 @@ export default () => {
     useEffect(() => {
         groupsRefetch();
     }, [update])
+    
+    useEffect(() => {
+        usersRefetch();
+    }, [updatedUsers])
     
     return (
         <Page ignore key={update}>
@@ -57,14 +62,14 @@ export default () => {
                             <h2>Groepen</h2>
                             <Forms.Group className="form--inline" state={[update, updateList]}/>
                         </div>
-                        {allGroups && allGroups.map(g => g.name && <Cards.Group editable key={g.id} data={g}/> || null )}
+                        {allGroups && allGroups.map(g => <Cards.Group editable key={g.id} data={g}/> )}
                     </div>
                 </TabPanel>
                 <TabPanel>
                     <div className="container"> 
                         <div className="mb-5"> 
                             <h2>Gebruikers</h2>
-                            <Forms.User className="form--inline" state={[update, updateList]}/>
+                            <Forms.User state={[updatedUsers, updateUsers]} groups={allGroups}/>
                         </div>
                         {allUsers && allUsers.map(u => u.name && <Cards.User editable key={u.id} data={u} /> || null )}
                     </div>

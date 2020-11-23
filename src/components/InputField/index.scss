@@ -3,10 +3,6 @@
 .input-field {
     display: block;
     
-    & + & {
-        margin-top: 1rem;
-    }
-    
     &__label {
         display: block;
         margin-bottom: 0.4rem;

@@ -3,10 +3,6 @@
 .select-field {
     display: block;
     
-    & + &, .input-field + & {
-        margin-top: 1rem;
-    }
-    
     &__label {
         display: block;
         margin-bottom: 0.4rem;
