@@ -31,4 +31,15 @@
             height: 19px;
         }
     }
+    
+    &--sub {
+        background-color: #aababc !important;
+    }
+}
+
+.btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }

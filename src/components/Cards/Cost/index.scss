@@ -1,7 +1,8 @@
 @import '../../../scss/abstracts';
 
 .card--cost { 
-    padding: 1.4rem;
+    padding: 0;
+    overflow: hidden;
           
     & + & {
         margin-top: 1rem;
@@ -23,10 +24,21 @@
         grid-row-gap: 0px;
     }
     
+    .card__top {
+        padding: 1.4rem;
+    }
+    
     .card__btm {
+        padding: 0 1.4rem;
         max-height: 0vh;
         overflow: hidden;
-        opacity: 0;
+        background-color: #f6f9f9;
+        background-color: #dbeaec;
+        border-radius: 0 0 $bdRadius $bdRadius;
+        
+        * {
+            opacity: 0;
+        }
     }
     
     hr.striped {
@@ -38,7 +50,11 @@
     &.collapse--false {
         .card__btm {
             max-height: 100vh;
-            opacity: 1;
+            padding: 1.4rem;
+            
+            * {
+                opacity: 1;
+            }
         }
         
         hr.striped {

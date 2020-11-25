@@ -1,8 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
-import React, { useState } from 'react';
-import { Collapse } from 'react-collapse';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../..';
 import './index.scss';
+import '../../../utils';
 
 const DELETE_GROUP = gql`
     mutation deleteGroup($id: String) {
@@ -13,11 +13,28 @@ const DELETE_GROUP = gql`
     }
 `;
 
-export default ({ data, budgetData, onClick, editable }) => {       
+export default ({ data, budgetData, states, onClick, editable }) => {       
     const [ collapseState, setCollapseState ] = useState(true);
+    const [ budgetTotal, setBudgetTotal ] = states.budgetTotal;
+    const [ modalState, setModalState ] = states.modal;
     const [deleteGroup, { loading, data: deleteGroupData, error }] = useMutation(DELETE_GROUP, {variables: {
         id: data.id
     }})
+    
+    const people = calcCostType(data.type, budgetData.people)
+    const when = calcCostWhen(data.when, budgetData.stay)
+    const totalAmount = ((people * data.amount) * when);
+    
+    const toggleModal = () => {
+        setModalState(!modalState)
+    }
+    
+    useEffect(() => {    
+        setBudgetTotal(prev => [...prev, ...[{
+            id: data.id,
+            total: totalAmount
+        }]])
+    }, [])
     
     const handleDelete = (e) => {
         deleteGroup()
@@ -25,8 +42,8 @@ export default ({ data, budgetData, onClick, editable }) => {
     }
     
     return (
-        <Card theme="cost" className={`collapse collapse--${collapseState}`} onClick={() => setCollapseState(!collapseState)}>
-            <div className="card__top">
+        <Card theme="cost" className={`collapse collapse--${collapseState}`}>
+            <div className="card__top" onClick={() => setCollapseState(!collapseState)}>
                 <div className="card__header">
                     <div className="card__icon">{ CategoryIcon(data.category) }</div>
                     <div>
@@ -35,29 +52,20 @@ export default ({ data, budgetData, onClick, editable }) => {
                     </div>
                 </div>
                 <div className="card__price">
-                    <h3>+{ data.amount } euro</h3>
-                    <small>about this price</small>
+                    <h3>+{ totalAmount.pricify() }</h3>
+                    <small>{ costTypeContext(data.type) }</small>
                 </div>
             </div>
-            <hr className="striped"/>
+            {/* <hr className="striped"/> */}
             <div className="card__btm">
                 <div className="card__detail">
-                    <p>Uitgave van 3,30 euro per persoon</p>
-                    <small>Kost voor heel de group, verekend per betalende persoon</small>
+                    <p>Uitgave van <strong>{ (totalAmount / budgetData.people.paying).pricify() } per persoon</strong></p>
+                    <small>{ costTypeDetail(data.type) }, verekend per betalende persoon</small>
                 </div>
                 <div className="card__actions">
-                    <button className="btn">Bewerken</button>
+                    <button className="btn" onClick={toggleModal}>Bewerken</button>
                 </div>
             </div>
-
-            {/* <div className="d-flex gap--col">
-                 <strong>{ data.title }</strong>
-            </div>
-            {editable && 
-                <div>
-                    <button className="btn btn--blank" onClick={handleDelete}><box-icon name='x'></box-icon></button>
-                </div>
-            } */}
         </Card>
     )
 }
@@ -73,5 +81,43 @@ const CategoryIcon = (prop) => {
         INSURANCE: <box-icon name='check-shield'></box-icon>,
         GWE: <box-icon name='plug'></box-icon>,
         OTHER: <box-icon name='coin'></box-icon>
+    }[prop]
+}
+
+const calcCostType = (prop, { paying, free }) => {
+    return {
+        FIXED: 1,
+        PER_PERSON: paying + free,
+        PER_PAYER: paying,
+        PER_FREE: free,
+        INCOME: -1
+    }[prop]
+}
+
+const costTypeContext = (prop) => {
+    return {
+        FIXED: 'Vaste kost, ongeacht aantal personen',
+        PER_PERSON: 'Totaalkost, alle personen',
+        PER_PAYER: 'Totaalkost, per betalende personen',
+        PER_FREE: 'Totaalkost, per niet-betalende personen',
+        INCOME: 'Inkomst, wordt afgetrokken'
+    }[prop]
+}
+
+const costTypeDetail = (prop) => {
+    return {
+        FIXED: 'Kost voor heel de groep, verekend per betalende persoon',
+        PER_PERSON: 'Kost voor elke persoon uit de groep',
+        PER_PAYER: 'Kost voor elke betalende persoon uit de groep',
+        PER_FREE: 'Kost voor elke niet-betalende persoon uit de groep',
+        INCOME: 'Deze inkomsten worden afgetrokken van het totaal van deze begroting'
+    }[prop]
+}
+
+const calcCostWhen = (prop, { days, nights }) => {
+    return {
+        ONETIME: 1,
+        PER_DAY: days,
+        PER_NIGHT: nights
     }[prop]
 }

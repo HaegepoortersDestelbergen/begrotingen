@@ -23,7 +23,7 @@ const GET_USER = gql`
 
 export default ({ children, minRole, maxRole }) => {
     const { token, userId } = getToken();
-    const [authenticatedUser, authenticateUser] = useContext(AuthContext);
+    const [ authenticatedUser, authenticateUser ] = useContext(AuthContext);
     const { loading, data, error } = useQuery(GET_USER, {
         variables: {id: userId}
     })
