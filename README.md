@@ -7,7 +7,7 @@ Technology:
 - GraphQL
 - Apollo-client
 
-... is the repo for the back-end.
+[begrotingen-api](https://github.com/HaegepoortersDestelbergen/begrotingen-api) is the repo for the back-end.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
