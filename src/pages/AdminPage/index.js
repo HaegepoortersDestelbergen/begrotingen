@@ -75,7 +75,7 @@ export default () => {
                     </div>
                 </TabPanel>
                 <TabPanel>
-                    <div className="container"> 
+                    <div className="container">
                         <h2>Instellingen</h2>
                     </div>
                 </TabPanel>

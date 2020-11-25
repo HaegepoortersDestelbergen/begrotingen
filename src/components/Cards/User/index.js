@@ -28,7 +28,7 @@ export default ({ data, onClick, editable }) => {
                 <box-icon name='user-circle'></box-icon> <strong>{ data.name }</strong>
             </div>
             <div>
-                <button className="btn btn--blank" onClick={handleDelete}><box-icon name='x'></box-icon></button>
+                <button className="btn btn--blank" onClick={(e) => handleDelete(e)}><box-icon name='x'></box-icon></button>
             </div>
         </Card>
     )

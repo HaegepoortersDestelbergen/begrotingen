@@ -4,7 +4,7 @@ import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 const REGISTER_USER = gql`
-    mutation register($name: String, $email: String, $password: String, $role: String, $access: [AccessInput]) {
+    mutation register($name: String, $email: String, $password: String, $role: Int, $access: [AccessInput]) {
         register(user: {name: $name, email: $email, password: $password, role: $role, access: $access}) {
             id
             name
@@ -27,7 +27,7 @@ export default ({ state, className = '', groups = [] }) => {
         delete formData.role;
         
         const access = handleAccess(formData);
-        const parsedFormData = { name, email, password, role, access: access }
+        const parsedFormData = { name, email, password, role: parseFloat(role), access: access }
         
         registerUser({
             variables: parsedFormData
@@ -66,12 +66,11 @@ export default ({ state, className = '', groups = [] }) => {
                         <InputField className="input--stretch" ref={register} name="name" placeholder="webmaster" autoComplete={false}>Naam</InputField>
                         <InputField className="input--stretch" ref={register} name="email" value="webmaster@haegepoorters.be">E-mail</InputField>
                         {/* <InputField ref={register} name="role">Rol</InputField> */}
-                        <SelectField className="input--stretch" name="role" label="Rol" value="user" ref={register}>
-                            <option value="user">Gebruiker</option>
-                            <option value="poweruser">Power gebruiker</option>
-                            <option value="admin">Administrator</option>
-                            <option value="root">Root</option>
-                            <option value="guest">Gast</option>
+                        <SelectField className="input--stretch" name="role" label="Rol" value="3" ref={register}>
+                            <option value="3">Gebruiker</option>
+                            <option value="2">Administrator</option>
+                            <option value="1">Root</option>
+                            <option value="0">Gast</option>
                         </SelectField>
                         <InputField className="input--stretch" ref={register} name="password" type="password" value="svg image">Wachtwoord</InputField>
                     </div>
@@ -96,7 +95,7 @@ const handleAccess = (data) => {
     
     return keys.map(k => {
         return {
-            id: k,
+            budgetId: k,
             type: data[k]
         }
     })

@@ -35,7 +35,7 @@ export default () => {
     return (
         <form onSubmit={handleSubmit(handleLogin)}>
             <InputField ref={register} value="givers@haegepoorters.be">E-mail</InputField>
-            <InputField ref={register} value="givers" name="password">Wachtwoord</InputField>
+            <InputField ref={register} value="givers" type="password" name="password">Wachtwoord</InputField>
             <button type="submit">Aanmelden</button>
         </form>
     )

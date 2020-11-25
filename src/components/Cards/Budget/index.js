@@ -23,9 +23,9 @@ export default ({ data, onClick, editable }) => {
     }
     
     return (
-        <Card theme="group">
+        <Card theme="budget">
             <div className="d-flex gap--col">
-                <box-icon name='group'></box-icon> <strong>{ data.name }</strong>
+                <box-icon name='coin'></box-icon> <strong>{ data.title }</strong>
             </div>
             {editable && 
                 <div>
