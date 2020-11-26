@@ -1,8 +1,8 @@
 import { useQuery, gql } from '@apollo/client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { WaveTopBottomLoading } from 'react-loadingg';
 import { Link, useParams } from 'react-router-dom';
-import { Card, Cards, Section } from '../../components';
+import { Card, Cards, Section, Forms } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 
@@ -28,6 +28,7 @@ const GET_BUDGETS = gql`
 
 export default () => {
     const { id: requestedGroupId } = useParams();
+    const [ updatedBudgets, updateBudgets ] = useState();
     
     const { loading: groupLoading, data: groupData, error: groupError } = useQuery(GET_GROUP, {
         variables: {id: requestedGroupId}
@@ -53,6 +54,7 @@ export default () => {
                         <Link to="/">Overzicht groepen</Link>
                         <h1>{ name }</h1>
                         <h2>Overzicht van begrotingen</h2>
+                        <Forms.Budget groupData={group[0]} state={[ updatedBudgets, updateBudgets ]}/>
                     </Section>
                 </header>
                 <Section container>

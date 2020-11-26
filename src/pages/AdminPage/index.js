@@ -25,10 +25,10 @@ const GET_USERS = gql`
 `;
 
 export default () => {
-    const {loading: groupsLoading, data: groupsData, error: groupsError, refetch: groupsRefetch } = useQuery(GET_GROUPS);
-    const {loading: userssLoading, data: usersData, error: usersError, refetch: usersRefetch } = useQuery(GET_USERS);
-    const [update, updateList] = useState([]);
-    const [updatedUsers, updateUsers] = useState([]);
+    const { loading: groupsLoading, data: groupsData, error: groupsError, refetch: groupsRefetch } = useQuery(GET_GROUPS);
+    const { loading: userssLoading, data: usersData, error: usersError, refetch: usersRefetch } = useQuery(GET_USERS);
+    const [ update, updateList ] = useState([]);
+    const [ updatedUsers, updateUsers ] = useState([]);
     
     const { group: allGroups } = groupsData || [];
     const { user: allUsers } = usersData || [];

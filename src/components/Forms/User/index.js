@@ -13,7 +13,7 @@ const REGISTER_USER = gql`
 `;
 
 export default ({ state, className = '', groups = [] }) => {
-    const [updatedUsers, updateUsers] = state;
+    const [ updatedUsers, updateUsers ] = state;
     
     const { register, handleSubmit, watch, errors } = useForm();
     const [ registerUser, { loading: registerUserLoading, data: registerUserData, error: registerUserError } ] = useMutation(REGISTER_USER);

@@ -76,10 +76,14 @@
             justify-content: center;
             width: 47px; height: 47px;
             background-color: $blue300;
+            // background-color: #dbeaec;
             border-radius: 100%;
+            // border: 2px solid #dbeaec;
+            // border: 2px solid $blue300;
             
             box-icon {
-                fill: $blue100;
+                fill: #dbeaec;
+                fill: white;
             }
         }
     }

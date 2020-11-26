@@ -4,11 +4,11 @@ import { Card } from '../..';
 import './index.scss';
 import '../../../utils';
 
-const DELETE_GROUP = gql`
-    mutation deleteGroup($id: String) {
-        deleteGroup(id: $id) {
+
+const DELETE_COST = gql`
+    mutation deleteCost($id: String) {
+        deleteCost(id: $id){
             id
-            name
         }
     }
 `;
@@ -17,10 +17,10 @@ export default ({ data, budgetData, states, onClick, editable }) => {
     const [ collapseState, setCollapseState ] = useState(true);
     const [ budgetTotal, setBudgetTotal ] = states.budgetTotal;
     const [ modalState, setModalState ] = states.modal;
-    const [deleteGroup, { loading, data: deleteGroupData, error }] = useMutation(DELETE_GROUP, {variables: {
+    const [ deleteCost, { loading, data: deleteCostData, error }] = useMutation(DELETE_COST, {variables: {
         id: data.id
     }})
-    
+        
     const people = calcCostType(data.type, budgetData.people)
     const when = calcCostWhen(data.when, budgetData.stay)
     const totalAmount = ((people * data.amount) * when);
@@ -37,7 +37,7 @@ export default ({ data, budgetData, states, onClick, editable }) => {
     }, [])
     
     const handleDelete = (e) => {
-        deleteGroup()
+        deleteCost()
         if (!loading) e.target.closest('.card').remove();
     }
     
@@ -52,7 +52,7 @@ export default ({ data, budgetData, states, onClick, editable }) => {
                     </div>
                 </div>
                 <div className="card__price">
-                    <h3>+{ totalAmount.pricify() }</h3>
+                    <h3>{totalAmount >= 0 && '+'}{ totalAmount.pricify() }</h3>
                     <small>{ costTypeContext(data.type) }</small>
                 </div>
             </div>
@@ -63,7 +63,10 @@ export default ({ data, budgetData, states, onClick, editable }) => {
                     <small>{ costTypeDetail(data.type) }, verekend per betalende persoon</small>
                 </div>
                 <div className="card__actions">
-                    <button className="btn" onClick={toggleModal}>Bewerken</button>
+                    <div className="btn-group">
+                        <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder cost</button>
+                        <button className="btn" onClick={toggleModal}>Bewerken</button>
+                    </div>
                 </div>
             </div>
         </Card>

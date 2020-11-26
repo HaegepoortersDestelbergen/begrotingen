@@ -16,11 +16,23 @@
 }
 
 .input {
+    width: 100%;
+    
     & + &:not(.radio-field) {
         margin-top: 1rem;
     }
     
     &--stretch input, &--stretch select {
         width: 100%;
+    }
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    
+    .input {
+        margin-top: 0 !important;
     }
 }
