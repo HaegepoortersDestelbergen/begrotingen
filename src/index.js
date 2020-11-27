@@ -9,8 +9,8 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import 'boxicons/dist/boxicons';
 
-const gqlUri = env('http://localhost:4000', 'https://rocky-ridge-68212.herokuapp.com/');
-const wsUri = env('ws://localhost:4000/graphql', 'wss://rocky-ridge-68212.herokuapp.com/graphql');
+const gqlUri = env('http://localhost:4000', 'https://immense-cliffs-08162.herokuapp.com/');
+const wsUri = env('ws://localhost:4000/graphql', 'wss://immense-cliffs-08162.herokuapp.com/graphql');
 
 const httpLink = new HttpLink({
   uri: gqlUri
