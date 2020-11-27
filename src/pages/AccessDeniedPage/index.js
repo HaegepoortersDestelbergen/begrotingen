@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Page } from '../../layouts';
 import './index.scss';
 
@@ -9,6 +10,7 @@ export default () => {
                 <img src="https://res.cloudinary.com/haegepoortersbe/image/upload/v1598633138/uhujsjocl5n4bhdqrsmu.gif" alt="" width="200px" height="200px"/>
                 <h2>Geen toegang</h2>
                 <p>Je hebt niet voldoende rechten op deze pagina te bekijken</p>
+                <Link to="/" className="btn mt-3">Startpagina</Link>
             </div>
         </Page>
     )

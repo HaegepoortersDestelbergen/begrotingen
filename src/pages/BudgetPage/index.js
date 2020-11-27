@@ -1,15 +1,16 @@
 import { useQuery, gql, useMutation } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { WaveTopBottomLoading } from 'react-loadingg';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl-be';
-import { Card, Cards, Forms, Section } from '../../components';
+import { Card, Cards, Forms, OnAuth, Section } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
+import { AuthContext } from '../../contexts';
 
 dayjs.locale('nl-be') 
 
@@ -54,6 +55,7 @@ const GET_COSTS = gql`
 
 export default () => {
     const { id: requestedBudget } = useParams();
+    const [ authenticatedUser, authenticateUser ] = useContext(AuthContext);
     const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
     const [ modalState, setModalState ] = useState(false);
     const [ updatedCosts, updateCosts ] = useState([]);
@@ -68,7 +70,6 @@ export default () => {
     })
     
     const handleDelete = (groupId) => {
-        console.log('deleted budget');
         deleteBudget();
         window.location.hash = `#/group/${groupId}`;
     }
@@ -93,40 +94,33 @@ export default () => {
         const periodNights = periodDays - 1;
         const peopleTotal = people.paying + people.free;
         const budgetTotalReduced = budgetTotal.reduce((a, b) => {
-            console.log(a, b);
             return {total: a.total + b.total}
         });
         
         const budgetTotalReducedIsNumber = budgetTotalReduced.total == 'number';
                 
         return (
-            <Page theme="group" ignore>
+            <Page theme="budget" ignore>
                 <header>
                     <Section container>
                         <div className="mb-5 d-flex align-items-center justify-content-between">
-                            <Link to={`/group/${groupId}`}>Overzicht budgetten</Link>
+                            <Link to={`/group/${groupId}`} className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht budgetten</Link>
                             <div className="btn-group">
                                 <button className="btn btn--icon btn--sub" onClick={() => handleDelete(groupId)}><box-icon name='trash'></box-icon> Verwijder budget</button>
-                                <button className="btn btn--icon" onClick={() => handleDelete(groupId)}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
+                                <button className="btn btn--icon btn--sub" onClick={() => {}}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
+                                <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col">
-                                <h1>{ title }</h1>
-                                <h2>van { periodStart.format('DD MMM') } tot { periodEnd.format('DD MMM') } — { peopleTotal } personen</h2>
+                                <h1 className="page__title">{ title }</h1>
+                                <h2 className="page__subtitle">Van { periodStart.format('DD MMM') } tot { periodEnd.format('DD MMM') } — { peopleTotal } personen</h2>
                                 <p>{ comment }</p> 
                             </div>
                             <div className="col d-flex flex-column align-items-end">
                                 <h1>{ typeof budgetTotalReduced.total == 'number' ? budgetTotalReduced.total.pricify() : 0 }</h1>
-                                { budgetTotalReduced.total == 'number' && budgetTotalReduced.total >= 0 ?
-                                    <small>{ budgetTotalReducedIsNumber ? ((budgetTotalReduced.total)/peopleTotal).pricify() : 0 } per persoon</small> :
-                                    <small>{ budgetTotalReducedIsNumber ? (((budgetTotalReduced.total)/peopleTotal)*-1).pricify() : 0 } winst per persoon</small>
-                                }
-                                
+                                <small>{ typeof budgetTotalReduced.total == 'number' ? ((budgetTotalReduced.total)/peopleTotal).pricify() : 0 } per persoon</small>
                             </div>
-                        </div>
-                        <div>
-                            <Forms.Cost state={[ updatedCosts, updateCosts ]} budgetId={requestedBudget} />
                         </div>
                     </Section>
                 </header>
@@ -148,12 +142,15 @@ export default () => {
                 </Section>
                 <Popup open={modalState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
                     <div className="modal__body">
-                        
+                        <Forms.Cost states={{
+                            updateCost: [ updatedCosts, updateCosts ],
+                            modal: toggleModal
+                        }} budgetId={requestedBudget} />
                     </div>
-                    <div className="btn-group">
+                    {/* <div className="btn-group">
                         <button className="btn btn--sub" onClick={toggleModal}>Annuleren</button>
                         <button onClick={toggleModal}>Opslaan</button>
-                    </div>
+                    </div> */}
                 </Popup>
             </Page>
         )

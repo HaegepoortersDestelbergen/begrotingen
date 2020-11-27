@@ -24,7 +24,7 @@ export default ({ state, groupData, className = '', budgetId }) => {
     const [ updatedBudgets, updateBudgets ] = state;
     
     const { register, handleSubmit, watch, errors } = useForm();
-    const [ addBudget, { loading:addBudgettLoading, data: addBudgetData, error: addBudgetError } ] = useMutation(ADD_BUDGET);
+    const [ addBudget, { loading: addBudgettLoading, data: addBudgetData, error: addBudgetError } ] = useMutation(ADD_BUDGET);
 
     const handle = (formData) => {        
         const { start, end, paying, free } = formData;

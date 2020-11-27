@@ -67,10 +67,10 @@ export default ({ state, className = '', groups = [] }) => {
                         <InputField className="input--stretch" ref={register} name="email" value="webmaster@haegepoorters.be">E-mail</InputField>
                         {/* <InputField ref={register} name="role">Rol</InputField> */}
                         <SelectField className="input--stretch" name="role" label="Rol" value="3" ref={register}>
-                            <option value="3">Gebruiker</option>
-                            <option value="2">Administrator</option>
-                            <option value="1">Root</option>
-                            <option value="0">Gast</option>
+                            <option value="2">Gebruiker</option>
+                            <option value="1">Administrator</option>
+                            <option value="0">Root</option>
+                            <option value="3">Gast</option>
                         </SelectField>
                         <InputField className="input--stretch" ref={register} name="password" type="password" value="svg image">Wachtwoord</InputField>
                     </div>
@@ -95,7 +95,7 @@ const handleAccess = (data) => {
     
     return keys.map(k => {
         return {
-            budgetId: k,
+            groupId: k,
             type: data[k]
         }
     })

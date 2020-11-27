@@ -64,7 +64,7 @@ export default ({ data, budgetData, states, onClick, editable }) => {
                 </div>
                 <div className="card__actions">
                     <div className="btn-group">
-                        <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder cost</button>
+                        <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder kost</button>
                         <button className="btn" onClick={toggleModal}>Bewerken</button>
                     </div>
                 </div>

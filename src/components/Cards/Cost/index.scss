@@ -26,6 +26,7 @@
     
     .card__top {
         padding: 1.4rem;
+        cursor: pointer;
     }
     
     .card__btm {
@@ -68,23 +69,23 @@
                     
         display: flex;
         align-items: center;
-        column-gap: 1rem;
+        column-gap: 1.4rem;
         
         .card__icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 47px; height: 47px;
-            background-color: $blue300;
+            // width: 47px; height: 47px;
+            // background-color: $blue300;
             // background-color: #dbeaec;
-            border-radius: 100%;
+            // border-radius: 100%;
             // border: 2px solid #dbeaec;
             // border: 2px solid $blue300;
             
-            box-icon {
-                fill: #dbeaec;
-                fill: white;
-            }
+            // box-icon {
+            //     fill: #dbeaec;
+            //     fill: white;
+            // }
         }
     }
     

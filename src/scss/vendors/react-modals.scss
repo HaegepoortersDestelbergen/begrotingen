@@ -30,3 +30,11 @@
         border-radius: $bdRadius $bdRadius 0 0; 
     }
 }
+
+
+.popup-content.menu-content {
+  padding: 1.4rem;
+  background-color: $blue100;
+  border: none;
+  border-radius: $bdRadius !important;
+}

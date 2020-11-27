@@ -20,6 +20,7 @@ const GET_USERS = gql`
             id
             name
             email
+            role
         }
     }
 `;
@@ -71,6 +72,8 @@ export default () => {
                             <h2>Gebruikers</h2>
                             <Forms.User state={[updatedUsers, updateUsers]} groups={allGroups}/>
                         </div>
+                        BADGE TOEVOEGEN + INFO ICON / FADED X-ICON + POPUP
+                        <small className="d-block mb-3">Root-gebruikers kunnen niet verwijderd worden</small>
                         {allUsers && allUsers.map(u => u.name && <Cards.User editable key={u.id} data={u} /> || null )}
                     </div>
                 </TabPanel>

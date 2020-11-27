@@ -35,6 +35,14 @@
     &--sub {
         background-color: #aababc !important;
     }
+    
+    &--simple {
+        background-color: transparent !important;
+        font-weight: 500;
+        color: $blue400 !important;
+        
+        box-icon {fill: $blue300 !important;}
+    }
 }
 
 .btn-group {

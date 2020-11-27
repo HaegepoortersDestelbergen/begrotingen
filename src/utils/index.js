@@ -11,7 +11,13 @@ Number.prototype.pricify = function (append = 'euro', fixed = 2) {
     return `${this.toFixed(fixed).replace('.', ',')} ${append}`
 }
 
+const logOut = () => {
+    window.localStorage.removeItem('user');
+    window.location.hash = '#/login';
+}
+
 export {
     env,
-    getToken
+    getToken,
+    logOut
 }

@@ -1,5 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import React from 'react';
+import Popup from 'reactjs-popup';
 import { Card } from '../..';
 import './index.scss';
 
@@ -17,6 +18,8 @@ export default ({ data, onClick, editable }) => {
         id: data.id
     }})
     
+    console.log({ data })
+    
     const handleDelete = (e) => {
         deleteUser()
         if (!loading) e.target.closest('.card').remove();
@@ -27,9 +30,16 @@ export default ({ data, onClick, editable }) => {
             <div className="d-flex gap--col">
                 <box-icon name='user-circle'></box-icon> <strong>{ data.name }</strong>
             </div>
-            <div>
-                <button className="btn btn--blank" onClick={(e) => handleDelete(e)}><box-icon name='x'></box-icon></button>
-            </div>
+            { data.role != 0 ? 
+                <div>
+                    <button className="btn btn--blank" onClick={(e) => handleDelete(e)}><box-icon name='x'></box-icon></button>
+                </div> :
+                <div>
+                    <Popup trigger={<button className="btn btn--blank"><box-icon name='x'></box-icon></button>} position="left center">
+                        Root-gebruikers kunnen<br/>niet verwijderd worden
+                    </Popup>
+                </div>
+            }
         </Card>
     )
 }

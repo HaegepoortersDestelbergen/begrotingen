@@ -2,7 +2,8 @@ import { useQuery, gql } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { WaveTopBottomLoading } from 'react-loadingg';
 import { Link, useParams } from 'react-router-dom';
-import { Card, Cards, Section, Forms } from '../../components';
+import Popup from 'reactjs-popup';
+import { Card, Cards, Section, Forms, OnAuth } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 
@@ -22,14 +23,23 @@ const GET_BUDGETS = gql`
             title
             created
             groupId
+            comment
+            people {
+                paying
+                free
+            }
+            period {
+                start
+                end
+            }
         }
     }
 `;
 
 export default () => {
     const { id: requestedGroupId } = useParams();
-    const [ updatedBudgets, updateBudgets ] = useState();
-    
+    const [ updatedBudgets, updateBudgets ] = useState([]);
+    const [ modalState, setModalState ] = useState(false);
     const { loading: groupLoading, data: groupData, error: groupError } = useQuery(GET_GROUP, {
         variables: {id: requestedGroupId}
     })
@@ -39,6 +49,14 @@ export default () => {
     
     const { group } = groupData || [];
     const { budget: budgets } = budgetsData || [];
+    
+    const toggleModal = (e) => {
+        setModalState(!modalState)
+    }
+    
+    useEffect(() => {
+        refetch();
+    }, [updatedBudgets])
     
     useEffect(() => {
         refetch();
@@ -51,10 +69,19 @@ export default () => {
             <Page theme="group" ignore> 
                 <header>
                     <Section container>
-                        <Link to="/">Overzicht groepen</Link>
-                        <h1>{ name }</h1>
-                        <h2>Overzicht van begrotingen</h2>
-                        <Forms.Budget groupData={group[0]} state={[ updatedBudgets, updateBudgets ]}/>
+                        <div className="mb-5 d-flex justify-content-between">  
+                            <Link to="/" className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht groepen</Link>
+                            <div className="btn-group">
+                                <OnAuth>
+                                    <button className="btn" onClick={toggleModal}>Nieuwe begroting</button>
+                                </OnAuth>
+                            </div>
+                        </div>
+                        <h1 className="page__title">{ name }</h1>
+                        <h2 className="page__subtitle">Overzicht van begrotingen</h2>
+                        {/* <OnAuth>
+                            
+                        </OnAuth> */}
                     </Section>
                 </header>
                 <Section container>
@@ -62,6 +89,15 @@ export default () => {
                         <Cards.Budget data={b}/>
                     </Link>) : <WaveTopBottomLoading/>}
                 </Section>
+                <Popup open={modalState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
+                    <div className="modal__body">
+                        <Forms.Budget groupData={group[0]} state={[ updatedBudgets, updateBudgets ]}/>
+                    </div>
+                    <div className="btn-group">
+                        <button className="btn btn--sub" onClick={toggleModal}>Annuleren</button>
+                        <button onClick={toggleModal}>Opslaan</button>
+                    </div>
+                </Popup>
             </Page>
         )
     } else {

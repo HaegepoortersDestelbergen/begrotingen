@@ -19,16 +19,14 @@ const ADD_COST = gql`
     }
 `;
 
-export default ({ state, className = '', budgetId }) => {
-    const [ updatedCosts, updateCosts ] = state;
-    
+export default ({ states, className = '', budgetId }) => {
+    const [ updatedCosts, updateCosts ] = states.updateCost;
     const { register, handleSubmit, watch, errors } = useForm();
     const [ addCost, { loading: addCostLoading, data: addCostData, error: addCostError } ] = useMutation(ADD_COST);
 
     const handle = (formData) => {        
         const parsedFormData = {...formData, budgetId: budgetId, amount: parseFloat(formData.amount)}
-        console.log(parsedFormData)
-        
+        if (states.modal) states.modal();
         addCost({
             variables: parsedFormData
         })
@@ -75,7 +73,10 @@ export default ({ state, className = '', budgetId }) => {
                     </div>
                 </div>
             </div>
-            <button className="btn btn--icon" type="submit"><box-icon name='plus'></box-icon> Kost toevoegen</button>
+            <div className="btn-group mt-3">
+                <button className="btn btn--sub" type="reset" onClick={() => {states.modal()}}>Niet opslaan</button>
+                <button className="btn btn--icon" type="submit"><box-icon name='plus'></box-icon> Kost toevoegen</button>
+            </div>
         </form>
     )
 }
