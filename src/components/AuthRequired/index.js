@@ -29,7 +29,7 @@ const GET_BUDGET= gql`
     }
 `;
 
-export default ({ children, minRole, maxRole }) => {
+export default ({ children, minRole, maxRole, givenGroupId }) => {
     const location = useLocation();
     const { token, userId } = getToken();
     const [ groupId, setGroupId ] = useState(null);
@@ -44,48 +44,44 @@ export default ({ children, minRole, maxRole }) => {
     const groupMatch = useRouteMatch('/group/:id');
     const budgetMatch = useRouteMatch('/budget/:id');
     
-    console.log({ groupMatch, budgetMatch })
-    
+    // set groupId
     useEffect(() => {
         if (user && startMatch) authenticateUser({ ...user[0], authorization: null });
         if (user && groupMatch) setGroupId(groupMatch.params.id);
         if (user && budgetMatch) {
             getBudget({ variables: { id: budgetMatch.params.id }});
-            if (getBudgetData) setGroupId(getBudgetData.budget.groupId);
-            
         }
     }, [location.key, user]);
     
+    // if budgetpage do extra configuration
+    useEffect(() => {
+        if (getBudgetError) window.location.reload();
+        if (getBudgetData) {
+            setGroupId(getBudgetData.budget[0].groupId)
+        }
+    }, [getBudgetData, user])
+    
+    // authenticate
     useEffect(() => {
         if (user && groupMatch && groupId) authenticateUser({ ...user[0], authorization: findAuthorizationType(user[0].access, groupId) })
         if (user && budgetMatch && groupId) authenticateUser({ ...user[0], authorization: findAuthorizationType(user[0].access, groupId) })
-    }, [groupId])
+    }, [location.key, user, groupId])
     
     // redirect if no data is available
     if (!token) return <Redirect to="/login"/>
     if (error) return <Redirect to="/login"/>
     
-        if (minRole) {
+    if (minRole) {
         if (user && (user[0].role <= minRole)) return children
         else if (user && !(user[0].role <= minRole)) return <AccessDeniedPage/>
-        else return <Page theme="loading">
-            <WaveTopBottomLoading/>
-        </Page>
-    } else return children;
-        
-    if (groupId) {
-        console.log('groupId exists')        
-        if (!authenticatedUser?.authorization) {
-            <Page theme="loading">
-                <WaveTopBottomLoading/>
-            </Page>
-        } else if (authenticatedUser.authorization == 'none') {
-            return <AccessDeniedPage/>
-        } else return children
-    }
+        else return <Page theme="loading"><WaveTopBottomLoading/></Page>
+    } else if ((groupMatch || budgetMatch) && authenticatedUser) {
+        if (!authenticatedUser.authorization) return <Page theme="loading"><WaveTopBottomLoading/></Page>
+        else if (authenticatedUser.authorization == 'none') return <AccessDeniedPage/>
+        else return children
+    } else return children
 }
 
 const findAuthorizationType = (access, id) => {
-    console.log({ access, id })
     return access.find(a => a.groupId === id).type
 }

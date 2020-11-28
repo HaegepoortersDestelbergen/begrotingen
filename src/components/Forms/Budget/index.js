@@ -20,10 +20,12 @@ const ADD_BUDGET = gql`
     }
 `;
 
-export default ({ state, groupData, className = '', budgetId }) => {
-    const [ updatedBudgets, updateBudgets ] = state;
-    
-    const { register, handleSubmit, watch, errors } = useForm();
+export default ({ states, groupData, className = '', budgetId, placeHolder }) => {
+    const [ updatedBudgets, updateBudgets ] = states.updatedBudgets;
+        
+    const { register, handleSubmit, watch, errors } = useForm({
+        defaultValues: placeHolder && placeHolder || { }
+    });
     const [ addBudget, { loading: addBudgettLoading, data: addBudgetData, error: addBudgetError } ] = useMutation(ADD_BUDGET);
 
     const handle = (formData) => {        
@@ -53,11 +55,16 @@ export default ({ state, groupData, className = '', budgetId }) => {
     }
         
     useEffect(() => {
-        if (addBudgetData) updateBudgets(prev => [...prev, addBudgetData.addBudget]);
+        if (addBudgetData) {
+            updateBudgets(prev => [...prev, addBudgetData.addBudget]);
+            states.modal();
+        }
     }, [addBudgetData])
     
     const today = dayjs().format('YYYY-MM-DD')
     const future = dayjs().add(2, 'day').format('YYYY-MM-DD')
+    
+    //todo: better naming https://react-hook-form.com/api#register
     
     return (
         <form onSubmit={handleSubmit(handle)} className={`form ${className}`}>
@@ -77,7 +84,10 @@ export default ({ state, groupData, className = '', budgetId }) => {
                     </div>
                 </div>
             </div>
-            <button className="btn btn--icon" type="submit"><box-icon name='plus'></box-icon> Kost toevoegen</button>
+            <div className="btn-group"> 
+                <button className="btn btn--sub" type="reset" onClick={states.modal}>Niet opslaan</button>
+                <button className="btn btn--icon" type="submit"><box-icon name='plus'></box-icon> Kost toevoegen</button>
+            </div>
         </form>
     )
 }

@@ -1,3 +1,40 @@
+@import '../../scss/abstracts';
+
 .page--login {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .img--backgr {
+        position: absolute;
+        top: 0px; bottom: 0px;
+        left: 0px; right: 0px;
+        width: 100vw;
+        height: 100vh;
+    }
+    
+    .form-wrapper {
+        z-index: 10;
+        background-color: white;
+        border-radius: $bdRadius;
+        padding: 2rem;
+        width: 100%;
+    }
+}
+
+@media (min-width: 576px) {}
+
+@media (min-width: 768px) {}
+
+@media (min-width: 992px) {
+    .page--login {
+        .form-wrapper {
+            max-width: 30vw;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
     
 }

@@ -79,9 +79,6 @@ export default () => {
                         </div>
                         <h1 className="page__title">{ name }</h1>
                         <h2 className="page__subtitle">Overzicht van begrotingen</h2>
-                        {/* <OnAuth>
-                            
-                        </OnAuth> */}
                     </Section>
                 </header>
                 <Section container>
@@ -91,11 +88,10 @@ export default () => {
                 </Section>
                 <Popup open={modalState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
                     <div className="modal__body">
-                        <Forms.Budget groupData={group[0]} state={[ updatedBudgets, updateBudgets ]}/>
-                    </div>
-                    <div className="btn-group">
-                        <button className="btn btn--sub" onClick={toggleModal}>Annuleren</button>
-                        <button onClick={toggleModal}>Opslaan</button>
+                        <Forms.Budget groupData={group[0]} states={{
+                            updatedBudgets: [ updatedBudgets, updateBudgets ],
+                            modal: toggleModal
+                        }}/>
                     </div>
                 </Popup>
             </Page>

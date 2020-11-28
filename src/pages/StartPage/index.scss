@@ -1,0 +1,17 @@
+.page--start {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    text-align: center;
+    
+    h1 {
+        margin: 0;
+    }
+    
+    .section--groups-list {
+        display: flex;
+        gap: 1.4rem;
+        justify-content: center;
+    }
+}

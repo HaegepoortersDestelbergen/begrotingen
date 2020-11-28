@@ -26,14 +26,16 @@ export default ({ states, className = '', budgetId }) => {
 
     const handle = (formData) => {        
         const parsedFormData = {...formData, budgetId: budgetId, amount: parseFloat(formData.amount)}
-        if (states.modal) states.modal();
         addCost({
             variables: parsedFormData
         })
     }
         
     useEffect(() => {
-        if (addCostData) updateCosts(prev => [...prev, addCostData.addCost]);
+        if (addCostData) {
+            updateCosts(prev => [...prev, addCostData.addCost])
+            states.modal();
+        };
     }, [addCostData])
     
     return (

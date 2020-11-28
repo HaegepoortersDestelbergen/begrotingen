@@ -5,7 +5,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl-be';
-import { Card, Cards, Forms, OnAuth, Section } from '../../components';
+import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
@@ -21,6 +21,7 @@ const GET_BUDGET = gql`
             title
             created
             groupId
+            comment
             people {
                 paying
                 free
@@ -43,12 +44,6 @@ const GET_COSTS = gql`
     query cost($budgetId: String) {
         cost(budgetId: $budgetId) {
             id
-            title
-            comment
-            category
-            type
-            when
-            amount
         }
     }
 `;
@@ -58,7 +53,9 @@ export default () => {
     const [ authenticatedUser, authenticateUser ] = useContext(AuthContext);
     const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
     const [ modalState, setModalState ] = useState(false);
+    const [ modalBudgetState, setModalBudgetState ] = useState(false);
     const [ updatedCosts, updateCosts ] = useState([]);
+    const [ updatedBudget, setUpdateBudget ] = useState([]);
     const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(GET_BUDGET, {
         variables: { id: requestedBudget }
     })
@@ -79,26 +76,24 @@ export default () => {
     }
     
     useEffect(() => {
-        costsRefetch();
+        if (updatedCosts) costsRefetch();
     }, [updatedCosts])
     
-    const { budget } = budgetData || [];
-    const { cost: costs } = costsData || [];
-
-    if (!budgetLoading && budget[0]) {
+    if (!budgetLoading && budgetData && costsData) {
+        const { budget } = budgetData || [];
         const { title, groupId, comment, period: { start, end }, people } = budget[0];
+        const { cost: costs } = costsData || [];
         
         const periodStart = dayjs(start);
         const periodEnd = dayjs(end);
         const periodDays = (periodEnd.diff(periodStart, 'days'))+1;
         const periodNights = periodDays - 1;
+        
         const peopleTotal = people.paying + people.free;
         const budgetTotalReduced = budgetTotal.reduce((a, b) => {
             return {total: a.total + b.total}
         });
-        
-        const budgetTotalReducedIsNumber = budgetTotalReduced.total == 'number';
-                
+                        
         return (
             <Page theme="budget" ignore>
                 <header>
@@ -107,7 +102,7 @@ export default () => {
                             <Link to={`/group/${groupId}`} className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht budgetten</Link>
                             <div className="btn-group">
                                 <button className="btn btn--icon btn--sub" onClick={() => handleDelete(groupId)}><box-icon name='trash'></box-icon> Verwijder budget</button>
-                                <button className="btn btn--icon btn--sub" onClick={() => {}}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
+                                <button className="btn btn--icon btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
                                 <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
                             </div>
                         </div>
@@ -118,7 +113,7 @@ export default () => {
                                 <p>{ comment }</p> 
                             </div>
                             <div className="col d-flex flex-column align-items-end">
-                                <h1>{ typeof budgetTotalReduced.total == 'number' ? budgetTotalReduced.total.pricify() : 0 }</h1>
+                                <h1 className="mb-0">{ typeof budgetTotalReduced.total == 'number' ? budgetTotalReduced.total.pricify() : 0 }</h1>
                                 <small>{ typeof budgetTotalReduced.total == 'number' ? ((budgetTotalReduced.total)/peopleTotal).pricify() : 0 } per persoon</small>
                             </div>
                         </div>
@@ -129,17 +124,15 @@ export default () => {
                     {   !costsLoading && costs ? 
                         costs.map(c =>
                             <Cards.Cost key={c.id} data={c} budgetData={{...budget[0], stay: { days: periodDays, nights: periodNights } }} states={{
-                                budgetTotal: [ budgetTotal, setBudgetTotal ],
-                                modal: [ modalState, setModalState ]
+                                budgetTotal: [ budgetTotal, setBudgetTotal ]
                             }} />
                         ) : 
                         null
                     }
-                    { (!costsLoading && costs.length == 0) && <div className="">
-                        <img src="undraw/searching.svg" width="200px"/>
-                        We konden geen uitgaven vinden
-                    </div> }
+                    { (!costsLoading && costs.length == 0) && <NotifyNotFound/> }
                 </Section>
+                
+                {/* ADD COST */}
                 <Popup open={modalState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
                     <div className="modal__body">
                         <Forms.Cost states={{
@@ -147,14 +140,24 @@ export default () => {
                             modal: toggleModal
                         }} budgetId={requestedBudget} />
                     </div>
-                    {/* <div className="btn-group">
-                        <button className="btn btn--sub" onClick={toggleModal}>Annuleren</button>
-                        <button onClick={toggleModal}>Opslaan</button>
-                    </div> */}
+                </Popup>
+                
+                {/* UPDATE BUDGET */}
+                <Popup open={modalBudgetState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
+                    <div className="modal__body">
+                        <h3 className="text-center">Update budget</h3>
+                        <Forms.UpdateBudget
+                            states={{
+                                updateBudget: [ updatedBudget, setUpdateBudget ],
+                                modal: () => setModalBudgetState(!modalBudgetState)
+                            }}
+                            budgetId={requestedBudget}
+                        />
+                    </div>
                 </Popup>
             </Page>
         )
-    } else if (!budgetLoading && !budget[0]) {
+    } else if (!budgetLoading && !budgetData.budget) {
         return <Redirect to={`/`}/>
     } else {
         return <WaveTopBottomLoading/>

@@ -19,7 +19,8 @@ export default ({ data, onClick, editable }) => {
     }})
     
     const handleDelete = (e) => {
-        deleteGroup()
+        window.location.hash = `#/group/${data.id}`;
+        deleteGroup();
         if (!loading) e.target.closest('.card').remove();
     }
     

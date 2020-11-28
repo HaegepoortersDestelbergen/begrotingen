@@ -1,9 +1,23 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { Card } from '../..';
+import Popup from 'reactjs-popup';
+import { Card, OnAuth, Forms } from '../..';
 import './index.scss';
 import '../../../utils';
+import WaveTopBottomLoading from 'react-loadingg/lib/WaveTopBottomLoading';
 
+const GET_COST = gql`
+    query cost($id: String) {
+        cost(id: $id) {
+            title
+            comment
+            category
+            type
+            when
+            amount
+        }
+    }
+`;
 
 const DELETE_COST = gql`
     mutation deleteCost($id: String) {
@@ -13,64 +27,85 @@ const DELETE_COST = gql`
     }
 `;
 
-export default ({ data, budgetData, states, onClick, editable }) => {       
+export default ({ data, budgetData, states, onClick, editable }) => {
     const [ collapseState, setCollapseState ] = useState(true);
+    const [ modalState, setModalState ] = useState(false);
+    const [ costState, setCostState ] = useState(data);
     const [ budgetTotal, setBudgetTotal ] = states.budgetTotal;
-    const [ modalState, setModalState ] = states.modal;
-    const [ deleteCost, { loading, data: deleteCostData, error }] = useMutation(DELETE_COST, {variables: {
+    const { loading: getCostLoading, data: getCostData, error: getCostError} = useQuery(GET_COST, { variables: {
         id: data.id
     }})
-        
-    const people = calcCostType(data.type, budgetData.people)
-    const when = calcCostWhen(data.when, budgetData.stay)
-    const totalAmount = ((people * data.amount) * when);
+    const [ deleteCost, { loading, data: deleteCostData, error }] = useMutation(DELETE_COST, { variables: {
+        id: data.id
+    }})
     
-    const toggleModal = () => {
-        setModalState(!modalState)
-    }
+    const { category, title, comment, type, when, amount } = getCostData && getCostData.cost[0] || [];
+    const peopleCalc = calcCostType(type, budgetData.people)
+    const whenCalc = calcCostWhen(when, budgetData.stay)
+    const totalAmount = ((peopleCalc * amount) * whenCalc);
     
     useEffect(() => {    
-        setBudgetTotal(prev => [...prev, ...[{
-            id: data.id,
-            total: totalAmount
-        }]])
-    }, [])
+        if (getCostData) {
+            setBudgetTotal(prev => [...prev, ...[{
+                id: data.id,
+                total: totalAmount
+            }]])
+        }
+    }, [getCostData])
     
-    const handleDelete = (e) => {
-        deleteCost()
-        if (!loading) e.target.closest('.card').remove();
-    }
-    
-    return (
-        <Card theme="cost" className={`collapse collapse--${collapseState}`}>
-            <div className="card__top" onClick={() => setCollapseState(!collapseState)}>
-                <div className="card__header">
-                    <div className="card__icon">{ CategoryIcon(data.category) }</div>
-                    <div>
-                        <h3>{ data.title }</h3>
-                        <small>{ data.comment }</small>
+    if (getCostData) {
+        const handleDelete = (e) => {
+            deleteCost()
+            if (!loading) e.target.closest('.card').remove();
+        }    
+         
+        return ( <>
+            <Card theme="cost" className={`collapse collapse--${collapseState}`}>
+                <div className="card__top" onClick={() => setCollapseState(!collapseState)}>
+                    <div className="card__header">
+                        <div className="card__icon">{ CategoryIcon(category) }</div>
+                        <div>
+                            <h3>{ title }</h3>
+                            <small>{ comment }</small>
+                        </div>
+                    </div>
+                    <div className="card__price">
+                        <h3>{totalAmount >= 0 && '+'}{ totalAmount.pricify() }</h3>
+                        <small>{ costTypeContext(type) }</small>
                     </div>
                 </div>
-                <div className="card__price">
-                    <h3>{totalAmount >= 0 && '+'}{ totalAmount.pricify() }</h3>
-                    <small>{ costTypeContext(data.type) }</small>
-                </div>
-            </div>
-            {/* <hr className="striped"/> */}
-            <div className="card__btm">
-                <div className="card__detail">
-                    <p>Uitgave van <strong>{ (totalAmount / budgetData.people.paying).pricify() } per persoon</strong></p>
-                    <small>{ costTypeDetail(data.type) }, verekend per betalende persoon</small>
-                </div>
-                <div className="card__actions">
-                    <div className="btn-group">
-                        <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder kost</button>
-                        <button className="btn" onClick={toggleModal}>Bewerken</button>
+                {/* <hr className="striped"/> */}
+                <div className="card__btm">
+                    <div className="card__detail">
+                        <p>Uitgave van <strong>{ (totalAmount / budgetData.people.paying).pricify() } per persoon</strong></p>
+                        <small>{ costTypeDetail(type) }, verekend per betalende persoon</small>
+                    </div>
+                    <div className="card__actions">
+                        <OnAuth>
+                            <div className="btn-group">
+                                <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder kost</button>
+                                <button className="btn" onClick={() => setModalState(!modalState)}>Bewerken</button>
+                            </div>
+                        </OnAuth>
                     </div>
                 </div>
-            </div>
-        </Card>
-    )
+            </Card>
+            
+            {/* UPDATE COST */}
+            <Popup open={modalState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
+                <div className="modal__body">
+                    <h3 className="text-center">Update kost</h3>
+                    <Forms.UpdateCost
+                        states={{
+                            updateCost: [ costState, setCostState ],
+                            modal: () => setModalState(!modalState)
+                        }}
+                        costId={data.id}
+                    />
+                </div>
+            </Popup>
+        </>)
+    } else return <WaveTopBottomLoading/>
 }
 
 const CategoryIcon = (prop) => {

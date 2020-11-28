@@ -22,6 +22,7 @@ export default () => {
     useEffect(() => {
         if (loginData) {
             window.localStorage.setItem('user', JSON.stringify(loginData.login))
+            window.location.hash = '#/'
         }
     }, [loginData])
     
@@ -33,10 +34,11 @@ export default () => {
     }
     
     return (
-        <form onSubmit={handleSubmit(handleLogin)}>
-            <InputField ref={register} value="givers@haegepoorters.be">E-mail</InputField>
-            <InputField ref={register} value="givers" type="password" name="password">Wachtwoord</InputField>
-            <button type="submit">Aanmelden</button>
+        <form className="form" onSubmit={handleSubmit(handleLogin)}>
+            <InputField className="input--stretch" ref={register} value="givers@haegepoorters.be">E-mail</InputField>
+            <InputField className="input--stretch" ref={register} value="givers" type="password" name="password">Wachtwoord</InputField>
+            <small className="d-block text-center mt-3">Een login ontvang je van de webmaster(s)</small>
+            <button className="btn mx-auto" type="submit">Aanmelden</button>
         </form>
     )
 }
