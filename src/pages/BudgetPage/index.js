@@ -79,6 +79,10 @@ export default () => {
         if (updatedCosts) costsRefetch();
     }, [updatedCosts])
     
+    // useEffect(() => {
+    //     console.log('reload');
+    // }, [budgetTotal])
+    
     if (!budgetLoading && budgetData && costsData) {
         const { budget } = budgetData || [];
         const { title, groupId, comment, period: { start, end }, people } = budget[0];
@@ -101,9 +105,11 @@ export default () => {
                         <div className="mb-5 d-flex align-items-center justify-content-between">
                             <Link to={`/group/${groupId}`} className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht budgetten</Link>
                             <div className="btn-group">
-                                <button className="btn btn--icon btn--sub" onClick={() => handleDelete(groupId)}><box-icon name='trash'></box-icon> Verwijder budget</button>
-                                <button className="btn btn--icon btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
-                                <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
+                                <OnAuth>
+                                    <button className="btn btn--icon btn--sub" onClick={() => handleDelete(groupId)}><box-icon name='trash'></box-icon> Verwijder budget</button>
+                                    <button className="btn btn--icon btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
+                                    <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
+                                </OnAuth>
                             </div>
                         </div>
                         <div className="row">
@@ -113,8 +119,8 @@ export default () => {
                                 <p>{ comment }</p> 
                             </div>
                             <div className="col d-flex flex-column align-items-end">
-                                <h1 className="mb-0">{ typeof budgetTotalReduced.total == 'number' ? budgetTotalReduced.total.pricify() : 0 }</h1>
-                                <small>{ typeof budgetTotalReduced.total == 'number' ? ((budgetTotalReduced.total)/peopleTotal).pricify() : 0 } per persoon</small>
+                                <h1 className="mb-0 color--blue500">{ typeof budgetTotalReduced.total == 'number' ? budgetTotalReduced.total.pricify() : 0 }</h1>
+                                <small className="color--blue300">{ typeof budgetTotalReduced.total == 'number' ? ((budgetTotalReduced.total)/peopleTotal).pricify() : 0 } per persoon</small>
                             </div>
                         </div>
                     </Section>

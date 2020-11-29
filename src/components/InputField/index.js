@@ -7,7 +7,7 @@ export default React.forwardRef(({ name, type = 'text', value = '', children, on
     return (
         <label className={`input-field input ${className}`}>
             <span className="input-field__label">{children}</span>
-            <input name={nameValue} type={type} placeholder={placeholder} defaultValue={value} ref={ref} autoComplete={autoComplete ? 'true' : 'off'}/>
+            <input name={nameValue} type={type} placeholder={placeholder} defaultValue={value} ref={ref} autoComplete={autoComplete ? 'true' : 'off'} step="0.01"/>
         </label>
     )
 })

@@ -66,7 +66,7 @@ export default ({ state, className = '', groups = [] }) => {
                         <InputField className="input--stretch" ref={register} name="name" placeholder="webmaster" autoComplete={false}>Naam</InputField>
                         <InputField className="input--stretch" ref={register} name="email" value="webmaster@haegepoorters.be">E-mail</InputField>
                         {/* <InputField ref={register} name="role">Rol</InputField> */}
-                        <SelectField className="input--stretch" name="role" label="Rol" value="3" ref={register}>
+                        <SelectField className="input--stretch" name="role" label="Rol" value="2" ref={register}>
                             <option value="2">Gebruiker</option>
                             <option value="1">Administrator</option>
                             <option value="0">Root</option>

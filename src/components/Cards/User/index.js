@@ -27,8 +27,8 @@ export default ({ data, onClick, editable }) => {
     
     return (
         <Card theme="user">
-            <div className="d-flex gap--col">
-                <box-icon name='user-circle'></box-icon> <strong>{ data.name }</strong>
+            <div className="d-flex align-items-center gap--col">
+                { RoleIcon(data.role) } <strong>{ data.name }</strong> <small>{ RoleName(data.role) }</small>
             </div>
             { data.role != 0 ? 
                 <div>
@@ -42,4 +42,24 @@ export default ({ data, onClick, editable }) => {
             }
         </Card>
     )
+    
+}
+
+const RoleIcon = (role) => {
+    return {
+        // 0: <box-icon name='power-off' ></box-icon>,
+        0: <box-icon name='crown' ></box-icon>,
+        1: <box-icon name='cog'></box-icon>,
+        2: <box-icon name='user-circle'></box-icon>,
+        3: <box-icon name='ghost' ></box-icon>
+    }[role]
+}
+
+const RoleName = (role) => {
+    return {
+        0: 'root-gebruiker',
+        1: 'admin',
+        2: 'gebruiker',
+        3: 'gast'
+    }[role]
 }

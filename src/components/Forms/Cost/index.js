@@ -55,6 +55,8 @@ export default ({ states, className = '', budgetId }) => {
                             <option value="NIGHT">Nacht</option>
                             <option value="INSURANCE">Verzekering</option>
                             <option value="GWE">GWE</option>
+                            <option value="GIFT">Gift / Sponsor</option>
+                            <option value="BENEFIT">Financiële actie</option>
                             <option value="OTHER">Andere</option>
                         </SelectField>
                         <div className="input-group"> 

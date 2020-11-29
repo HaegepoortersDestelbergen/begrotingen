@@ -27,6 +27,7 @@
     .card__top {
         padding: 1.4rem;
         cursor: pointer;
+        user-select: none;
     }
     
     .card__btm {

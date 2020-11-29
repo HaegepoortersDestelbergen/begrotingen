@@ -46,12 +46,21 @@ export default ({ data, budgetData, states, onClick, editable }) => {
     
     useEffect(() => {    
         if (getCostData) {
-            setBudgetTotal(prev => [...prev, ...[{
-                id: data.id,
-                total: totalAmount
-            }]])
+            setBudgetTotal(prev => {
+                const duplicate = prev.findIndex(p => p.id && p.id === data.id );
+                if (duplicate != -1) {
+                    prev.splice(duplicate, 1);
+                    return [...prev, ...[{
+                        id: data.id,
+                        total: totalAmount
+                    }]]
+                } else return [...prev, ...[{
+                    id: data.id,
+                    total: totalAmount
+                }]]
+            })
         }
-    }, [getCostData])
+    }, [getCostData, costState])
     
     if (getCostData) {
         const handleDelete = (e) => {
@@ -83,8 +92,8 @@ export default ({ data, budgetData, states, onClick, editable }) => {
                     <div className="card__actions">
                         <OnAuth>
                             <div className="btn-group">
-                                <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder kost</button>
                                 <button className="btn" onClick={() => setModalState(!modalState)}>Bewerken</button>
+                                <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder kost</button>
                             </div>
                         </OnAuth>
                     </div>
@@ -118,6 +127,8 @@ const CategoryIcon = (prop) => {
         NIGHT: <box-icon name='bed'></box-icon>,
         INSURANCE: <box-icon name='check-shield'></box-icon>,
         GWE: <box-icon name='plug'></box-icon>,
+        GIFT: <box-icon name='donate-heart'></box-icon>,
+        BENEFIT: <box-icon name='donate-heart'></box-icon>,
         OTHER: <box-icon name='coin'></box-icon>
     }[prop]
 }
