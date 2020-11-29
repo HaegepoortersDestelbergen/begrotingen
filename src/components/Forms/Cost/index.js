@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
@@ -30,11 +31,12 @@ export default ({ states, className = '', budgetId }) => {
             variables: parsedFormData
         })
     }
-        
+    
     useEffect(() => {
         if (addCostData) {
             updateCosts(prev => [...prev, addCostData.addCost])
             states.modal();
+            if (!addCostError) toast('Kost toegevoegd');
         };
     }, [addCostData])
     

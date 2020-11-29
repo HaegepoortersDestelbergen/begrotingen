@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
 import { WaveTopBottomLoading } from 'react-loadingg';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -44,6 +45,12 @@ const GET_BUDGET = gql`
     }
 `;
 
+const DELETE_BUDGET = gql`
+    mutation deleteBudget($id: String) {
+        deleteBudget(id: $id){title}
+    }
+`;
+
 export default ({ states, groupData, className = '', budgetId, placeHolder = {} }) => {
     const [ updatedBudget, setUpdateBudget ] = states.updateBudget;        
     const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(GET_BUDGET, {
@@ -51,6 +58,15 @@ export default ({ states, groupData, className = '', budgetId, placeHolder = {} 
     })
     const { register, handleSubmit, watch, errors } = useForm();
     const [ updateBudget, { loading: updateBudgetLoading, data: updateBudgetData, error: updateBudgetError } ] = useMutation(UPDATE_BUDGET);
+    const [ deleteBudget, { loading: deleteBudgetLoading, data: deleteBudgetData, error: deleteBudgetError } ] = useMutation(DELETE_BUDGET, {
+        variables: { id: budgetId }
+    });
+    
+    const handleDelete = (groupId) => {
+        toast('Budget werd verwijderd');
+        deleteBudget();
+        window.location.hash = `#/group/${groupId}`;
+    }
             
     // useEffect(() => {
     //     if (updateBudgetData) {
@@ -69,7 +85,7 @@ export default ({ states, groupData, className = '', budgetId, placeHolder = {} 
     //todo: better naming https://react-hook-form.com/api#register
     
     if (budgetData) {
-        const { title, comment, period, people: { paying, free } } = budgetData.budget[0];
+        const { title, comment, period, people: { paying, free }, groupId } = budgetData.budget[0];
         
         const handle = (formData) => { 
             const { period: { start, end }, people: { paying, free } } = formData;
@@ -112,9 +128,12 @@ export default ({ states, groupData, className = '', budgetId, placeHolder = {} 
                     </div>
                 </div>
             </div>
-            <div className="btn-group mt-4"> 
-                <button className="btn btn--sub" type="reset" onClick={states.modal}>Niet opslaan</button>
-                <button className="btn" type="submit">Budget bijwerken</button>
+            <div className="d-flex justify-content-between mt-4">
+                <button className="btn btn--icon btn--sub" onClick={() => handleDelete(groupId)}><box-icon name='trash'></box-icon> Verwijder budget</button>
+                <div className="btn-group"> 
+                    <button className="btn btn--sub" type="reset" onClick={states.modal}>Niet opslaan</button>
+                    <button className="btn" type="submit">Budget bijwerken</button>
+                </div>
             </div>
         </form> )} else return <WaveTopBottomLoading/>;
 }

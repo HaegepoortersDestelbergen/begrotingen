@@ -31,6 +31,11 @@ img {
     object-fit: cover;
 }
 
+hr {
+    border: none;
+    border-top: 2px solid $grey200;
+}
+
 input, select, textarea, button {
     &, &:focus, &:focus-within, &:active {
         outline: none;

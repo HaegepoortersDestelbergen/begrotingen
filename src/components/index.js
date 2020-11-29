@@ -10,6 +10,7 @@ export { default as Fab } from './Fab';
 export { default as NotifyNotFound } from './NotifyNotFound';
 export { default as NotifyContainer } from './NotifyContainer';
 export { default as Notify } from './Notify';
+export { default as SharesList } from './SharesList';
 
 export * as Forms from './Forms';
 export * as Cards from './Cards';

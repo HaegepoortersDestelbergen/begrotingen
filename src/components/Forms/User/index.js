@@ -63,8 +63,8 @@ export default ({ state, className = '', groups = [] }) => {
             <div className="form__fields">
                 <div className="row">
                     <div className="col">
-                        <InputField className="input--stretch" ref={register} name="name" placeholder="webmaster" autoComplete={false}>Naam</InputField>
-                        <InputField className="input--stretch" ref={register} name="email" value="webmaster@haegepoorters.be">E-mail</InputField>
+                        <InputField className="input--stretch" ref={register} name="name" placeholder="tak" autoComplete={false}>Naam</InputField>
+                        <InputField className="input--stretch" ref={register} name="email" value="tak@haegepoorters.be">E-mail</InputField>
                         {/* <InputField ref={register} name="role">Rol</InputField> */}
                         <SelectField className="input--stretch" name="role" label="Rol" value="2" ref={register}>
                             <option value="2">Gebruiker</option>

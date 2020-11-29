@@ -28,7 +28,6 @@ const DELETE_COST = gql`
 `;
 
 export default ({ data, budgetData, states, onClick, editable = true }) => {
-    console.log({editable})
     const [ collapseState, setCollapseState ] = useState(true);
     const [ modalState, setModalState ] = useState(false);
     const [ costState, setCostState ] = useState(data);
@@ -87,8 +86,8 @@ export default ({ data, budgetData, states, onClick, editable = true }) => {
                 {/* <hr className="striped"/> */}
                 <div className="card__btm">
                     <div className="card__detail">
-                        <p>Uitgave van <strong>{ (totalAmount / budgetData.people.paying).pricify() } per persoon</strong></p>
-                        <small>{ costTypeDetail(type) }, verekend per betalende persoon</small>
+                        <p>{ costTypeAmountPerPerson(type, totalAmount, budgetData.people.paying) }</p>
+                        <small>{ costTypeDetail(type) }, { costTypeAmountPerPersonDetail(type) }</small>
                     </div>
                     <div className="card__actions">
                         <OnAuth>
@@ -169,5 +168,20 @@ const calcCostWhen = (prop, { days, nights }) => {
         ONETIME: 1,
         PER_DAY: days,
         PER_NIGHT: nights
+    }[prop]
+}
+
+const costTypeAmountPerPerson = (prop, amount, peoplePaying) => {
+    if (prop != 'INCOME') return (<>Uitgave van <strong>{ (amount / peoplePaying).pricify() } per persoon</strong></>)
+    else return (<>Aftrek van <strong>{ (amount / peoplePaying).pricify() } per persoon</strong></>)
+}
+
+const costTypeAmountPerPersonDetail = (prop) => {
+    return {
+        FIXED: 'verrekend per betalende persoon',
+        PER_PERSON: 'verrekend per betalende persoon',
+        PER_PAYER: 'verrekend per betalende persoon',
+        PER_FREE: 'verrekend per betalende persoon',
+        INCOME: 'verrekend per betalende persoon'
     }[prop]
 }

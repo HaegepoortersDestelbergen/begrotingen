@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import Popup from 'reactjs-popup';
+import { ToastContainer, toast, Slide, Zoom, Flip, Bounce } from 'react-toastify';
 import './App.scss';
-import { AuthRequired, Fab, NotifyContainer } from './components';
+import { AuthRequired, Fab } from './components';
 import { AuthContext, NotifyContext } from './contexts';
 import { AccessDeniedPage, AdminPage, BudgetPage, GroupPage, Login, SharePage, StartPage } from './pages'
 import { logOut } from './utils';
@@ -52,7 +53,7 @@ function App() {
                             </div>
                         </Popup>}
                     </Fab>
-                    <NotifyContainer>lel</NotifyContainer>
+                    <ToastContainer newestOnTop position="bottom-center" transition={Slide}/>
                 </NotifyContext.Provider>
             </AuthContext.Provider>
         </BrowserRouter>

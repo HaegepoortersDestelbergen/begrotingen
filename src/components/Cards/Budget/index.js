@@ -27,6 +27,7 @@ export default ({ data, onClick, editable }) => {
     const periodStart = dayjs(data.period.start).format('DD MMM');
     const periodEnd = dayjs(data.period.end).format('DD MMM');
     const peopleTotal = data.people.paying + data.people.free;
+    const maxCommentString = 75;
     
     return (
         <Card theme="budget">
@@ -38,7 +39,7 @@ export default ({ data, onClick, editable }) => {
                 </div>
                 <div className="card__title">
                     <h4>{ data.title }</h4>
-                    <small>{ data.comment }</small>
+                    <small>{ data.comment.substring(0,maxCommentString) }{data.comment.length > maxCommentString ? '...' : ''}</small>
                 </div>
             </div>
             <div className="card__summary">

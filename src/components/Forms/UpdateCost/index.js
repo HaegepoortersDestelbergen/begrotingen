@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
 import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import WaveTopBottomLoading from 'react-loadingg/lib/WaveTopBottomLoading';
@@ -64,6 +65,7 @@ export default ({ states, className = '', costId }) => {
         if (updateCostData) {
             setUpdateBudget(updateCostData)
             states.modal();
+            if (!updateCostError) toast('Kost is bijgewerkt');
         };
         getCostRefetch();
     }, [updateCostData])

@@ -5,7 +5,7 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl-be';
-import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section } from '../../components';
+import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section, SharesList } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
@@ -54,6 +54,7 @@ export default () => {
     const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
     const [ modalState, setModalState ] = useState(false);
     const [ modalBudgetState, setModalBudgetState ] = useState(false);
+    const [ modalShareState, setModalShareState ] = useState(false);
     const [ updatedCosts, updateCosts ] = useState([]);
     const [ updatedBudget, setUpdateBudget ] = useState([]);
     const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(GET_BUDGET, {
@@ -106,8 +107,8 @@ export default () => {
                             <Link to={`/group/${groupId}`} className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht budgetten</Link>
                             <div className="btn-group">
                                 <OnAuth>
-                                    <button className="btn btn--icon btn--sub" onClick={() => handleDelete(groupId)}><box-icon name='trash'></box-icon> Verwijder budget</button>
-                                    <button className="btn btn--icon btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}><box-icon name='edit-alt'></box-icon> Bewerk budget</button>
+                                    <button className="btn btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
+                                    <button className="btn btn--icon" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
                                     <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
                                 </OnAuth>
                             </div>
@@ -125,6 +126,7 @@ export default () => {
                         </div>
                     </Section>
                 </header>
+                
                 <Section container>
                     { costsLoading && <WaveTopBottomLoading/> }
                     {   !costsLoading && costs ? 
@@ -159,6 +161,25 @@ export default () => {
                             }}
                             budgetId={requestedBudget}
                         />
+                    </div>
+                </Popup>
+                
+                {/* SHARES */}
+                <Popup open={modalShareState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
+                    <div className="modal__body">
+                        <h3 className="text-center">Shares</h3>
+                        <Forms.Share
+                            states={{
+                                updateShare: [ updatedBudget, setUpdateBudget ],
+                                modal: () => setModalShareState(!modalShareState)
+                            }}
+                            budgetId={ requestedBudget }
+                        />
+                        <hr className="my-4"/>
+                        <SharesList budgetId={ requestedBudget }/>
+                    </div>
+                    <div className="modal__actions btn-group mt-4">
+                        <button className="btn btn--sub" onClick={() => setModalShareState(!modalShareState)}>Sluiten</button>
                     </div>
                 </Popup>
             </Page>
