@@ -28,7 +28,11 @@ export default ({ data, onClick, editable }) => {
     return (
         <Card theme="user">
             <div className="d-flex align-items-center gap--col">
-                { RoleIcon(data.role) } <strong>{ data.name }</strong> <small>{ RoleName(data.role) }</small>
+                { RoleIcon(data.role) } 
+                <div className="d-flex flex-column">
+                    <strong>{ data.name }</strong> 
+                    <small>{ RoleName(data.role) }</small>
+                </div> 
             </div>
             { data.role != 0 ? 
                 <div>
@@ -57,9 +61,9 @@ const RoleIcon = (role) => {
 
 const RoleName = (role) => {
     return {
-        0: 'root-gebruiker',
-        1: 'admin',
-        2: 'gebruiker',
-        3: 'gast'
+        0: 'Root',
+        1: 'Admin',
+        2: 'Gebruiker',
+        3: 'Gast'
     }[role]
 }
