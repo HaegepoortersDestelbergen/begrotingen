@@ -9,5 +9,5 @@ export default ({ children }) => {
         if ( authenticatedUser.authorization == 'read') {
             return null;
         } else return children
-    } else return <WaveTopBottomLoading/>
+    } else return null
 }

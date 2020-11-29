@@ -21,7 +21,7 @@ const GET_USER = gql`
     }
 `;
 
-const GET_BUDGET= gql`
+const GET_BUDGET = gql`
     query budget($id: String) {
         budget(id: $id) {
             groupId
@@ -37,7 +37,7 @@ export default ({ children, minRole, maxRole, givenGroupId }) => {
     const { loading, data, error } = useQuery(GET_USER, {
         variables: {id: userId}
     });
-    const [ getBudget, { loading: getBudgetLoading, data: getBudgetData, error: getBudgetError }] = useLazyQuery(GET_BUDGET)
+    const [ getBudget, { loading: getBudgetLoading, data: getBudgetData, error: getBudgetError }] = useLazyQuery(GET_BUDGET);
     const { user } = data || [];
     
     const startMatch = useRouteMatch({path: '/', exact: true});

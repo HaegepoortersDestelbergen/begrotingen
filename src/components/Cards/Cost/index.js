@@ -27,11 +27,12 @@ const DELETE_COST = gql`
     }
 `;
 
-export default ({ data, budgetData, states, onClick, editable }) => {
+export default ({ data, budgetData, states, onClick, editable = true }) => {
+    console.log({editable})
     const [ collapseState, setCollapseState ] = useState(true);
     const [ modalState, setModalState ] = useState(false);
     const [ costState, setCostState ] = useState(data);
-    const [ budgetTotal, setBudgetTotal ] = states.budgetTotal;
+    const [ budgetTotal, setBudgetTotal ] = states?.budgetTotal || [];
     const { loading: getCostLoading, data: getCostData, error: getCostError} = useQuery(GET_COST, { variables: {
         id: data.id
     }})
@@ -45,7 +46,7 @@ export default ({ data, budgetData, states, onClick, editable }) => {
     const totalAmount = ((peopleCalc * amount) * whenCalc);
     
     useEffect(() => {    
-        if (getCostData) {
+        if (getCostData && states?.budgetTotal) {
             setBudgetTotal(prev => {
                 const duplicate = prev.findIndex(p => p.id && p.id === data.id );
                 if (duplicate != -1) {

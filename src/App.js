@@ -5,7 +5,7 @@ import Popup from 'reactjs-popup';
 import './App.scss';
 import { AuthRequired, Fab, NotifyContainer } from './components';
 import { AuthContext, NotifyContext } from './contexts';
-import { AccessDeniedPage, AdminPage, BudgetPage, GroupPage, Login, StartPage } from './pages'
+import { AccessDeniedPage, AdminPage, BudgetPage, GroupPage, Login, SharePage, StartPage } from './pages'
 import { logOut } from './utils';
 
 function App() {
@@ -32,6 +32,9 @@ function App() {
                         </Route>
                         <Route path="/budget/:id" exact={true}>
                             <AuthRequired><BudgetPage/></AuthRequired>
+                        </Route>
+                        <Route path="/share/:id" exact={true}>
+                            <SharePage/>
                         </Route>
                         <Route>
                             <AccessDeniedPage/>
