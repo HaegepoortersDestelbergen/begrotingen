@@ -35,8 +35,8 @@ export default () => {
     
     return (
         <form className="form" onSubmit={handleSubmit(handleLogin)}>
-            <InputField className="input--stretch" ref={register} value="givers@haegepoorters.be">E-mail</InputField>
-            <InputField className="input--stretch" ref={register} value="givers" type="password" name="password">Wachtwoord</InputField>
+            <InputField className="input--stretch" ref={register} value="demo@haegepoorters.be">E-mail</InputField>
+            <InputField className="input--stretch" ref={register} value="demo" type="password" name="password">Wachtwoord</InputField>
             <small className="d-block text-center mt-3">Een login ontvang je van de webmaster(s)</small>
             <button className="btn mx-auto" type="submit">Aanmelden</button>
         </form>
