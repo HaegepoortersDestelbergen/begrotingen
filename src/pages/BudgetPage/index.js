@@ -11,6 +11,7 @@ import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
 import { AuthContext } from '../../contexts';
+import { toast } from 'react-toastify';
 
 dayjs.locale('nl-be') 
 
@@ -80,10 +81,6 @@ export default () => {
         if (updatedCosts) costsRefetch();
     }, [updatedCosts])
     
-    // useEffect(() => {
-    //     console.log('reload');
-    // }, [budgetTotal])
-    
     if (!budgetLoading && budgetData && costsData) {
         const { budget } = budgetData || [];
         const { title, groupId, comment, period: { start, end }, people } = budget[0];
@@ -98,6 +95,11 @@ export default () => {
         const budgetTotalReduced = budgetTotal.reduce((a, b) => {
             return {total: a.total + b.total}
         });
+        
+        /**
+         * TODO: make sortable
+         * https://github.com/SortableJS/react-sortablejs
+         */
                         
         return (
             <Page theme="budget" ignore>
@@ -109,8 +111,10 @@ export default () => {
                                 <OnAuth>
                                     <button className="btn btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
                                     <button className="btn btn--icon" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
+                                    <button className="btn btn--icon" onClick={() => toast('Nog niet beschikbaar')}><box-icon type='solid' name='analyse'></box-icon> Stats</button>
                                     <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
                                 </OnAuth>
+                                
                             </div>
                         </div>
                         <div className="row">
