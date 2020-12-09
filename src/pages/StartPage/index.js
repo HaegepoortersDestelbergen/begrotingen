@@ -25,7 +25,9 @@ export default () => {
             <h2 className="page__subtitle">Kies een tak om begrotingen te bekijken of bewerken</h2>
             <Section theme="groups-list" container>
                 {allGroups && authenticatedUser ? allGroups.map(g => {
+                    console.log({g})
                     const groupAccess = authenticatedUser.access.find(a => a.groupId === g.id);
+                    console.log({groupAccess})
                     if (groupAccess.type != 'none') return <Link key={g.id} to={`/group/${g.id}`} className="mb-3">
                         <Cards.Group data={g}/>
                     </Link>
