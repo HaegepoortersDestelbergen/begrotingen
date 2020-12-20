@@ -10,65 +10,33 @@ import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
-import { AuthContext } from '../../contexts';
 
 dayjs.locale('nl-be') 
-
-const GET_BUDGET = gql`
-    query budget($id: String) {
-        budget(id: $id) {
-            id
-            title
-            created
-            groupId
-            comment
-            people {
-                paying
-                free
-            }
-            period {
-                start
-                end
-            }
-        }
-    }
-`;
-
-const GET_COSTS = gql`
-    query cost($budgetId: String) {
-        cost(budgetId: $budgetId) {
-            id
-        }
-    }
-`;
 
 const GET_SHARE = gql`
     query share($id: String) {
         share(id: $id) {
             id
-        }
-    }
-`;
-
-const GET_ALL = gql`
-    query all($budgetId: String) {
-        budget: budget(id: $budgetId) {
-            id
-            title
-            created
-            groupId
-            comment
-            people {
-                paying
-                free
+            budgetId
+            budget {
+                id
+                title
+                created
+                groupId
+                comment
+                people {
+                    paying
+                    free
+                }
+                period {
+                    start
+                    end
+                }
             }
-            period {
-                start
-                end
+            costs {
+                id
+                title
             }
-        },
-        costs: cost(budgetId: $budgetId) {
-            id
         }
     }
 `;
@@ -76,37 +44,13 @@ const GET_ALL = gql`
 export default () => {
     const { id: requestedShare } = useParams();
     const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
-    const [ getAll, { loading: getAllLoading, data: getAllData, error: getAllError }] = useLazyQuery(GET_ALL);
     const { loading: getShareLoading, data: getShareData, error: getShareError } = useQuery(GET_SHARE, {
         variables: { id: requestedShare }
     })
-    const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(GET_BUDGET, {
-        variables: { id: getShareData && getShareData.share[0].budgetId }
-    })
-    const { loading: costsLoading, data: costsData, error: costsError } = useQuery(GET_COSTS, {
-        variables: { budgetId: getShareData && getShareData.share[0].budgetId }
-    })
     
-    console.log(getShareData && {getShareData })
-    
-    useEffect(() => {
-        console.log('reload getShareData')
-        if (getShareData) {
-            getAll({
-                variables: { budgetId: getShareData.share[0].budgetId }
-            })
-        }
-    }, [getShareLoading])
-    
-    
-    useEffect(() => {
-        if (getAllData) console.log(getAllData)
-    }, [getAllData])
-    
-    if (!budgetLoading && budgetData && costsData) {
-        const { budget } = budgetData || [];
-        const { title, groupId, comment, period: { start, end }, people } = budget[0];
-        const { cost: costs } = costsData || [];
+    if (getShareData) {
+        const { budget, costs } = getShareData.share[0];
+        const { title, groupId, comment, period: { start, end }, people } = budget
         
         const periodStart = dayjs(start);
         const periodEnd = dayjs(end);
@@ -136,16 +80,16 @@ export default () => {
                     </Section>
                 </header>
                 <Section container>
-                    { costsLoading && <WaveTopBottomLoading/> }
-                    {   !costsLoading && costsData ? 
-                        costsData.cost.map(c =>
-                            <Cards.Cost key={c.id} data={c} budgetData={{...budget[0], stay: { days: periodDays, nights: periodNights } }} editable={false} states={{
+                    {/* { costsLoading && <WaveTopBottomLoading/> } */}
+                    {   costs ? 
+                        costs.map(c =>
+                            <Cards.Cost key={c.id} data={c} budgetData={{...budget, stay: { days: periodDays, nights: periodNights } }} editable={false} states={{
                                 budgetTotal: [ budgetTotal, setBudgetTotal ]
                             }} />
                         ) : 
                         null
                     }
-                    { (!costsLoading && costs.length == 0) && <NotifyNotFound/> }
+                    { (costs && costs.length == 0) && <NotifyNotFound/> }
                 </Section>
             </Page>
         )
