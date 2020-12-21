@@ -5,11 +5,14 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl-be';
+
 import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section } from '../../components';
+import { useBudgetPeriod } from '../../hooks'
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
+import { AccessDeniedPage } from '..';
 
 dayjs.locale('nl-be') 
 
@@ -44,13 +47,18 @@ const GET_SHARE = gql`
 export default () => {
     const { id: requestedShare } = useParams();
     const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
+    const [ simulation, setSimulation ] = useState({})
     const { loading: getShareLoading, data: getShareData, error: getShareError } = useQuery(GET_SHARE, {
         variables: { id: requestedShare }
     })
     
+    useEffect(() => {
+        if (getShareData) setSimulation(getShareData.share[0])
+    }, [getShareData])
+                
     if (getShareData) {
         const { budget, costs } = getShareData.share[0];
-        const { title, groupId, comment, period: { start, end }, people } = budget
+        const { title, groupId, comment, period: { start, end }, people } = budget;
         
         const periodStart = dayjs(start);
         const periodEnd = dayjs(end);
@@ -93,6 +101,8 @@ export default () => {
                 </Section>
             </Page>
         )
+    } else if (getShareError) {
+       return <AccessDeniedPage/>
     } else {
         return <WaveTopBottomLoading/>
     } 

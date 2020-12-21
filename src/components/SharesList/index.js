@@ -17,11 +17,14 @@ const GET_SHARES = gql`
 `;
 
 export default ({ budgetId }) => {
+    console.log({ budgetId })
+    
     const { loading: getSharesLoading, data: getSharesData, error: getSharesError } = useQuery(GET_SHARES, {
         variables: { budgetId: budgetId }
     })
     
-    if (getSharesData) console.log(getSharesData);
+    if (getSharesError) console.log(getSharesError);
+    console.log(getSharesData);
         
     return (
         <div>

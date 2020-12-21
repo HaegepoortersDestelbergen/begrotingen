@@ -5,13 +5,13 @@ import { Link, Redirect, useParams } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl-be';
+import { toast } from 'react-toastify';
+
 import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section, SharesList } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
-import { AuthContext } from '../../contexts';
-import { toast } from 'react-toastify';
 
 dayjs.locale('nl-be') 
 
@@ -51,13 +51,13 @@ const GET_COSTS = gql`
 
 export default () => {
     const { id: requestedBudget } = useParams();
-    const [ authenticatedUser, authenticateUser ] = useContext(AuthContext);
     const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
     const [ modalState, setModalState ] = useState(false);
     const [ modalBudgetState, setModalBudgetState ] = useState(false);
     const [ modalShareState, setModalShareState ] = useState(false);
     const [ updatedCosts, updateCosts ] = useState([]);
     const [ updatedBudget, setUpdateBudget ] = useState([]);
+    const [ simulation, setSimulation ] = useState({}); 
     const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(GET_BUDGET, {
         variables: { id: requestedBudget }
     })
@@ -76,6 +76,14 @@ export default () => {
     const toggleModal = (e) => {
         setModalState(!modalState)
     }
+    
+    /**
+     * TODO: simulation
+     */
+    
+    // useEffect(() => {
+    //     setSimulation(budgetData)
+    // }, [budgetData])
     
     useEffect(() => {
         if (updatedCosts) costsRefetch();
@@ -111,7 +119,8 @@ export default () => {
                                 <OnAuth>
                                     <button className="btn btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
                                     <button className="btn btn--icon" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
-                                    <button className="btn btn--icon" onClick={() => toast('Nog niet beschikbaar')}><box-icon type='solid' name='analyse'></box-icon> Stats</button>
+                                    <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon name='cube-alt'></box-icon> Simulatie</button>
+                                    <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon type='solid' name='analyse'></box-icon> Stats</button>
                                     <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
                                 </OnAuth>
                                 
