@@ -1,70 +1,28 @@
-import { useQuery, gql } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import React, { useState } from 'react';
 import { WaveTopBottomLoading } from 'react-loadingg';
 import { Link, useParams } from 'react-router-dom';
 import Popup from 'reactjs-popup';
-import { Card, Cards, Section, Forms, OnAuth } from '../../components';
+import { Section, Forms, OnAuth, BudgetsList } from '../../components';
 import { Page } from '../../layouts';
+import { QUERIES } from '../../utils';
 import './index.scss';
-
-const GET_GROUP = gql`
-    query group($id: String) {
-        group(id: $id) {
-            id
-            name
-        }
-    }
-`;
-
-const GET_BUDGETS = gql`
-    query budget($groupId: String) {
-        budget(groupId: $groupId) {
-            id
-            title
-            created
-            groupId
-            comment
-            people {
-                paying
-                free
-            }
-            period {
-                start
-                end
-            }
-        }
-    }
-`;
 
 export default () => {
     const { id: requestedGroupId } = useParams();
     const [ updatedBudgets, updateBudgets ] = useState([]);
     const [ modalState, setModalState ] = useState(false);
-    const { loading: groupLoading, data: groupData, error: groupError } = useQuery(GET_GROUP, {
+    const { loading: groupLoading, data: groupData, error: groupError } = useQuery(QUERIES.GET_GROUP, {
         variables: {id: requestedGroupId}
     })
-    const {loading: budgetsLoading, data: budgetsData, error: budgetsError, refetch } = useQuery(GET_BUDGETS, {
-        variables: {groupId: requestedGroupId}
-    })
-    
-    const { group } = groupData || [];
-    const { budget: budgets } = budgetsData || [];
     
     const toggleModal = (e) => {
         setModalState(!modalState)
     }
     
-    useEffect(() => {
-        refetch();
-    }, [updatedBudgets])
-    
-    useEffect(() => {
-        refetch();
-    }, [])
-    
-    if (group) {
-        const { name } = group[0];
-        
+    if (groupData) {
+        const { group: [ group ]} = groupData;
+
         return (
             <Page theme="group" ignore> 
                 <header>
@@ -77,27 +35,23 @@ export default () => {
                                 </OnAuth>
                             </div>
                         </div>
-                        <h1 className="page__title">{ name }</h1>
+                        <h1 className="page__title">{ group.name }</h1>
                         <h2 className="page__subtitle">Overzicht van begrotingen</h2>
                     </Section>
                 </header>
+                
                 <Section container>
-                    {budgets ? budgets.map(b => <Link key={b.id} to={`/budget/${b.id}`} className="mb-3">
-                        <Cards.Budget data={b}/>
-                    </Link>) : <WaveTopBottomLoading/>}
+                    <BudgetsList groupId={ requestedGroupId } />
                 </Section>
+                
                 <Popup open={modalState} position="right center" modal className={"edit-cost"} closeOnDocumentClick={false}>
                     <div className="modal__body">
-                        <Forms.Budget groupData={group[0]} states={{
-                            updatedBudgets: [ updatedBudgets, updateBudgets ],
+                        <Forms.Budget groupData={ group } states={{
                             modal: toggleModal
                         }}/>
                     </div>
                 </Popup>
             </Page>
         )
-    } else {
-        return <WaveTopBottomLoading/>
-    }
-    
+    } else return <WaveTopBottomLoading/>
 }

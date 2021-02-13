@@ -16,6 +16,7 @@ const logOut = () => {
     window.location.hash = '#/login';
 }
 
+export { QUERIES, SUBS } from './queries';
 export {
     env,
     getToken,

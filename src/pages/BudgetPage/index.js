@@ -1,4 +1,4 @@
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import React, { useEffect, useState, useContext } from 'react';
 import { WaveTopBottomLoading } from 'react-loadingg';
 import { Link, Redirect, useParams } from 'react-router-dom';
@@ -12,66 +12,27 @@ import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
+import { QUERIES } from '../../utils/index';
 
 dayjs.locale('nl-be') 
 
-const GET_BUDGET = gql`
-    query budget($id: String) {
-        budget(id: $id) {
-            id
-            title
-            created
-            groupId
-            comment
-            people {
-                paying
-                free
-            }
-            period {
-                start
-                end
-            }
-        }
-    }
-`;
-
-const DELETE_BUDGET = gql`
-    mutation deleteBudget($id: String) {
-        deleteBudget(id: $id){title}
-    }
-`;
-
-const GET_COSTS = gql`
-    query cost($budgetId: String) {
-        cost(budgetId: $budgetId) {
-            id
-        }
-    }
-`;
-
 export default () => {
     const { id: requestedBudget } = useParams();
-    const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
+    // const [ budgetTotal, setBudgetTotal ] = useState([{id: null, total: 0}]);
     const [ modalState, setModalState ] = useState(false);
     const [ modalBudgetState, setModalBudgetState ] = useState(false);
     const [ modalShareState, setModalShareState ] = useState(false);
     const [ updatedCosts, updateCosts ] = useState([]);
     const [ updatedBudget, setUpdateBudget ] = useState([]);
     const [ simulation, setSimulation ] = useState({}); 
-    const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(GET_BUDGET, {
+    const { loading: budgetLoading, data: budgetData, error: budgetError } = useQuery(QUERIES.GET_BUDGET, {
         variables: { id: requestedBudget }
     })
-    const [ deleteBudget, { loading: deleteBudgetLoading, data: deleteBudgetData, error: deleteBudgetError } ] = useMutation(DELETE_BUDGET, {
-        variables: { id: requestedBudget }
-    });
-    const { loading: costsLoading, data: costsData, error: costsError, refetch: costsRefetch } = useQuery(GET_COSTS, {
+    const { loading: costsLoading, data: costsData, error: costsError, refetch: costsRefetch } = useQuery(QUERIES.GET_COSTS, {
         variables: { budgetId: requestedBudget }
     })
-    
-    const handleDelete = (groupId) => {
-        deleteBudget();
-        window.location.hash = `#/group/${groupId}`;
-    }
+            
+    const [ getBudgetTotal, { data: budgetTotal, loading: budgetTotalLoading }] = useLazyQuery(QUERIES.GET_BUDGET_TOTAL)
     
     const toggleModal = (e) => {
         setModalState(!modalState)
@@ -89,6 +50,23 @@ export default () => {
         if (updatedCosts) costsRefetch();
     }, [updatedCosts])
     
+    useEffect(() => {
+        if (budgetData) {
+            const { budget: [{ period, people: { paying, free} }]} = budgetData
+            const periodStart = dayjs(period.start);
+            const periodEnd = dayjs(period.end);
+            const periodDays = (periodEnd.diff(periodStart, 'days'))+1;
+        
+            getBudgetTotal({
+                variables: { 
+                    budgetId: requestedBudget,
+                    people: { paying, free },
+                    days: periodDays
+                }
+            })
+        };
+    }, [budgetData])
+    
     if (!budgetLoading && budgetData && costsData) {
         const { budget } = budgetData || [];
         const { title, groupId, comment, period: { start, end }, people } = budget[0];
@@ -100,9 +78,9 @@ export default () => {
         const periodNights = periodDays - 1;
         
         const peopleTotal = people.paying + people.free;
-        const budgetTotalReduced = budgetTotal.reduce((a, b) => {
-            return {total: a.total + b.total}
-        });
+        // const budgetTotalReduced = budgetTotal.reduce((a, b) => {
+        //     return {total: a.total + b.total}
+        // });
         
         /**
          * TODO: make sortable
@@ -133,8 +111,8 @@ export default () => {
                                 <p>{ comment }</p> 
                             </div>
                             <div className="col d-flex flex-column align-items-end">
-                                <h1 className="mb-0 color--blue500">{ typeof budgetTotalReduced.total == 'number' ? budgetTotalReduced.total.pricify() : 0 }</h1>
-                                <small className="color--blue300">{ typeof budgetTotalReduced.total == 'number' ? ((budgetTotalReduced.total)/peopleTotal).pricify() : 0 } per persoon</small>
+                                <h1 className="mb-0 color--blue500">{ budgetTotal && budgetTotal.budgetTotal.pricify() || (0).pricify() }</h1>
+                                <small className="color--blue300">{ budgetTotal ? (budgetTotal.budgetTotal/peopleTotal).pricify() : (0).pricify() } per persoon</small>
                             </div>
                         </div>
                     </Section>
@@ -144,9 +122,7 @@ export default () => {
                     { costsLoading && <WaveTopBottomLoading/> }
                     {   !costsLoading && costs ? 
                         costs.map(c =>
-                            <Cards.Cost key={c.id} data={c} budgetData={{...budget[0], stay: { days: periodDays, nights: periodNights } }} states={{
-                                budgetTotal: [ budgetTotal, setBudgetTotal ]
-                            }} />
+                            <Cards.Cost key={c.id} data={c} budgetData={{...budget[0], stay: { days: periodDays, nights: periodNights } }} />
                         ) : 
                         null
                     }

@@ -20,9 +20,7 @@ const ADD_BUDGET = gql`
     }
 `;
 
-export default ({ states, groupData, className = '', budgetId, placeHolder }) => {
-    const [ updatedBudgets, updateBudgets ] = states.updatedBudgets;
-        
+export default ({ states, groupData, className = '', budgetId, placeHolder }) => {        
     const { register, handleSubmit, watch, errors } = useForm({
         defaultValues: placeHolder && placeHolder || { }
     });
@@ -31,10 +29,10 @@ export default ({ states, groupData, className = '', budgetId, placeHolder }) =>
     const handle = (formData) => {        
         const { start, end, paying, free } = formData;
         
-        delete formData.start
-        delete formData.end
-        delete formData.paying
-        delete formData.free
+        // delete formData.start
+        // delete formData.end
+        // delete formData.paying
+        // delete formData.free
         
         const parsedFormData = {
             ...formData,
@@ -55,10 +53,7 @@ export default ({ states, groupData, className = '', budgetId, placeHolder }) =>
     }
         
     useEffect(() => {
-        if (addBudgetData) {
-            updateBudgets(prev => [...prev, addBudgetData.addBudget]);
-            states.modal();
-        }
+        if (addBudgetData) states.modal();
     }, [addBudgetData])
     
     const today = dayjs().format('YYYY-MM-DD')

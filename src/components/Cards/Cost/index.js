@@ -31,7 +31,7 @@ export default ({ data, budgetData, states, onClick, editable = true }) => {
     const [ collapseState, setCollapseState ] = useState(true);
     const [ modalState, setModalState ] = useState(false);
     const [ costState, setCostState ] = useState(data);
-    const [ budgetTotal, setBudgetTotal ] = states?.budgetTotal || [];
+    // const [ budgetTotal, setBudgetTotal ] = states?.budgetTotal || [];
     const { loading: getCostLoading, data: getCostData, error: getCostError} = useQuery(GET_COST, { variables: {
         id: data.id
     }})
@@ -44,23 +44,23 @@ export default ({ data, budgetData, states, onClick, editable = true }) => {
     const whenCalc = calcCostWhen(when, budgetData.stay)
     const totalAmount = ((peopleCalc * amount) * whenCalc);
     
-    useEffect(() => {    
-        if (getCostData && states?.budgetTotal) {
-            setBudgetTotal(prev => {
-                const duplicate = prev.findIndex(p => p.id && p.id === data.id );
-                if (duplicate != -1) {
-                    prev.splice(duplicate, 1);
-                    return [...prev, ...[{
-                        id: data.id,
-                        total: totalAmount
-                    }]]
-                } else return [...prev, ...[{
-                    id: data.id,
-                    total: totalAmount
-                }]]
-            })
-        }
-    }, [getCostData, costState])
+    // useEffect(() => {    
+    //     if (getCostData && states?.budgetTotal) {
+    //         setBudgetTotal(prev => {
+    //             const duplicate = prev.findIndex(p => p.id && p.id === data.id );
+    //             if (duplicate != -1) {
+    //                 prev.splice(duplicate, 1);
+    //                 return [...prev, ...[{
+    //                     id: data.id,
+    //                     total: totalAmount
+    //                 }]]
+    //             } else return [...prev, ...[{
+    //                 id: data.id,
+    //                 total: totalAmount
+    //             }]]
+    //         })
+    //     }
+    // }, [getCostData, costState])
     
     if (getCostData) {
         const handleDelete = (e) => {

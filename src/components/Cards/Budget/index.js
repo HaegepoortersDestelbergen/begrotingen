@@ -1,6 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
 import dayjs from 'dayjs';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '../..';
 import './index.scss';
 
@@ -30,27 +31,29 @@ export default ({ data, onClick, editable }) => {
     const maxCommentString = 75;
     
     return (
-        <Card theme="budget">
-            <div className="card__header">
-                <div className="card__icon">
-                    {/* <box-icon name='coin'></box-icon> */}
-                    {/* <box-icon name='coin-stack'></box-icon> */}
-                    <box-icon name='wallet'></box-icon>
+        <Link to={`/budget/${data.id}`} className="mb-3">
+            <Card theme="budget">
+                <div className="card__header">
+                    <div className="card__icon">
+                        {/* <box-icon name='coin'></box-icon> */}
+                        {/* <box-icon name='coin-stack'></box-icon> */}
+                        <box-icon name='wallet'></box-icon>
+                    </div>
+                    <div className="card__title">
+                        <h4>{ data.title }</h4>
+                        <small>{ data.comment.substring(0,maxCommentString) }{data.comment.length > maxCommentString ? '...' : ''}</small>
+                    </div>
                 </div>
-                <div className="card__title">
-                    <h4>{ data.title }</h4>
-                    <small>{ data.comment.substring(0,maxCommentString) }{data.comment.length > maxCommentString ? '...' : ''}</small>
+                <div className="card__summary">
+                    <h4>{ periodStart } tot { periodEnd }</h4>
+                    <small>{ peopleTotal } personen</small>
                 </div>
-            </div>
-            <div className="card__summary">
-                <h4>{ periodStart } tot { periodEnd }</h4>
-                <small>{ peopleTotal } personen</small>
-            </div>
-            {editable && 
-                <div>
-                    <button className="btn btn--blank" onClick={handleDelete}><box-icon name='x'></box-icon></button>
-                </div>
-            }
-        </Card>
+                {editable && 
+                    <div>
+                        <button className="btn btn--blank" onClick={handleDelete}><box-icon name='x'></box-icon></button>
+                    </div>
+                }
+            </Card>
+        </Link>
     )
 }
