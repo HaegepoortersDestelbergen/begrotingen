@@ -1,56 +1,27 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { InputField, SelectField } from '../..';
+import { useMutation, useQuery } from '@apollo/client';
 import WaveTopBottomLoading from 'react-loadingg/lib/WaveTopBottomLoading';
-
-const GET_COST = gql`
-    query cost($id: String) {
-        cost(id: $id) {
-            title
-            comment
-            category
-            type
-            when
-            amount
-        }
-    }
-`;
-
-const UPDATE_COST = gql`
-    mutation addCost ($id: ID, $budgetId: ID, $title: String, $comment: String, $category: CostCategory, $type: CostType, $when: CostWhen, $amount: Float ) {
-        addCost (
-            id: $id,
-            cost: {
-                budgetId: $budgetId,
-                title: $title,
-                comment: $comment,
-                category: $category,
-                type: $type,
-                when: $when,
-                amount: $amount
-            }
-        ){
-            title
-        }
-    }
-`;
+import { MUTATIONS, QUERIES } from '../../../utils/queries';
 
 export default ({ states, className = '', costId }) => {
     const [ updatedBudget, setUpdateBudget ] = states.updateCost;
     const { register, handleSubmit, watch, errors } = useForm();
-    const { loading: getCostLoading, data: getCostData, error: getCostError, refetch: getCostRefetch } = useQuery(GET_COST, { variables: {
+    const { loading: getCostLoading, data: getCostData, error: getCostError, refetch: getCostRefetch } = useQuery(QUERIES.GET_COST_BY_ID, { variables: {
         id: costId
     }})
-    const [ updateCost, { loading: updateCostLoading, data: updateCostData, error: updateCostError } ] = useMutation(UPDATE_COST, {
+    const [ updateCost, { loading: updateCostLoading, data: updateCostData, error: updateCostError } ] = useMutation(MUTATIONS.UPDATE_COST, {
         variables: {id: costId}
     });
 
     const handle = (formData) => {    
         const { amount } = formData; 
+        const { cost: [{ budgetId }]} = getCostData;
         const parsedFormData = {
             ...formData,
+            budgetId,
             amount: parseFloat(amount)
         }
         updateCost({

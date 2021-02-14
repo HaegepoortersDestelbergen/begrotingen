@@ -2,28 +2,12 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
-
-const ADD_COST = gql`
-    mutation addCost ($budgetId: ID, $title: String, $comment: String, $category: CostCategory, $type: CostType, $when: CostWhen, $amount: Float ) {
-        addCost(cost: {
-            budgetId: $budgetId,
-            title: $title,
-            comment: $comment,
-            category: $category,
-            type: $type,
-            when: $when,
-            amount: $amount
-        }){
-            title
-        }
-    }
-`;
+import { useMutation } from '@apollo/client';
+import { MUTATIONS } from '../../../utils/queries';
 
 export default ({ states, className = '', budgetId }) => {
-    const [ updatedCosts, updateCosts ] = states.updateCost;
     const { register, handleSubmit, watch, errors } = useForm();
-    const [ addCost, { loading: addCostLoading, data: addCostData, error: addCostError } ] = useMutation(ADD_COST);
+    const [ addCost, { loading: addCostLoading, data: addCostData, error: addCostError } ] = useMutation(MUTATIONS.ADD_COST);
 
     const handle = (formData) => {        
         const parsedFormData = {...formData, budgetId: budgetId, amount: parseFloat(formData.amount)}
@@ -34,7 +18,6 @@ export default ({ states, className = '', budgetId }) => {
     
     useEffect(() => {
         if (addCostData) {
-            updateCosts(prev => [...prev, addCostData.addCost])
             states.modal();
             if (!addCostError) toast('Kost toegevoegd');
         };

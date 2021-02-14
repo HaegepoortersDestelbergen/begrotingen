@@ -23,7 +23,8 @@ const wsLink = new WebSocketLink({
     connectionParams: {
       authToken: getToken().token,
     },
-  }
+  },
+  onError: () => console.log('HTTPS LINK ERROR')
 })
 
 const authLink = new ApolloLink((operation, forward) => {
@@ -47,7 +48,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  authLink.concat(httpLink),
+  authLink.concat(httpLink)
 );
 
 const client = new ApolloClient({

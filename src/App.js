@@ -3,11 +3,14 @@ import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import Popup from 'reactjs-popup';
 import { ToastContainer, toast, Slide, Zoom, Flip, Bounce } from 'react-toastify';
+import 'dayjs/locale/nl-be';
+
 import './App.scss';
 import { AuthRequired, Fab } from './components';
 import { AuthContext, NotifyContext } from './contexts';
 import { AccessDeniedPage, AdminPage, BudgetPage, GroupPage, Login, SharePage, StartPage } from './pages'
 import { logOut } from './utils';
+import { version as appVersion } from '../package.json'
 
 function App() {
     const [ authenticatedUser, authenticateUser ] = useState(null);
@@ -42,7 +45,13 @@ function App() {
                         </Route>
                     </Switch>
                     <Fab>
-                        <button className="btn btn--icon btn--sub"><box-icon name='support'></box-icon> Support</button>
+                        <Popup
+                            trigger={<button className="btn btn--icon btn--sub"><box-icon name='support'></box-icon> Support</button>}
+                            className={'menu'}
+                            position="top right">
+                            <p className="label m-0 mb-2">versie { appVersion }</p>
+                            <p className="m-0">Gebruik dit nummer om hulp te vragen</p>
+                        </Popup>
                         { authenticatedUser && <Popup
                             trigger={<button className="btn btn--icon"><box-icon name='user-circle' ></box-icon> { authenticatedUser.name }</button>}
                             className={'menu'}
