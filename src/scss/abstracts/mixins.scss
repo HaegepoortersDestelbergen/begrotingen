@@ -1,0 +1,10 @@
+@mixin textModern {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 90%;
+}
+
+@mixin label {
+    @include textModern;
+    font-weight: 600;
+}

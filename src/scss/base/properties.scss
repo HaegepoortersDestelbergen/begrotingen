@@ -1,0 +1,17 @@
+.label {
+    @include label;
+    font-weight: 600;
+}
+
+.gap--col {
+    column-gap: 1rem;
+}
+
+.fill-white { fill: white; }
+
+.bg--grey400 { background-color: $grey400;}
+.bg--blue500 { background-color: $blue500;}
+
+.color--blue300 {color: $blue300 !important}
+.color--blue400 {color: $blue400 !important}
+.color--blue500 {color: $blue500 !important}

@@ -1,0 +1,140 @@
+@import '../../../scss/abstracts';
+
+.card--cost { 
+    padding: 0;
+    overflow: hidden;
+          
+    & + & {
+        margin-top: 1rem;
+    }
+    
+    h3, p {
+        margin-bottom: 0;
+    }
+    
+    small {
+        display: block;
+    }
+    
+    .card__top, .card__btm {
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+    }
+    
+    .card__top {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 1.4rem;
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .card__btm {
+        padding: 0 1.4rem;
+        max-height: 0vh;
+        overflow: hidden;
+        background-color: #f6f9f9;
+        background-color: #dbeaec;
+        border-radius: 0 0 $bdRadius $bdRadius;
+        row-gap: 1rem;
+        
+        * {
+            opacity: 0;
+        }
+    }
+    
+    hr.striped {
+        margin: 0 auto;
+        opacity: 0;
+        background-position: 46%;
+    }
+    
+    &.collapse--false {
+        .card__btm {
+            max-height: 100vh;
+            padding: 1.4rem;
+            
+            * {
+                opacity: 1;
+            }
+        }
+        
+        hr.striped {
+            margin: 1.4rem auto;
+            opacity: 1;
+        }
+    }
+    
+    .card__header {   
+        grid-area: 1 / 1 / 2 / 2;
+                    
+        display: flex;
+        align-items: center;
+        column-gap: 1.4rem;
+        
+        .card__icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            // width: 47px; height: 47px;
+            // background-color: $blue300;
+            // background-color: #dbeaec;
+            // border-radius: 100%;
+            // border: 2px solid #dbeaec;
+            // border: 2px solid $blue300;
+            
+            // box-icon {
+            //     fill: #dbeaec;
+            //     fill: white;
+            // }
+        }
+    }
+    
+    .card__price {
+        grid-area: 1 / 2 / 2 / 3;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        
+        small {
+            text-align: right;
+        }
+    }
+    
+    .card__detail {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .card__actions {
+        grid-area: 2 / 1 / 3 / 2;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 576px) {}
+
+@media (min-width: 768px) {
+    .card--cost {
+        .card__btm {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .card__detail {
+            grid-area: 1 / 1 / 2 / 2;
+        }
+        
+        .card__actions {
+            grid-area: 1 / 2 / 2 / 3;
+        }
+    }
+}
+
+@media (min-width: 992px) {}
+
+@media (min-width: 1200px) {}

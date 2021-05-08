@@ -1,0 +1,39 @@
+.card--budget {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1.4rem;
+    padding: 1.4rem;
+    
+    & + & {
+        margin-top: 1rem;
+    }
+    
+    h3, h4 {
+        margin: 0;
+    }
+    
+    .card__header {
+        display: flex;
+        align-items: center;
+        column-gap: 1.4rem;
+        
+        .card__title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+    
+    .card__summary {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    
+    .card__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

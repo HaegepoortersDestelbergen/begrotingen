@@ -1,38 +1,57 @@
 {
-  "name": "begroting-maker",
-  "version": "1.0.0",
-  "description": "Eenvoudig begrotingen centraal aanmaken, bewaren en raadplegen",
-  "main": "index.js",
-  "scripts": {
-    "dev": "parcel watch index.html --target node --bundle-node-modules & browser-sync start --watch --server 'dist' --files 'dist' --no-notify",
-    "build": "parcel build index.html --target node --bundle-node-modules"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HaegepoortersDestelbergen/begrotingen.git"
-  },
-  "author": "Lennert De Ryck",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/HaegepoortersDestelbergen/begrotingen/issues"
-  },
-  "homepage": "https://github.com/HaegepoortersDestelbergen/begrotingen#readme",
+  "name": "begrotingen",
+  "version": "0.0.2-beta",
+  "private": true,
   "dependencies": {
-    "bootstrap": "^5.0.0-alpha1",
-    "browser-sync": "^2.26.10",
-    "cutleryjs": "^3.0.1",
-    "firebase": "^7.16.1",
-    "firebase-admin": "^9.0.0",
-    "http2": "^3.3.7",
-    "moment": "^2.27.0",
-    "mousetrap": "^1.6.5",
-    "navigo": "^7.1.2",
-    "popper.js": "^1.16.1",
-    "sesam-collapse": "^5.3.2"
+    "@apollo/client": "^3.2.7",
+    "@kenshooui/react-multi-select": "^1.1.6",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "bootstrap": "^5.0.0-alpha3",
+    "boxicons": "^2.0.7",
+    "cutleryjs": "^3.5.5",
+    "dayjs": "^1.9.6",
+    "graphql": "^15.4.0",
+    "moment": "^2.29.1",
+    "node-sass": "^4.14.1",
+    "react": "^17.0.1",
+    "react-collapse": "^5.1.0",
+    "react-dom": "^17.0.1",
+    "react-hook-form": "^6.11.4",
+    "react-loadingg": "^1.7.2",
+    "react-reveal": "^1.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.0",
+    "react-tabs": "^3.1.1",
+    "react-toastify": "^6.1.0",
+    "react-undraw": "^2.0.2",
+    "reactjs-popup": "^2.0.4",
+    "sanitize.css": "^12.0.1",
+    "styled-react-modal": "^2.0.1",
+    "subscriptions-transport-ws": "^0.9.18",
+    "web-vitals": "^0.2.4"
   },
-  "devDependencies": {
-    "@types/node": "^14.0.23",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.26.10"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+    
+    &, &:focus, &:focus-within, &:active {
+        transition: all .3s ease;
+    }
+}
+
+html, body, #root, .App {
+    min-height: 100vh;
+}
+
+body {
+    font-family: 'Gilroy';
+    font-weight: 400;
+    color: #707070;
+}
+
+a {
+    display: block;
+    text-decoration: none;
+    color: unset;
+}
+
+p a {
+    display: inline;
+}
+
+img {
+    display: block;
+    object-fit: cover;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid $grey200;
+}
+
+input, select, textarea, button {
+    &, &:focus, &:focus-within, &:active {
+        outline: none;
+        box-shadow: none;
+    }
+}

@@ -1,0 +1,22 @@
+@import '../../scss/abstracts';
+
+.radio-field {
+    display: block;
+    width: fit-content;
+    
+    &__label {
+        display: block;
+        padding: .375rem .8rem .3rem .8rem;
+        border-radius: 120px;
+        background-color: $blue100;
+        @include label;
+    }
+    
+    input {
+        display: none;
+        
+        &:checked + span {
+            background-color: $blue200;
+        }
+    }
+}

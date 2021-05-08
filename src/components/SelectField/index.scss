@@ -1,0 +1,22 @@
+@import '../../scss/abstracts';
+
+.select-field {
+    display: block;
+    
+    &__label {
+        display: block;
+        margin-bottom: 0.4rem;
+        @include label;
+    }
+    
+    select, select {
+        display: block;
+        padding: .375rem .75rem;
+        background-color: #ecf7f8;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+}
