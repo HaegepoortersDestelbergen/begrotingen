@@ -1,24 +1,27 @@
-const env = (dev = '', prod = '') => {
+export const env = (dev = '', prod = '') => {
     const env = process.env.NODE_ENV;
     return env === 'development' ? dev : prod;
 }
 
-const getToken = () => {
+export const getToken = () => {
     return JSON.parse(window.localStorage.getItem('user')) || { token: null, userId: null };
 }
+
+export const localToken = () => JSON.parse(window.localStorage.getItem('user')) || null;
 
 Number.prototype.pricify = function (append = 'euro', fixed = 2) {
     return `${this.toFixed(fixed).replace('.', ',')} ${append}`
 }
 
-const logOut = () => {
+export const logOut = () => {
     window.localStorage.removeItem('user');
     window.location.hash = '#/login';
 }
 
 export { QUERIES, SUBS } from './queries';
-export {
-    env,
-    getToken,
-    logOut
-}
+// export {
+//     env,
+//     getToken,
+//     localToken,
+//     logOut
+// }

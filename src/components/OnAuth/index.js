@@ -1,13 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import WaveTopBottomLoading from 'react-loadingg/lib/WaveTopBottomLoading';
-import { AuthContext } from '../../contexts';
+import { useLocation, useParams, useRouteMatch } from 'react-router';
 
-export default ({ children }) => {
-    const [ authenticatedUser, authenticateUser ] = useContext(AuthContext);
+import { AuthContext } from '../../contexts';
+import { useAuth } from '../../contexts/Auth';
+
+export default ({ children, group: requestedGroup }) => {
+    const { user } = useAuth('none');
+    const [ access, setAccess ] = useState()
     
-    if (authenticatedUser) {
-        if ( authenticatedUser.authorization == 'read') {
-            return null;
-        } else return children
-    } else return null
+    useEffect(() => {
+        const result = requestedGroup && user?.access.find(group => group.groupId === requestedGroup) || 'none';
+        setAccess(result.type);
+    }, [])
+    
+    if (access === 'write') return children
+    return null
 }

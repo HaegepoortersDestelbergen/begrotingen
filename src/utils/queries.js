@@ -89,6 +89,58 @@ export const QUERIES = {
                 name
             }
         }
+    `,
+    GET_USER: gql`
+        query user($id: String) {
+            user(id: $id) {
+                name
+                role
+                email
+                access {
+                    groupId
+                    type
+                }
+            }
+        }
+    `,
+    GET_SHARE: gql`
+        query share($id: String) {
+            share(id: $id) {
+                id
+                budgetId
+                budget {
+                    id
+                    title
+                    created
+                    groupId
+                    comment
+                    people {
+                        paying
+                        free
+                    }
+                    period {
+                        start
+                        end
+                    }
+                }
+                costs {
+                    id
+                    title
+                    amount
+                }
+            }
+        }
+    `,
+    LOGIN: gql`
+        query login($email: String, $password: String) {
+            login(user: {
+                email: $email,
+                password: $password
+            }) {
+                userId
+                token
+            }
+        }
     `
 }
 

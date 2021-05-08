@@ -6,6 +6,7 @@ import { Link, Route } from 'react-router-dom';
 import { Cards, OnAuth, Section } from '../../components';
 import { AuthContext } from '../../contexts';
 import './index.scss';
+import { useAuth } from '../../contexts/Auth';
 
 const GET_GROUPS = gql`
     query {group {
@@ -18,19 +19,28 @@ const GET_GROUPS = gql`
 export default () => {
     const {loading: groupsLoading, data: groupsData, error: groupsError, refetch: groupsRefetch } = useQuery(GET_GROUPS);
     const { group: allGroups } = groupsData || [];
-    const [authenticatedUser, authenticateUser] = useContext(AuthContext);
+    const { user } = useAuth();
+    // const [authenticatedUser, authenticateUser] = useContext(AuthContext);
     
     useEffect(() => {
         groupsRefetch();
     }, [])
-    
     
     return (
         <Page theme="start">
             <h1>Welke tak?</h1>
             <h2 className="page__subtitle">Kies een tak om begrotingen te bekijken of bewerken</h2>
             <Section theme="groups-list" container>
-                {allGroups && authenticatedUser ? allGroups.map(g => {
+                { user && allGroups ? 
+                    allGroups?.map(g => {
+                        const groupAccess = user.access.find(a => a.groupId === g.id);
+                        if(!groupAccess) return null;
+                        else if (groupAccess.type != 'none') return <Link key={g.id} to={`/group/${g.id}`} className={`mb-3 ${groupAccess.type == 'write' ? 'group--prior' : 'group--no-prior'}`}>
+                            <Cards.Group data={g}/>
+                        </Link>
+                    })
+                : <WaveTopBottomLoading/> }
+                {/* {allGroups && authenticatedUser ? allGroups.map(g => {
                     const groupAccess = authenticatedUser.access.find(a => a.groupId === g.id);
                     
                     if(!groupAccess) return null;
@@ -38,7 +48,7 @@ export default () => {
                         <Cards.Group data={g}/>
                     </Link>
                 }
-                ) : <WaveTopBottomLoading/>}
+                ) : <WaveTopBottomLoading/>} */}
             </Section>
         </Page>
     )

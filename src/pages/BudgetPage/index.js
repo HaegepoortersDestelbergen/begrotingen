@@ -12,6 +12,7 @@ import './index.scss';
 import '../../utils/index';
 import 'reactjs-popup/dist/index.css';
 import { QUERIES, SUBS } from '../../utils/index';
+import { useBudget } from '../../contexts';
 
 dayjs.locale('nl-be') 
 
@@ -82,7 +83,7 @@ export default () => {
     if (!budgetLoading && budgetData) {
         const { budget: [ budget ]} = budgetData || [];
         const { title, groupId, comment, period: { start, end }, people } = budget;
-                
+        
         const periodStart = dayjs(start);
         const periodEnd = dayjs(end);
         const periodDays = (periodEnd.diff(periodStart, 'days'))+1;
@@ -94,6 +95,8 @@ export default () => {
          * TODO: make sortable
          * https://github.com/SortableJS/react-sortablejs
          */
+        
+        console.log('groupId', groupId)
                         
         return (
             <Page theme="budget" ignore>
@@ -102,14 +105,13 @@ export default () => {
                         <div className="mb-5 d-flex align-items-center justify-content-between">
                             <Link to={`/group/${groupId}`} className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht budgetten</Link>
                             <div className="btn-group">
-                                <OnAuth>
+                                <OnAuth group={ groupId }>
                                     <button className="btn btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
                                     <button className="btn btn--icon" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
                                     <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon name='cube-alt'></box-icon> Simulatie</button>
                                     <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon type='solid' name='analyse'></box-icon> Stats</button>
                                     <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
                                 </OnAuth>
-                                
                             </div>
                         </div>
                         <div className="row">

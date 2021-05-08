@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputField } from '../..';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { useAuth } from '../../../contexts/Auth';
 
 const LOGIN = gql`
     query login($email: String, $password: String) {
@@ -17,20 +18,20 @@ const LOGIN = gql`
 
 export default () => {
     const { register, handleSubmit, watch, errors } = useForm();
-    const [ loginQuery, { loading: loginLoading, data: loginData, error: loginError } ] = useLazyQuery(LOGIN);
+    // const [ loginQuery, { loading: loginLoading, data: loginData, error: loginError } ] = useLazyQuery(LOGIN);
+    const { setLocalToken, login, loginState: { data: loginData } } = useAuth()
     
     useEffect(() => {
         if (loginData) {
-            window.localStorage.setItem('user', JSON.stringify(loginData.login))
+            const d = JSON.stringify(loginData.login)
+            window.localStorage.setItem('user', d)
             window.location.hash = '#/'
+            
+            setLocalToken(d);
         }
     }, [loginData])
     
-    const handleLogin = (formData) => {
-        loginQuery({
-            variables: formData
-        })
-    }
+    const handleLogin = ({ email, password }) => login(email, password)
     
     return (
         <form className="form" onSubmit={handleSubmit(handleLogin)}>

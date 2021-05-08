@@ -1,9 +1,15 @@
 import React from 'react';
+import { Redirect } from 'react-router';
 import { Forms } from '../../components'
+import { useAuth } from '../../contexts/Auth';
 import { Page } from '../../layouts';
 import './index.scss';
 
 export default () => {
+    const { user } = useAuth()
+    
+    if (user) return <Redirect to="/" />
+    
     return (
         <Page theme="login">
             <div className="form-wrapper">

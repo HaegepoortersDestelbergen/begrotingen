@@ -6,7 +6,7 @@ import { Cards, NotifyNotFound } from '..';
 import { QUERIES, SUBS } from '../../utils';
 import NotifyNoNetwork from '../NotifyNoNetwork';
 
-export default ({ budgetData }) => {
+export default ({ budgetData, editable = true }) => {
     if (!budgetData) throw new Error('[CostsList] No budgetId found');
     
    const { data: costChanges } = useSubscription(SUBS.COST_EDITED, {
@@ -26,5 +26,5 @@ export default ({ budgetData }) => {
     if (error) return <NotifyNoNetwork onClick={ refetch } />
     else if (loading) return <WaveTopBottomLoading />
     else if (data.cost.length == 0) return <NotifyNotFound msg="Er werden geen kosten gevonden" />
-    else return data.cost.map(c => <Cards.Cost key={ c.id } data={ c } budgetData={ budgetData } />)
+    else return data.cost.map(c => <Cards.Cost key={ c.id } data={ c } budgetData={ budgetData } editable={ editable }/>)
 }

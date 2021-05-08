@@ -24,13 +24,13 @@ export default () => {
         const { group: [ group ]} = groupData;
 
         return (
-            <Page theme="group" ignore> 
+            <Page theme="group" ignore>
                 <header>
                     <Section container>
                         <div className="mb-5 d-flex justify-content-between">  
                             <Link to="/" className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht groepen</Link>
                             <div className="btn-group">
-                                <OnAuth>
+                                <OnAuth group={ requestedGroupId }>
                                     <button className="btn" onClick={toggleModal}>Nieuwe begroting</button>
                                 </OnAuth>
                             </div>

@@ -17,7 +17,7 @@ export default ({ data: { __typename, ...data }, budgetData, states, onClick, ed
     const [ collapseState, setCollapseState ] = useState(true);
     const [ modalState, setModalState ] = useState(false);
     const [ costState, setCostState ] = useState(data);
-
+    
     const [ deleteCost, { loading, data: deleteCostData, error }] = useMutation(DELETE_COST, { variables: {
         cost: data
     }})
@@ -54,12 +54,12 @@ export default ({ data: { __typename, ...data }, budgetData, states, onClick, ed
                     <small>{ costTypeDetail(type) }, { costTypeAmountPerPersonDetail(type) }</small>
                 </div>
                 <div className="card__actions">
-                    <OnAuth>
+                    {editable && <OnAuth group={ budgetData.groupId }>
                         <div className="btn-group btn-group--stretch">
                             <button className="btn" onClick={() => setModalState(!modalState)}>Bewerken</button>
                             <button className="btn btn--sub btn--icon" onClick={(e) => handleDelete(e)}><box-icon name='trash'></box-icon> Verwijder kost</button>
                         </div>
-                    </OnAuth>
+                    </OnAuth>}
                 </div>
             </div>
         </Card>
