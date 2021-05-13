@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import Popup from 'reactjs-popup';
 import { ToastContainer, toast, Slide, Zoom, Flip, Bounce } from 'react-toastify';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/nl-be';
 
 import './App.scss';
@@ -12,9 +14,33 @@ import { AccessDeniedPage, AdminPage, BudgetPage, GroupPage, Login, SharePage, S
 import { logOut } from './utils';
 import { version as appVersion } from '../package.json'
 import _Auth, { useAuth, _AuthRequired } from './contexts/Auth';
+import { useApi } from './hooks';
+
+dayjs.extend(relativeTime);
+
+const CommitDisplay = ({ data }) => {
+    if (!data) return null
+    
+    const { author: { name, date }, message } = data.commit;
+    const formattedDate = dayjs(date).fromNow()
+    
+    return <>
+        <p className="label m-0 mb-2">Laatste update</p>
+        <p>{ message }</p>
+        <small className="d-block mt-0">
+            { formattedDate } geupdate
+            door { name }
+        </small>
+    </>
+}
 
 const Wrapper = () => {
     const { user } = useAuth();
+    const { data } = useApi('https://api.github.com/repos/HaegepoortersDestelbergen/begrotingen/commits', false)
+    
+    useEffect(() => {
+        console.log(data?.[0])
+    }, [data]);
     
     return <>
         <Switch>
@@ -44,10 +70,11 @@ const Wrapper = () => {
         <Fab>
             <Popup
                 trigger={<button className="btn btn--icon btn--sub"><box-icon name='support'></box-icon> Support</button>}
-                className={'menu'}
-                position="top right">
+                className={'menu tooltip--support'}
+                position="top center">
                 <p className="label m-0 mb-2">versie { appVersion }</p>
-                <p className="m-0">Gebruik dit nummer om hulp te vragen</p>
+                <p className="m-0 mb-4">Gebruik dit nummer om hulp te vragen</p>
+                <CommitDisplay data={ data?.[0] } />
             </Popup>
             { user && <Popup
                 trigger={<button className="btn btn--icon"><box-icon name='user-circle' ></box-icon> { user.name }</button>}
