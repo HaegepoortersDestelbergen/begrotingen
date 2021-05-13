@@ -26,7 +26,7 @@ const CommitDisplay = ({ data }) => {
     
     return <>
         <p className="label m-0 mb-2">Laatste update</p>
-        <p>{ message }</p>
+        <p className="mt-0">{ message }</p>
         <small className="d-block mt-0">
             { formattedDate } geupdate
             door { name }
