@@ -6,7 +6,7 @@ import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 
-import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section, SharesList, CostsList } from '../../components';
+import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section, SharesList, CostsList, ButtonOverflow } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
@@ -39,7 +39,7 @@ export default () => {
     }
     
     /**
-     * TODO: simulation
+     * TODO: simulation with context provider
      */
     
     // useEffect(() => {
@@ -106,11 +106,21 @@ export default () => {
                             <Link to={`/group/${groupId}`} className="btn btn--simple btn--icon"><box-icon name='left-arrow-alt'></box-icon> Overzicht budgetten</Link>
                             <div className="btn-group">
                                 <OnAuth group={ groupId }>
-                                    <button className="btn btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
-                                    <button className="btn btn--icon" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
-                                    <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon name='cube-alt'></box-icon> Simulatie</button>
-                                    <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon type='solid' name='analyse'></box-icon> Stats</button>
-                                    <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
+                                    <ButtonOverflow 
+                                        onMobile={<>
+                                            <button className="btn btn--sub btn--w-full" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
+                                            <div className="btn-group">
+                                                    <button className="btn btn--icon mb-0" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
+                                                    <button className="btn btn--w-full mb-0" onClick={toggleModal}> Nieuwe kost</button>
+                                            </div>
+                                        </>}
+                                    >
+                                        <button className="btn btn--sub" onClick={() => setModalBudgetState(!modalBudgetState)}>Bewerken</button>
+                                        <button className="btn btn--icon" onClick={() => setModalShareState(!modalShareState)}><box-icon name='share-alt'></box-icon> Delen</button>
+                                        <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon name='cube-alt'></box-icon> Simulatie</button>
+                                        <button className="btn btn--icon" onClick={() => toast('Functie nog niet beschikbaar')}><box-icon type='solid' name='analyse'></box-icon> Stats</button>
+                                        <button className="btn" onClick={toggleModal}> Nieuwe kost</button>
+                                    </ButtonOverflow>
                                 </OnAuth>
                             </div>
                         </div>

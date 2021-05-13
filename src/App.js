@@ -16,8 +16,6 @@ import _Auth, { useAuth, _AuthRequired } from './contexts/Auth';
 const Wrapper = () => {
     const { user } = useAuth();
     
-    console.log(user);
-    
     return <>
         <Switch>
             <Route path="/login" exact={true}>
