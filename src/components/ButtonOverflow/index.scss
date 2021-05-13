@@ -1,0 +1,48 @@
+.ButtonOverflow {
+    &__button {
+        @media (min-width: 992px) {
+            display: none;
+        }
+    }
+    
+    &__modal {
+        &-content {
+            position: fixed !important;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            width: 100%;
+            padding: 1.4rem;
+            border: none;
+            border-radius: 12px 12px 0 0;
+            
+            .btn, .button, button {
+                // width: 100%;
+                margin-bottom: 1rem;
+                
+            }
+            
+            .row {
+                --bs-gutter-x: 1rem;
+            }
+        }
+    }
+    
+    &__overflow {
+        display: none;
+        
+        @media (min-width: 992px) {
+            display: flex;
+        }
+    }
+}
+
+// .ButtonOverflow__modal-content {
+//     position: fixed !important;
+//     left: 0px;
+//     right: 0px;
+//     bottom: 0px;
+//     padding: 1.4rem;
+//     border: none;
+//     border-radius: 12px 12px 0 0;
+// }

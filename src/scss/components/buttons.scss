@@ -24,6 +24,8 @@
     
     &--icon {
         position: relative;
+        // display: flex;
+        align-items: center;
         padding-left: 2.8rem !important;
         padding-right: 1rem !important;
         
@@ -46,6 +48,10 @@
         color: $blue400 !important;
         
         box-icon {fill: $blue300 !important;}
+    }
+    
+    &--w-full {
+        width: 100% !important;
     }
 }
 

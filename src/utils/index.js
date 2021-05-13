@@ -18,6 +18,8 @@ export const logOut = () => {
     window.location.hash = '#/login';
 }
 
+export const _cls = (...classes) => classes.filter(c => c != false).join(' ');
+
 export { QUERIES, SUBS } from './queries';
 // export {
 //     env,
