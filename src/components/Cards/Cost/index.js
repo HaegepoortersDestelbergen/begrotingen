@@ -50,7 +50,7 @@ const Cost = forwardRef(({ data: { __typename, ...data }, budgetData, states, on
                                 {editable ? <div className="card__icon"
                                     { ...provided.dragHandleProps }
                                 >
-                                    <box-icon name='dots-vertical-rounded' class="opacity-05"></box-icon>
+                                    <box-icon name='menu' class="opacity-05 mr-3"></box-icon>
                                     { CategoryIcon(category) }
                                 </div> : <div className="card__icon">{ CategoryIcon(category) }</div>}
                                 <div>
