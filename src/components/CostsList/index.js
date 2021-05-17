@@ -67,6 +67,7 @@ export default ({ budgetData, editable = true }) => {
                     ref={ provided.innerRef }
                     { ...provided.droppableProps }
                 >
+                    { console.log('costsDataList', costsDataList) }
                     { costsDataList.map((c, index) => 
                         <Cards.Cost key={ c.id } data={ c } budgetData={ budgetData } editable={ editable } index={ index }/>) 
                     }
