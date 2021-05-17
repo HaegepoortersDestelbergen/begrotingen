@@ -2,19 +2,22 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { InputField, SelectField, RadioField, RadioFieldGroup } from '../..';
-import { useMutation } from '@apollo/client';
-import { MUTATIONS } from '../../../utils/queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { MUTATIONS, QUERIES } from '../../../utils/queries';
 
 export default ({ states, className = '', budgetId }) => {
     const { register, handleSubmit, watch, errors } = useForm();
+    const { data: costsAmountData, loading: costsAmountLoading, error: costsAmountError } = useQuery(QUERIES.GET_COSTS_AMOUNT, { variables: { budgetId }});
     const [ addCost, { loading: addCostLoading, data: addCostData, error: addCostError } ] = useMutation(MUTATIONS.ADD_COST);
 
     const handle = (formData) => {        
-        const parsedFormData = {...formData, budgetId: budgetId, amount: parseFloat(formData.amount)}
+        const parsedFormData = {...formData, budgetId: budgetId, amount: parseFloat(formData.amount), order: costsAmountData.costAmount }
         addCost({
             variables: parsedFormData
         })
     }
+    
+    console.log(costsAmountData)
     
     useEffect(() => {
         if (addCostData) {
