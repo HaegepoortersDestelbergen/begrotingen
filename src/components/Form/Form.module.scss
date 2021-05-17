@@ -1,0 +1,17 @@
+.inputWrapper {
+    .label {
+        display: block;
+    }
+    
+    .field {
+        display: block;
+        padding: .375rem .75rem;
+        background-color: #ecf7f8;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        width: 100%;
+    }
+}
