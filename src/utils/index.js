@@ -20,7 +20,7 @@ export const logOut = () => {
 
 export const _cls = (...classes) => classes.filter(c => c != false).join(' ');
 
-export { QUERIES, SUBS } from './queries';
+export { QUERIES, SUBS, MUTATIONS } from './queries';
 // export {
 //     env,
 //     getToken,

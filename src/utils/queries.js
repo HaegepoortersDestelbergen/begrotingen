@@ -55,6 +55,11 @@ export const QUERIES = {
             }
         }
     `,
+    GET_COSTS_AMOUNT: gql`
+        query costsAmount($budgetId: ID) {
+            costAmount(budgetId: $budgetId)
+        }
+    `,
     GET_COSTS_BY_BUDGET: gql`
         query cost($budgetId: String) {
             cost(budgetId: $budgetId) {
@@ -163,7 +168,7 @@ export const SUBS = {
 
 export const MUTATIONS = {
     ADD_COST: gql`
-        mutation addCost ($budgetId: ID, $title: String, $comment: String, $category: CostCategory, $type: CostType, $when: CostWhen, $amount: Float ) {
+        mutation addCost ($budgetId: ID, $title: String, $comment: String, $category: CostCategory, $type: CostType, $when: CostWhen, $amount: Float, $order: Int ) {
             addCost(cost: {
                 budgetId: $budgetId,
                 title: $title,
@@ -171,7 +176,8 @@ export const MUTATIONS = {
                 category: $category,
                 type: $type,
                 when: $when,
-                amount: $amount
+                amount: $amount,
+                order: $order
             }){
                 title
             }
@@ -183,7 +189,7 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_COST: gql`
-        mutation addCost ($id: ID, $budgetId: ID, $title: String, $comment: String, $category: CostCategory, $type: CostType, $when: CostWhen, $amount: Float ) {
+        mutation addCost ($id: ID, $budgetId: ID, $title: String, $comment: String, $category: CostCategory, $type: CostType, $when: CostWhen, $amount: Float, $order: Int ) {
             addCost (
                 id: $id,
                 cost: {
@@ -193,7 +199,8 @@ export const MUTATIONS = {
                     category: $category,
                     type: $type,
                     when: $when,
-                    amount: $amount
+                    amount: $amount,
+                    order: $order
                 }
             ){
                 title

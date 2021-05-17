@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import './index.scss';
 
-export default ({ theme, children, className = '', onClick }) => {
+const Card = forwardRef(({ theme, children, className = '', onClick }, ref) => {
     return (
-        <div className={`card ${theme && `card--${theme}` || ''} ${className}`} onClick={onClick ? () => onClick() : null}>
+        <div ref={ ref } className={`card ${theme ? `card--${theme}` : ''} ${className}`} onClick={onClick ? () => onClick() : null}>
             { children }
         </div>
     )
-}
+})
+
+export default Card;

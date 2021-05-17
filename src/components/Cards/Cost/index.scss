@@ -1,12 +1,14 @@
 @import '../../../scss/abstracts';
 
-.card--cost { 
-    padding: 0;
-    overflow: hidden;
-          
+.card-cost__wrapper {
     & + & {
         margin-top: 1rem;
     }
+}
+
+.card--cost { 
+    padding: 0;
+    overflow: hidden;
     
     h3, p {
         margin-bottom: 0;
@@ -71,7 +73,7 @@
                     
         display: flex;
         align-items: center;
-        column-gap: 1.4rem;
+        column-gap: 1rem;
         
         .card__icon {
             display: flex;
