@@ -6,7 +6,7 @@ import Popup from 'reactjs-popup';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 
-import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section, SharesList, CostsList, ButtonOverflow } from '../../components';
+import { Card, Cards, Forms, NotifyNotFound, OnAuth, Section, SharesList, CostsList, ButtonOverflow, Form, FormInput } from '../../components';
 import { Page } from '../../layouts';
 import './index.scss';
 import '../../utils/index';
@@ -137,7 +137,11 @@ export default () => {
                         </div>
                     </Section>
                 </header>
-                
+                {/* <div className="container">
+                    <Form className="mt-4" onSubmit={ console.log }>
+                        <FormInput name="query" placeholder="Zoek in kosten" />
+                    </Form>
+                </div> */}
                 <Section container>
                     <CostsList budgetData={{ ...budget, stay: { days: periodDays, nights: periodNights } }} />
                 </Section>
